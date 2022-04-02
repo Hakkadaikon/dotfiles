@@ -22,7 +22,11 @@ Plug 'scrooloose/nerdcommenter'             "
 "
 " Filers
 "------------------------------------------------------------------------------
-Plug 'lambdalisue/fern.vim'                 " Filer
+Plug 'obaland/vfiler.vim'                       " Filer
+Plug 'obaland/vfiler-column-devicons'           " vfiler related plugin
+Plug 'junegunn/fzf', {'do': {-> fzf#install()}} " vfiler-fzf related plugin
+Plug 'junegunn/fzf.vim'                         " vfiler-fzf related plugin
+Plug 'obaland/vfiler-fzf'                       " vfiler related plugin
 "------------------------------------------------------------------------------
 
 "Views
@@ -35,12 +39,14 @@ Plug 'nvim-lualine/lualine.nvim'            " Extended status bar
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kamykn/spelunker.vim'                 " Spell check
 Plug 'posva/vim-vue'                        " 
+Plug 'phpactor/phpactor'                    " PHP
 
 " Color schemas
 Plug 'mhinz/vim-startify'                   " Show start screen when starting vim
 "Plug 'w0ng/vim-hybrid'                     " Schema for vim    (hybrid)
 "Plug 'arcticicestudio/nord-vim'            " Schema for vim    (nord)
 "Plug 'glepnir/zephyr-nvim'                 " Schema for neovim (hybrid)
+Plug 'bluz71/vim-nightfly-guicolors'
 Plug 'marko-cerovac/material.nvim'          " Schema for neovim (material)
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "------------------------------------------------------------------------------
@@ -126,6 +132,7 @@ require('material').setup({
     },
     lualine_style = 'stealth'
 })
+
 vim.cmd 'colorscheme material'
 EOF
 "------------------------------------------------------------------------------
@@ -135,10 +142,44 @@ EOF
 nmap [j <Plug>(jumpcursor-jump)
 "------------------------------------------------------------------------------
 
-" fern settings
+" vfiler.vim settings
 "------------------------------------------------------------------------------
-nnoremap <silent><C-e> <cmd>Fern . -drawer -toggle<cr>
-nnoremap <silent><C-w> <cmd>Fern ../<cr>
+" Execute explorer style.
+function! s:start_explorer() abort
+lua <<EOF
+
+local configs = {
+  options = {
+    auto_cd     = true,
+    auto_resize = true,
+    keep        = true,
+    name        = 'explorer',
+    layout      = 'floating',
+    width       = 120,
+    columns     = 'indent,devicons,name,mode,size',
+    -- columns     = 'indent,devicons,name,git,mode,size',
+    -- git = {
+    --   enabled   = true,
+    --   untracked = true,
+    --   ignored   = true,
+    -- },
+  },
+}
+
+local path = vim.fn.bufname(vim.fn.bufnr())
+if vim.fn.isdirectory(path) ~= 1 then
+  path = vim.fn.getcwd()
+end
+path = vim.fn.fnamemodify(path, ':p:h')
+
+require'nvim-web-devicons'.get_icons()
+require'vfiler'.start(path, configs)
+
+EOF
+endfunction
+
+" Execute explorer style.
+noremap <silent><C-e> :call <SID>start_explorer()<CR>
 "------------------------------------------------------------------------------
 
 " "tagbar settings
@@ -165,6 +206,11 @@ nmap <silent> <C-]> :LspDefinition<CR> " Jump definition
 nmap <silent> gd    :LspDefinition<CR> " Jump definition
 nmap <silent> gD    :LspReferences<CR> " View caller
 "------------------------------------------------------------------------------
+
+"phpactor settings
+"------------------------------------------------------------------------------
+nmap <silent> ww :call phpactor#Hover()<CR>
+""------------------------------------------------------------------------------
 
 "##############################################################################
 
@@ -200,6 +246,10 @@ set cmdheight=2                " Number of lines the message display field
 set laststatus=2               " Always show status line
 set display=lastline           " Don't omit the characters displayed on the status line
 set showmatch matchtime=1      " Bracket highlighting
+set termguicolors
+
+"set tags=~/tags
+
 "------------------------------------------------------------------------------
 "
 " Syntax settings by extension
