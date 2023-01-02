@@ -40,6 +40,8 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kamykn/spelunker.vim'                 " Spell check
 Plug 'posva/vim-vue'                        " 
 Plug 'phpactor/phpactor'                    " PHP
+Plug 'jparise/vim-graphql'
+Plug 'pantharshit00/vim-prisma'
 
 " Color schemas
 Plug 'mhinz/vim-startify'                   " Show start screen when starting vim
@@ -55,6 +57,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "------------------------------------------------------------------------------
 Plug 'ConradIrwin/vim-bracketed-paste'      " Automatically change paste mode
 Plug 'mattn/emmet-vim'                      " XML tag shortcuts
+Plug 'prettier/vim-prettier'                " Code formatter
 "------------------------------------------------------------------------------
 
 " Git plugins
@@ -77,6 +80,12 @@ Plug 'skanehira/jumpcursor.vim'             " Cursor jump
 Plug 'scrooloose/vim-slumlord'              " Edit PlantUML
 Plug 'skanehira/preview-markdown.vim'       " Preview markdown
 "------------------------------------------------------------------------------
+
+" Debug
+"------------------------------------------------------------------------------
+Plug 'cpiger/NeoDebug'                      " GDB plugin
+"------------------------------------------------------------------------------
+
 call plug#end()
 "##############################################################################
 
@@ -155,10 +164,10 @@ local configs = {
     auto_resize = true,
     keep        = true,
     name        = 'explorer',
-    layout      = 'floating',
-    width       = 120,
-    columns     = 'indent,devicons,name,mode,size',
-    -- columns     = 'indent,devicons,name,git,mode,size',
+    layout      = 'left',
+    width       = 40,
+    columns     = 'indent,name,mode,size',
+    -- columns     = 'indent,name,git,mode,size',
     -- git = {
     --   enabled   = true,
     --   untracked = true,
@@ -210,7 +219,7 @@ nmap <silent> gD    :LspReferences<CR> " View caller
 
 "phpactor settings
 "------------------------------------------------------------------------------
-nmap <silent> ww :call phpactor#Hover()<CR>
+"nmap <silent> ww :call phpactor#Hover()<CR>
 ""------------------------------------------------------------------------------
 
 "------------------------------------------------------------------------------
@@ -237,7 +246,7 @@ set number                     " Show line number
 set showcmd                    " Show the command your are typing
 set list                       " Show control characters
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-set cursorline                 " Highlight selected line
+"set cursorline                " Highlight selected line
 set expandtab                  " Replace tab with a half-width space
 set noswapfile                 " Don't create swap file
 "set nofoldenable              " Don't fold the source code
@@ -263,5 +272,35 @@ set termguicolors
 "------------------------------------------------------------------------------
 set noerrorbells               " Beep suppression at the time of error
 set history=10000              " Number of saved vim command execution histories
-"
+
+" jumpcursor
+"------------------------------------------------------------------------------
+nmap qj <Plug>(jumpcursor-jump)
+nmap qk <Plug>(jumpcursor-jump)
+nmap ql <Plug>(jumpcursor-jump)
+nmap qh <Plug>(jumpcursor-jump)
+"------------------------------------------------------------------------------
+
+" vim-prettier settings
+"------------------------------------------------------------------------------
+nmap qq <Plug>Prettier
+
+" Timing : BufWritePre/TextChanged
+augroup fmt
+autocmd!
+autocmd BufWritePre,TextChanged 
+\*.js,*.jsx,*.mjs,*.ts,*.tsx,
+\*.html,*.css,*.less,*.scss,
+\*.json,*.graphql,*.md,
+\*.vue,*.svelte,*.yaml
+\ PrettierAsync
+
+augroup END
+"------------------------------------------------------------------------------
+
+" vim-graphql settings
+"------------------------------------------------------------------------------
+au BufNewFile,BufRead *.prisma setfiletype graphql
+"------------------------------------------------------------------------------
+
 "##############################################################################
