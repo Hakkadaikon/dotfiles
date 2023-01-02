@@ -40,7 +40,7 @@ Plug 'pantharshit00/vim-prisma'
 
 " Color schemas
 Plug 'mhinz/vim-startify'                   " Show start screen when starting vim
-"Plug 'w0ng/vim-hybrid'                     " Schema for vim    (hybrid)
+Plug 'w0ng/vim-hybrid'                      " Schema for vim    (hybrid)
 "Plug 'arcticicestudio/nord-vim'            " Schema for vim    (nord)
 "Plug 'glepnir/zephyr-nvim'                 " Schema for neovim (hybrid)
 Plug 'bluz71/vim-nightfly-guicolors'
@@ -116,6 +116,7 @@ EOF
 
 " material settings
 "------------------------------------------------------------------------------
+" TODO: material does not highlight prisma model.
 lua << EOF
 vim.g.material_style = 'palenight'
 require('material').setup({
@@ -141,6 +142,8 @@ require('material').setup({
 
 vim.cmd 'colorscheme material'
 EOF
+
+colorscheme hybrid
 "------------------------------------------------------------------------------
 
 " jumpcursor settings
@@ -303,6 +306,7 @@ au BufNewFile,BufRead *.prisma setfiletype graphql
 "------------------------------------------------------------------------------
 inoremap <silent><expr> <C-k>     coc#pum#visible() ? coc#pum#prev(1)   : "\<C-k>"
 inoremap <silent><expr> <TAB>     coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
+inoremap <silent><expr> <Enter>   coc#pum#visible() ? coc#pum#confirm() : "\<Enter>"
 inoremap <silent><expr> <Esc>     coc#pum#visible() ? coc#pum#cancel()  : "\<Esc>"
 inoremap <silent><expr> <C-h>     coc#pum#visible() ? coc#pum#cancel()  : "\<C-h>"
 inoremap <silent><expr> <c-space> coc#refresh()
