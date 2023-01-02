@@ -58,6 +58,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'ConradIrwin/vim-bracketed-paste'      " Automatically change paste mode
 Plug 'mattn/emmet-vim'                      " XML tag shortcuts
 Plug 'prettier/vim-prettier'                " Code formatter
+Plug 'kana/vim-smartinput'
 "------------------------------------------------------------------------------
 
 " Git plugins
