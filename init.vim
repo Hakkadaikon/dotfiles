@@ -11,13 +11,10 @@
 call plug#begin()
 " Auto completes
 "------------------------------------------------------------------------------
-Plug 'mattn/vim-lsp-settings'               " LSP auto settings
-"Plug 'mattn/efm-langserver'
 Plug 'prabirshrestha/async.vim'             " Async task execution
 Plug 'prabirshrestha/asyncomplete.vim'      " Async auto complete
-Plug 'prabirshrestha/vim-lsp'               " Use language server protocol
-Plug 'prabirshrestha/asyncomplete-lsp.vim'  " Async auto complete (for lsp)
 Plug 'scrooloose/nerdcommenter'             " 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "------------------------------------------------------------------------------
 "
 " Filers
