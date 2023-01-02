@@ -13,6 +13,7 @@ call plug#begin()
 "------------------------------------------------------------------------------
 Plug 'prabirshrestha/async.vim'             " Async task execution
 Plug 'prabirshrestha/asyncomplete.vim'      " Async auto complete
+Plug 'prabirshrestha/asyncomplete-lsp.vim'  " Async auto complete
 Plug 'scrooloose/nerdcommenter'             " 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "------------------------------------------------------------------------------
@@ -28,10 +29,7 @@ Plug 'obaland/vfiler-fzf'                       " vfiler related plugin
 
 "Views
 "------------------------------------------------------------------------------
-Plug 'w0rp/ale'                             " Check syntax
 Plug 'machakann/vim-highlightedyank'        " Highlight the yanked string
-"Plug 'majutsushi/tagbar'                   " Status display of which function you are in
-"Plug 'vim-airline/vim-airline'             " Extended status bar 
 Plug 'nvim-lualine/lualine.nvim'            " Extended status bar
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kamykn/spelunker.vim'                 " Spell check
@@ -299,6 +297,15 @@ augroup END
 " vim-graphql settings
 "------------------------------------------------------------------------------
 au BufNewFile,BufRead *.prisma setfiletype graphql
+"------------------------------------------------------------------------------
+
+" coc.nvim settings
+"------------------------------------------------------------------------------
+inoremap <silent><expr> <C-k>     coc#pum#visible() ? coc#pum#prev(1)   : "\<C-k>"
+inoremap <silent><expr> <TAB>     coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
+inoremap <silent><expr> <Esc>     coc#pum#visible() ? coc#pum#cancel()  : "\<Esc>"
+inoremap <silent><expr> <C-h>     coc#pum#visible() ? coc#pum#cancel()  : "\<C-h>"
+inoremap <silent><expr> <c-space> coc#refresh()
 "------------------------------------------------------------------------------
 
 "##############################################################################
