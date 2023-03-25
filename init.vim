@@ -7,7 +7,6 @@
 "##############################################################################
 " Plugins
 "##############################################################################
-"
 call plug#begin()
 " Auto completes
 "------------------------------------------------------------------------------
@@ -37,6 +36,8 @@ Plug 'posva/vim-vue'                        "
 Plug 'phpactor/phpactor'                    " PHP
 Plug 'jparise/vim-graphql'
 Plug 'pantharshit00/vim-prisma'
+Plug 'dense-analysis/ale'
+"------------------------------------------------------------------------------
 
 " Color schemas
 Plug 'mhinz/vim-startify'                   " Show start screen when starting vim
@@ -148,7 +149,7 @@ colorscheme hybrid
 
 " jumpcursor settings
 "------------------------------------------------------------------------------
-nmap [j <Plug>(jumpcursor-jump)
+nmap jc <Plug>(jumpcursor-jump)
 "------------------------------------------------------------------------------
 
 " vfiler.vim settings
@@ -267,11 +268,6 @@ set termguicolors
 "autocmd BufNewFile,BufRead *.tpl set filetype=bash 
 "------------------------------------------------------------------------------
 
-" Other settings
-"------------------------------------------------------------------------------
-set noerrorbells               " Beep suppression at the time of error
-set history=10000              " Number of saved vim command execution histories
-
 " jumpcursor
 "------------------------------------------------------------------------------
 nmap qj <Plug>(jumpcursor-jump)
@@ -287,11 +283,11 @@ nmap qq <Plug>Prettier
 " Timing : BufWritePre/TextChanged
 augroup fmt
 autocmd!
-autocmd BufWritePre,TextChanged 
-\*.js,*.jsx,*.mjs,*.ts,*.tsx,
-\*.html,*.css,*.less,*.scss,
-\*.json,*.graphql,*.md,
-\*.vue,*.svelte,*.yaml
+autocmd BufWritePre
+\ *.js,*.jsx,*.mjs,*.ts,*.tsx,
+\ *.html,*.css,*.less,*.scss,
+\ *.json,*.graphql,*.md,
+\ *.vue,*.svelte,*.yaml
 \ PrettierAsync
 
 augroup END
@@ -304,12 +300,40 @@ au BufNewFile,BufRead *.prisma setfiletype graphql
 
 " coc.nvim settings
 "------------------------------------------------------------------------------
+let g:lightline = {
+  \'active': {
+    \'right': [
+      \['coc']
+    \]
+  \},
+  \'component_function': {
+    \'coc': 'coc#status'
+  \}
+\}
+
+highlight CocErrorSign ctermfg=15 ctermbg=196
+highlight CocWarningSign ctermfg=0 ctermbg=172
+
 inoremap <silent><expr> <C-k>     coc#pum#visible() ? coc#pum#prev(1)   : "\<C-k>"
 inoremap <silent><expr> <TAB>     coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
 inoremap <silent><expr> <Enter>   coc#pum#visible() ? coc#pum#confirm() : "\<Enter>"
 inoremap <silent><expr> <Esc>     coc#pum#visible() ? coc#pum#cancel()  : "\<Esc>"
 inoremap <silent><expr> <C-h>     coc#pum#visible() ? coc#pum#cancel()  : "\<C-h>"
 inoremap <silent><expr> <c-space> coc#refresh()
+
+nmap <silent> <space><space> :<C-u>CocList<cr>
+nmap <silent> <space>h       :<C-u>call CocAction('doHover')<cr>
+nmap <silent> <space>df      <Plug>(coc-definition)
+nmap <silent> <space>rf      <Plug>(coc-references)
+nmap <silent> <space>rn      <Plug>(coc-rename)
+nmap <silent> <space>fmt     <Plug>(coc-format)
+"------------------------------------------------------------------------------
+
+" Other settings
+"------------------------------------------------------------------------------
+set noerrorbells               " Beep suppression at the time of error
+set history=10000              " Number of saved vim command execution histories
+set clipboard+=unnamedplus
 "------------------------------------------------------------------------------
 
 "##############################################################################
