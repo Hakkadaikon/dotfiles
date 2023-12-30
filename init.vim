@@ -77,6 +77,8 @@ let g:enable_spelunker_vim = 1
 lua << EOF 
 require'lspconfig'.tsserver.setup{}
 require'lspconfig'.rust_analyzer.setup{}
+require'lspconfig'.gopls.setup{}
+require'lspconfig'.clangd.setup{}
 -- 1. LSP Sever management
 require('mason').setup()
 require('mason-lspconfig').setup_handlers({ function(server)
@@ -189,29 +191,29 @@ EOF
 " material settings
 "------------------------------------------------------------------------------
 lua << EOF
-vim.g.material_style = 'palenight'
-require('material').setup({
-    contrast = {
-        sidebars    = true,
-        cursor_line = true,
-    },
-    italics = {
-        comments  = false,
-        functions = false,
-    },
-    contrast_filetypes = {
-        "terminal",
-        "packer",
-        "qf",
-    },
-    disable = {
-        borders   = true,
-        eob_lines = true
-    },
-    lualine_style = 'stealth'
-})
-
-vim.cmd 'colorscheme material'
+-- vim.g.material_style = 'palenight'
+-- require('material').setup({
+--     contrast = {
+--         sidebars    = true,
+--         cursor_line = true,
+--     },
+--     italics = {
+--         comments  = false,
+--         functions = false,
+--     },
+--     contrast_filetypes = {
+--         "terminal",
+--         "packer",
+--         "qf",
+--     },
+--     disable = {
+--         borders   = true,
+--         eob_lines = true
+--     },
+--     lualine_style = 'stealth'
+-- })
+-- 
+-- vim.cmd 'colorscheme material'
 EOF
 
 colorscheme hybrid
