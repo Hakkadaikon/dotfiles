@@ -10,50 +10,42 @@
 call plug#begin()
 " Auto completes
 "------------------------------------------------------------------------------
-Plug 'prabirshrestha/async.vim'             " Async task execution
-Plug 'prabirshrestha/asyncomplete.vim'      " Async auto complete
-Plug 'prabirshrestha/asyncomplete-lsp.vim'  " Async auto complete
-Plug 'scrooloose/nerdcommenter'             " 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'prabirshrestha/async.vim'             " Async task execution
+"Plug 'prabirshrestha/asyncomplete.vim'      " Async auto complete
+"Plug 'prabirshrestha/asyncomplete-lsp.vim'  " Async auto complete
+Plug 'neovim/nvim-lspconfig'                 " LSP config
+Plug 'scrooloose/nerdcommenter'              "
+Plug 'williamboman/mason.nvim'               "
+Plug 'williamboman/mason-lspconfig.nvim'     "
+Plug 'hrsh7th/nvim-cmp'                      " Auto complete
+Plug 'hrsh7th/cmp-nvim-lsp'                  " Auto complete
+Plug 'hrsh7th/vim-vsnip'                     " Auto complete
 "------------------------------------------------------------------------------
+
 "
 " Filers
 "------------------------------------------------------------------------------
 Plug 'obaland/vfiler.vim'                       " Filer
-Plug 'obaland/vfiler-column-devicons'           " vfiler related plugin
-Plug 'junegunn/fzf', {'do': {-> fzf#install()}} " vfiler-fzf related plugin
-Plug 'junegunn/fzf.vim'                         " vfiler-fzf related plugin
-Plug 'obaland/vfiler-fzf'                       " vfiler related plugin
 "------------------------------------------------------------------------------
 
 "Views
 "------------------------------------------------------------------------------
 Plug 'machakann/vim-highlightedyank'        " Highlight the yanked string
 Plug 'nvim-lualine/lualine.nvim'            " Extended status bar
-Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kamykn/spelunker.vim'                 " Spell check
-Plug 'posva/vim-vue'                        " 
-Plug 'phpactor/phpactor'                    " PHP
-Plug 'jparise/vim-graphql'
-Plug 'pantharshit00/vim-prisma'
-Plug 'dense-analysis/ale'
 "------------------------------------------------------------------------------
 
 " Color schemas
+"------------------------------------------------------------------------------
 Plug 'mhinz/vim-startify'                   " Show start screen when starting vim
 Plug 'w0ng/vim-hybrid'                      " Schema for vim    (hybrid)
-"Plug 'arcticicestudio/nord-vim'            " Schema for vim    (nord)
-"Plug 'glepnir/zephyr-nvim'                 " Schema for neovim (hybrid)
 Plug 'bluz71/vim-nightfly-guicolors'
 Plug 'marko-cerovac/material.nvim'          " Schema for neovim (material)
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 "------------------------------------------------------------------------------
 
 " Input plugins
 "------------------------------------------------------------------------------
 Plug 'ConradIrwin/vim-bracketed-paste'      " Automatically change paste mode
-Plug 'mattn/emmet-vim'                      " XML tag shortcuts
-Plug 'prettier/vim-prettier'                " Code formatter
 Plug 'kana/vim-smartinput'
 "------------------------------------------------------------------------------
 
@@ -65,8 +57,6 @@ Plug 'tpope/vim-fugitive'                   " Operate git from vim
 
 " Search plugins
 "------------------------------------------------------------------------------
-"Plug 'easymotion/vim-easymotion'           " Cursor jump
-"Plug 'hrsh7th/vim-searchx'                 " Extended search
 Plug 'ctrlpvim/ctrlp.vim'                   " Search for files with [Ctrl + p]
 Plug 'mattn/ctrlp-lsp'                      " Jump the source code definition with [Ctrl + p]
 Plug 'skanehira/jumpcursor.vim'             " Cursor jump 
@@ -75,12 +65,7 @@ Plug 'skanehira/jumpcursor.vim'             " Cursor jump
 " External application cooperation
 "------------------------------------------------------------------------------
 Plug 'scrooloose/vim-slumlord'              " Edit PlantUML
-Plug 'skanehira/preview-markdown.vim'       " Preview markdown
-"------------------------------------------------------------------------------
-
-" Debug
-"------------------------------------------------------------------------------
-Plug 'cpiger/NeoDebug'                      " GDB plugin
+"Plug 'skanehira/preview-markdown.vim'       " Preview markdown
 "------------------------------------------------------------------------------
 
 call plug#end()
@@ -90,19 +75,96 @@ call plug#end()
 "##############################################################################
 " Plugin settings
 "##############################################################################
+let g:enable_spelunker_vim = 1
 
-" treesitter settings
-"------------------------------------------------------------------------------
-lua << EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  highlight = {
-    enable = true,                 -- false will disable the whole extension
-    disable = { "vue", "ruby" },   -- list of language that will be disabled
+lua << EOF 
+require'lspconfig'.tsserver.setup{}
+-- 1. LSP Sever management
+require('mason').setup()
+require('mason-lspconfig').setup_handlers({ function(server)
+  local opt = {
+    -- -- Function executed when the LSP server startup
+    -- on_attach = function(client, bufnr)
+    --   local opts = { noremap=true, silent=true }
+    --   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    --   vim.cmd 'autocmd BufWritePre * lua vim.lsp.buf.formatting_sync(nil, 1000)'
+    -- end,
+    capabilities = require('cmp_nvim_lsp').default_capabilities(
+      vim.lsp.protocol.make_client_capabilities()
+    )
+  }
+  require('lspconfig')[server].setup(opt)
+end })
+
+-- 2. build-in LSP function
+-- keyboard shortcut
+vim.keymap.set('n', 'K',  '<cmd>lua vim.lsp.buf.hover()<CR>')
+vim.keymap.set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+vim.keymap.set('n', 'gn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+vim.keymap.set('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>')
+vim.keymap.set('n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+vim.keymap.set('n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+-- LSP handlers
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = false }
+)
+-- Reference highlight
+vim.cmd [[
+set updatetime=500
+highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
+augroup lsp_document_highlight
+  autocmd!
+  autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
+  autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
+augroup END
+]]
+
+-- 3. completion (hrsh7th/nvim-cmp)
+local cmp = require("cmp")
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
   },
-}
+  sources = {
+    { name = "nvim_lsp" },
+    -- { name = "buffer" },
+    -- { name = "path" },
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ['<C-l>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ["<CR>"] = cmp.mapping.confirm { select = true },
+  }),
+  experimental = {
+    ghost_text = true,
+  },
+})
+-- cmp.setup.cmdline('/', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = {
+--     { name = 'buffer' }
+--   }
+-- })
+-- cmp.setup.cmdline(":", {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = {
+--     { name = "path" },
+--     { name = "cmdline" },
+--   },
+-- })
 EOF
-"------------------------------------------------------------------------------
 
 " lualine settings
 "------------------------------------------------------------------------------
@@ -117,7 +179,6 @@ EOF
 
 " material settings
 "------------------------------------------------------------------------------
-" TODO: material does not highlight prisma model.
 lua << EOF
 vim.g.material_style = 'palenight'
 require('material').setup({
@@ -167,12 +228,6 @@ local configs = {
     layout      = 'left',
     width       = 40,
     columns     = 'indent,name,mode,size',
-    -- columns     = 'indent,name,git,mode,size',
-    -- git = {
-    --   enabled   = true,
-    --   untracked = true,
-    --   ignored   = true,
-    -- },
   },
 }
 
@@ -182,7 +237,6 @@ if vim.fn.isdirectory(path) ~= 1 then
 end
 path = vim.fn.fnamemodify(path, ':p:h')
 
-require'nvim-web-devicons'.get_icons()
 require'vfiler'.start(path, configs)
 
 EOF
@@ -190,13 +244,6 @@ endfunction
 
 " Execute explorer style.
 noremap <silent><C-e> :call <SID>start_explorer()<CR>
-"------------------------------------------------------------------------------
-
-" "tagbar settings
-" "------------------------------------------------------------------------------
-" let g:tagbar_width       = 30
-" let g:tagbar_autoshowtag = 1  
-" set statusline=%F%m%r%h%w\%=%{tagbar#currenttag('[%s]','')}\[Pos=%v,%l]\[Len=%L]
 "------------------------------------------------------------------------------
 
 "vim-lsp settings
@@ -274,59 +321,6 @@ nmap qj <Plug>(jumpcursor-jump)
 nmap qk <Plug>(jumpcursor-jump)
 nmap ql <Plug>(jumpcursor-jump)
 nmap qh <Plug>(jumpcursor-jump)
-"------------------------------------------------------------------------------
-
-" vim-prettier settings
-"------------------------------------------------------------------------------
-nmap qq <Plug>Prettier
-
-" Timing : BufWritePre/TextChanged
-augroup fmt
-autocmd!
-autocmd BufWritePre
-\ *.js,*.jsx,*.mjs,*.ts,*.tsx,
-\ *.html,*.css,*.less,*.scss,
-\ *.json,*.graphql,*.md,
-\ *.vue,*.svelte,*.yaml
-\ PrettierAsync
-
-augroup END
-"------------------------------------------------------------------------------
-
-" vim-graphql settings
-"------------------------------------------------------------------------------
-au BufNewFile,BufRead *.prisma setfiletype graphql
-"------------------------------------------------------------------------------
-
-" coc.nvim settings
-"------------------------------------------------------------------------------
-let g:lightline = {
-  \'active': {
-    \'right': [
-      \['coc']
-    \]
-  \},
-  \'component_function': {
-    \'coc': 'coc#status'
-  \}
-\}
-
-highlight CocErrorSign ctermfg=15 ctermbg=196
-highlight CocWarningSign ctermfg=0 ctermbg=172
-
-inoremap <silent><expr> <C-k>     coc#pum#visible() ? coc#pum#prev(1)   : "\<C-k>"
-inoremap <silent><expr> <TAB>     coc#pum#visible() ? coc#pum#confirm() : "\<TAB>"
-inoremap <silent><expr> <Enter>   coc#pum#visible() ? coc#pum#confirm() : "\<Enter>"
-inoremap <silent><expr> <Esc>     coc#pum#visible() ? coc#pum#cancel()  : "\<Esc>"
-inoremap <silent><expr> <C-h>     coc#pum#visible() ? coc#pum#cancel()  : "\<C-h>"
-inoremap <silent><expr> <c-space> coc#refresh()
-
-nmap <silent> <space><space> :<C-u>CocList<cr>
-nmap <silent> <space>h       :<C-u>call CocAction('doHover')<cr>
-nmap <silent> <space>df      <Plug>(coc-definition)
-nmap <silent> <space>rf      <Plug>(coc-references)
-nmap <silent> <space>rn      <Plug>(coc-rename)
-nmap <silent> <space>fmt     <Plug>(coc-format)
 "------------------------------------------------------------------------------
 
 " Other settings
