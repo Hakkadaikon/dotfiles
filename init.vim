@@ -10,9 +10,6 @@
 call plug#begin()
 " Auto completes
 "------------------------------------------------------------------------------
-"Plug 'prabirshrestha/async.vim'             " Async task execution
-"Plug 'prabirshrestha/asyncomplete.vim'      " Async auto complete
-"Plug 'prabirshrestha/asyncomplete-lsp.vim'  " Async auto complete
 Plug 'neovim/nvim-lspconfig'                 " LSP config
 Plug 'scrooloose/nerdcommenter'              "
 Plug 'williamboman/mason.nvim'               "
