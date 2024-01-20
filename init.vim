@@ -63,6 +63,7 @@ Plug 'skanehira/jumpcursor.vim'             " Cursor jump
 "------------------------------------------------------------------------------
 Plug 'scrooloose/vim-slumlord'              " Edit PlantUML
 "Plug 'skanehira/preview-markdown.vim'       " Preview markdown
+Plug 'vim-skk/skk.vim'                      " Japanese input
 "------------------------------------------------------------------------------
 
 call plug#end()
@@ -72,6 +73,14 @@ call plug#end()
 "##############################################################################
 " Plugin settings
 "##############################################################################
+
+"SKK settings
+"------------------------------------------------------------------------------
+let g:skk_large_jisyo     = '~/repos/dict/SKK-JISYO.L'
+let g:skk_auto_save_jisyo = 1
+
+"spelunker settings
+"------------------------------------------------------------------------------
 let g:enable_spelunker_vim = 1
 
 " lspconfig settings
@@ -304,7 +313,7 @@ set termguicolors
 "
 " Syntax settings by extension
 "------------------------------------------------------------------------------
-"autocmd BufNewFile,BufRead *.tpl set filetype=bash 
+autocmd BufNewFile,BufRead init.vim set filetype=vim
 "------------------------------------------------------------------------------
 
 " jumpcursor
