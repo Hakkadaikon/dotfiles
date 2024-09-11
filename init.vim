@@ -62,8 +62,11 @@ Plug 'skanehira/jumpcursor.vim'             " Cursor jump
 " External application cooperation
 "------------------------------------------------------------------------------
 Plug 'scrooloose/vim-slumlord'              " Edit PlantUML
-"Plug 'skanehira/preview-markdown.vim'       " Preview markdown
+"Plug 'skanehira/preview-markdown.vim'      " Preview markdown
 Plug 'vim-skk/skk.vim'                      " Japanese input
+Plug 'thinca/vim-quickrun'
+Plug 'haya14busa/vim-edgemotion'
+Plug 'kana/vim-smartword'
 "------------------------------------------------------------------------------
 
 call plug#end()
@@ -324,11 +327,22 @@ nmap ql <Plug>(jumpcursor-jump)
 nmap qh <Plug>(jumpcursor-jump)
 "------------------------------------------------------------------------------
 
+" startify
+"------------------------------------------------------------------------------
+nnoremap sa :Startify<CR>
+"------------------------------------------------------------------------------
+
+" edge motion
+"------------------------------------------------------------------------------
+map <C-j> <Plug>(edgemotion-j)
+map <C-k> <Plug>(edgemotion-k)
+"------------------------------------------------------------------------------
+
 " Other settings
 "------------------------------------------------------------------------------
 set noerrorbells               " Beep suppression at the time of error
 set history=10000              " Number of saved vim command execution histories
-set clipboard+=unnamedplus
+set clipboard+=unnamed         " Copy and paste between vim and other applications
 "------------------------------------------------------------------------------
 
 "##############################################################################
