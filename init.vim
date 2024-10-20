@@ -79,8 +79,8 @@ call plug#end()
 
 "SKK settings
 "------------------------------------------------------------------------------
-let g:skk_large_jisyo     = '~/repos/dict/SKK-JISYO.L'
-let g:skk_auto_save_jisyo = 1
+"let g:skk_large_jisyo     = '~/repos/dict/SKK-JISYO.L'
+"let g:skk_auto_save_jisyo = 1
 
 "spelunker settings
 "------------------------------------------------------------------------------
@@ -93,13 +93,24 @@ lua << EOF
 require'lspconfig'.tsserver.setup{}
 
 -- Rust Language server
-require'lspconfig'.rust_analyzer.setup{}
+-- require'lspconfig'.rust_analyzer.setup{}
 
 -- Go Language server
-require'lspconfig'.gopls.setup{}
+-- require'lspconfig'.gopls.setup{}
 
 -- C/C++ Language server
 require'lspconfig'.clangd.setup{}
+
+-- PHP Language server
+require'lspconfig'.intelephense.setup{
+    settings = {
+        intelephense = {
+            environment = {
+                phpVersion = "8.2"
+            }
+        }
+    }
+}
 
 -- 1. LSP Sever management
 require('mason').setup()
