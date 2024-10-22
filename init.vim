@@ -361,7 +361,7 @@ set clipboard^=unnamedplus
 
 "clipboard settings(windows only)"
 "-----------------------------------------------------------------------------"
-source ./osc52.vim
+source <sfile>:h/osc52.vim
 augroup osc52
     autocmd!
     autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
