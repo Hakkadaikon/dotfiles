@@ -66,6 +66,7 @@ Plug 'vim-skk/skk.vim'                      "Japanese input"
 Plug 'thinca/vim-quickrun'
 Plug 'haya14busa/vim-edgemotion'
 Plug 'kana/vim-smartword'
+Plug 'tani/dmacro.vim'
 "-----------------------------------------------------------------------------"
 
 call plug#end()
@@ -75,11 +76,6 @@ call plug#end()
 "#############################################################################"
 " Plugin settings                                                             "
 "#############################################################################"
-
-"SKK settings"
-"-----------------------------------------------------------------------------"
-"let g:skk_large_jisyo     = '~/repos/dict/SKK-JISYO.L'"
-"let g:skk_auto_save_jisyo = 1"
 
 "spelunker settings"
 "-----------------------------------------------------------------------------"
@@ -139,7 +135,15 @@ vim.keymap.set('n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 
 -- LSP handlers
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, { virtual_text = false }
+  vim.lsp.diagnostic.on_publish_diagnostics,
+  {
+    -- virtual_text = false
+    virtual_text = {
+        format = function(diagnostic)
+        return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
+        end,
+    }
+  }
 )
 vim.cmd [[
 set updatetime=500
@@ -184,6 +188,16 @@ EOF
 "-----------------------------------------------------------------------------"
 nnoremap tt :QuickRun<CR>
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+
+"let g:quickrun_config['cpp/snip'] = {
+"    \ 'command'       : 'g++',
+"    \ 'exec'          : '%c %o -o %n -lgtest -lgtest_main -lpthread && ./%n',
+"    \ 'outputter'     : 'message',
+"    \ 'hook/snipe/enable' : 1,
+"    \ 'hook/snipe/prefix' : '#include <cstdio>\nint main() {\n',
+"    \ 'hook/snipe/suffix' : '\nreturn 0;\n}',
+"    \ }
+
 "------------------------------------------------------------------------------
 
 "lualine settings"
@@ -196,34 +210,6 @@ require('lualine').setup {
 }
 EOF
 "-----------------------------------------------------------------------------"
-
-"material settings"
-"-----------------------------------------------------------------------------"
-lua << EOF
--- vim.g.material_style = 'palenight'
--- require('material').setup({
---     contrast = {
---         sidebars    = true,
---         cursor_line = true,
---     },
---     italics = {
---         comments  = false,
---         functions = false,
---     },
---     contrast_filetypes = {
---         "terminal",
---         "packer",
---         "qf",
---     },
---     disable = {
---         borders   = true,
---         eob_lines = true
---     },
---     lualine_style = 'stealth'
--- })
--- 
--- vim.cmd 'colorscheme material'
-EOF
 
 colorscheme hybrid
 "-----------------------------------------------------------------------------"
@@ -326,7 +312,7 @@ set display=lastline           "Don't omit the characters displayed on the statu
 set showmatch matchtime=1      "Bracket highlighting"
 set termguicolors
 "-----------------------------------------------------------------------------"
- 
+
 " Syntax settings by extension
 "-----------------------------------------------------------------------------"
 autocmd BufNewFile,BufRead init.vim set filetype=vim
@@ -366,5 +352,13 @@ augroup osc52
     autocmd!
     autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
 augroup END
+
+"dmacro.vim"
+"-----------------------------------------------------------------------------"
+inoremap <C-y> <Plug>(dmacro-play-macro)
+nnoremap <C-y> <Plug>(dmacro-play-macro)
+"-----------------------------------------------------------------------------"
+
+"set tags=~/repos/fork/vim/src/tags"
 
 "##############################################################################"
