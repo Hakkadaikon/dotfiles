@@ -60,7 +60,7 @@ let g:enable_spelunker_vim = 1
 "lspconfig settings"
 "-----------------------------------------------------------------------------"
 lua << EOF
-require'lspconfig'.tsserver.setup{
+require'lspconfig'.ts_ls.setup{
 }
 -- require'lspconfig'.rust_analyzer.setup{
 -- }
