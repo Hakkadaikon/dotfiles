@@ -9,94 +9,61 @@
 "#############################################################################"
 call plug#begin()
 "Auto completes"
-"-----------------------------------------------------------------------------"
-Plug 'neovim/nvim-lspconfig'                 "LSP config"
-Plug 'scrooloose/nerdcommenter'              ""
-Plug 'williamboman/mason.nvim'               ""
-Plug 'williamboman/mason-lspconfig.nvim'     ""
-Plug 'hrsh7th/nvim-cmp'                      "Auto complete"
-Plug 'hrsh7th/cmp-nvim-lsp'                  "Auto complete"
-Plug 'hrsh7th/vim-vsnip'                     "Auto complete"
-"-----------------------------------------------------------------------------"
+Plug 'neovim/nvim-lspconfig'             "LSP config"
+Plug 'scrooloose/nerdcommenter'          ""
+Plug 'williamboman/mason.nvim'           ""
+Plug 'williamboman/mason-lspconfig.nvim' ""
+Plug 'hrsh7th/nvim-cmp'                  "Auto complete"
+Plug 'hrsh7th/cmp-nvim-lsp'              "Auto complete"
+Plug 'hrsh7th/vim-vsnip'                 "Auto complete"
 
 "Filers"
-"-----------------------------------------------------------------------------"
-Plug 'obaland/vfiler.vim'                    "Filer"
-"-----------------------------------------------------------------------------"
+Plug 'obaland/vfiler.vim'                "Filer"
 
 "Views"
-"-----------------------------------------------------------------------------"
-Plug 'machakann/vim-highlightedyank'         "Highlight the yanked string"
-Plug 'nvim-lualine/lualine.nvim'             "Extended status bar"
-Plug 'kamykn/spelunker.vim'                  "Spell check"
-"-----------------------------------------------------------------------------"
+Plug 'machakann/vim-highlightedyank'     "Highlight the yanked string"
+Plug 'nvim-lualine/lualine.nvim'         "Extended status bar"
+Plug 'kamykn/spelunker.vim'              "Spell check"
 
 "Color schemas"
-"-----------------------------------------------------------------------------"
-Plug 'mhinz/vim-startify'                    "Show start screen when starting vim"
-Plug 'w0ng/vim-hybrid'                       "Schema for vim    (hybrid)"
+Plug 'mhinz/vim-startify'                "Show start screen when starting vim"
+Plug 'w0ng/vim-hybrid'                   "Schema for vim    (hybrid)"
 Plug 'bluz71/vim-nightfly-guicolors'
-Plug 'marko-cerovac/material.nvim'           "Schema for neovim (material)"
-"-----------------------------------------------------------------------------"
+Plug 'marko-cerovac/material.nvim'       "Schema for neovim (material)"
 
 "Input plugins"
-"-----------------------------------------------------------------------------"
-Plug 'ConradIrwin/vim-bracketed-paste'       "Automatically change paste mode"
+Plug 'ConradIrwin/vim-bracketed-paste'   "Automatically change paste mode"
 Plug 'kana/vim-smartinput'
-"-----------------------------------------------------------------------------"
 
 "Git plugins"
-"-----------------------------------------------------------------------------"
-Plug 'airblade/vim-gitgutter'               " Show git diffs"
-Plug 'tpope/vim-fugitive'                   " Operate git from vim"
-"-----------------------------------------------------------------------------"
+Plug 'airblade/vim-gitgutter'            "Show git diffs"
+Plug 'tpope/vim-fugitive'                "Operate git from vim"
 
 "Search plugins"
-"-----------------------------------------------------------------------------"
-Plug 'ctrlpvim/ctrlp.vim'                   "Search for files with [Ctrl + p]"
-Plug 'mattn/ctrlp-lsp'                      "Jump the source code definition with [Ctrl + p]"
-Plug 'skanehira/jumpcursor.vim'             "Cursor jump"
-"-----------------------------------------------------------------------------"
+Plug 'ctrlpvim/ctrlp.vim'                "Search for files with [Ctrl + p]"
+Plug 'mattn/ctrlp-lsp'                   "Jump the source code definition with [Ctrl + p]"
 
 "External application cooperation"
-"-----------------------------------------------------------------------------"
-Plug 'scrooloose/vim-slumlord'              "Edit PlantUML"
-"Plug 'skanehira/preview-markdown.vim'      "Preview markdown"
-Plug 'vim-skk/skk.vim'                      "Japanese input"
-Plug 'thinca/vim-quickrun'
-Plug 'haya14busa/vim-edgemotion'
-Plug 'kana/vim-smartword'
-Plug 'tani/dmacro.vim'
-"-----------------------------------------------------------------------------"
-
+Plug 'scrooloose/vim-slumlord'           "Edit PlantUML"
+"Plug 'skanehira/preview-markdown.vim'   "Preview markdown"
+Plug 'thinca/vim-quickrun'               ""
+Plug 'haya14busa/vim-edgemotion'         ""
+Plug 'kana/vim-smartword'                ""
+Plug 'tani/dmacro.vim'                   ""
 call plug#end()
-"#############################################################################"
-
 
 "#############################################################################"
 " Plugin settings                                                             "
 "#############################################################################"
-
-"spelunker settings"
-"-----------------------------------------------------------------------------"
 let g:enable_spelunker_vim = 1
 
 "lspconfig settings"
 "-----------------------------------------------------------------------------"
-lua << EOF 
--- TS/JS Language server
+lua << EOF
 require'lspconfig'.tsserver.setup{}
-
--- Rust Language server
 -- require'lspconfig'.rust_analyzer.setup{}
-
--- Go Language server
 -- require'lspconfig'.gopls.setup{}
-
--- C/C++ Language server
 require'lspconfig'.clangd.setup{}
-
--- PHP Language server
 require'lspconfig'.intelephense.setup{
     settings = {
         intelephense = {
@@ -106,45 +73,47 @@ require'lspconfig'.intelephense.setup{
         }
     }
 }
+EOF
+"-----------------------------------------------------------------------------"
 
--- 1. LSP Sever management
-require('mason').setup()
-require('mason-lspconfig').setup_handlers({ function(server)
-  local opt = {
-    capabilities = require('cmp_nvim_lsp').default_capabilities(
-      vim.lsp.protocol.make_client_capabilities()
-    )
-  }
-  require('lspconfig')[server].setup(opt)
-end })
+"LSP Sever management"
+"-----------------------------------------------------------------------------"
+lua << EOF
+require('mason').setup{}
+require('mason-lspconfig').setup_handlers(
+    {
+        function(server)
+            local opt = {
+              capabilities = require('cmp_nvim_lsp').default_capabilities(
+                vim.lsp.protocol.make_client_capabilities()
+              )
+            }
+            require('lspconfig')[server].setup(opt)
+        end
+    }
+)
+EOF
+"-----------------------------------------------------------------------------"
 
--- 2. build-in LSP function
--- keyboard shortcut
-vim.keymap.set('n', 'K',  '<cmd>lua vim.lsp.buf.hover()<CR>')
-vim.keymap.set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
-vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
-vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-vim.keymap.set('n', 'gn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-vim.keymap.set('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>')
-vim.keymap.set('n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<CR>')
-vim.keymap.set('n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
-
--- LSP handlers
+"LSP handlers"
+"-----------------------------------------------------------------------------"
+lua << EOF
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics,
   {
     -- virtual_text = false
     virtual_text = {
-        format = function(diagnostic)
-        return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
-        end,
+      format = function(diagnostic)
+      return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
+      end,
     }
   }
 )
+EOF
+"-----------------------------------------------------------------------------"
+
+"-----------------------------------------------------------------------------"
+lua << EOF
 vim.cmd [[
 set updatetime=500
 highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
@@ -156,8 +125,12 @@ augroup lsp_document_highlight
   " autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
 augroup END
 ]]
+EOF
+"-----------------------------------------------------------------------------"
 
--- 3. completion (hrsh7th/nvim-cmp)
+"completion (hrsh7th/nvim-cmp)"
+"-----------------------------------------------------------------------------"
+lua << EOF
 local cmp = require("cmp")
 cmp.setup({
   snippet = {
@@ -186,9 +159,6 @@ EOF
 
 "quickrun settings"
 "-----------------------------------------------------------------------------"
-nnoremap tt :QuickRun<CR>
-nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
-
 "let g:quickrun_config['cpp/snip'] = {
 "    \ 'command'       : 'g++',
 "    \ 'exec'          : '%c %o -o %n -lgtest -lgtest_main -lpthread && ./%n',
@@ -197,8 +167,7 @@ nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() 
 "    \ 'hook/snipe/prefix' : '#include <cstdio>\nint main() {\n',
 "    \ 'hook/snipe/suffix' : '\nreturn 0;\n}',
 "    \ }
-
-"------------------------------------------------------------------------------
+"------------------------------------------------------------------------------"
 
 "lualine settings"
 "-----------------------------------------------------------------------------"
@@ -212,12 +181,6 @@ EOF
 "-----------------------------------------------------------------------------"
 
 colorscheme hybrid
-"-----------------------------------------------------------------------------"
-
-"jumpcursor settings"
-"-----------------------------------------------------------------------------"
-nmap jc <Plug>(jumpcursor-jump)
-"-----------------------------------------------------------------------------"
 
 " vfiler.vim settings"
 "-----------------------------------------------------------------------------"
@@ -247,9 +210,6 @@ require'vfiler'.start(path, configs)
 
 EOF
 endfunction
-
-"Execute explorer style."
-noremap <silent><C-e> :call <SID>start_explorer()<CR>
 "------------------------------------------------------------------------------"
 
 "vim-lsp settings"
@@ -276,8 +236,6 @@ nmap <silent> gD    :LspReferences<CR> "View caller"
 ""-----------------------------------------------------------------------------"
 
 "------------------------------------------------------------------------------"
-
-"##############################################################################"
 
 "##############################################################################"
 " Common settings                                                              "
@@ -318,25 +276,6 @@ set termguicolors
 autocmd BufNewFile,BufRead init.vim set filetype=vim
 "-----------------------------------------------------------------------------"
 
-"jumpcursor"
-"-----------------------------------------------------------------------------"
-nmap qj <Plug>(jumpcursor-jump)
-nmap qk <Plug>(jumpcursor-jump)
-nmap ql <Plug>(jumpcursor-jump)
-nmap qh <Plug>(jumpcursor-jump)
-"-----------------------------------------------------------------------------"
-
-"startify"
-"-----------------------------------------------------------------------------"
-nnoremap sa :Startify<CR>
-"-----------------------------------------------------------------------------"
-
-"edge motion"
-"-----------------------------------------------------------------------------"
-map <C-j> <Plug>(edgemotion-j)
-map <C-k> <Plug>(edgemotion-k)
-"-----------------------------------------------------------------------------"
-
 "Other setting"
 "-----------------------------------------------------------------------------"
 set noerrorbells               "Beep suppression at the time of error"
@@ -353,12 +292,39 @@ augroup osc52
     autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
 augroup END
 
-"dmacro.vim"
-"-----------------------------------------------------------------------------"
-inoremap <C-y> <Plug>(dmacro-play-macro)
-nnoremap <C-y> <Plug>(dmacro-play-macro)
-"-----------------------------------------------------------------------------"
+set tags=~/repos/fork/vim/src/tags
 
-"set tags=~/repos/fork/vim/src/tags"
+"-----------------------------------------------------------------------------"
+" Key bind                                                                    "
+"-----------------------------------------------------------------------------"
+"lsp key bind"
+lua << EOF
+vim.keymap.set('n', 'K',  '<cmd>lua vim.lsp.buf.hover()<CR>')
+vim.keymap.set('n', 'gf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+vim.keymap.set('n', 'gn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+vim.keymap.set('n', 'ge', '<cmd>lua vim.diagnostic.open_float()<CR>')
+vim.keymap.set('n', 'g]', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+vim.keymap.set('n', 'g[', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+EOF
+
+map <C-j> <Plug>(edgemotion-j)
+map <C-k> <Plug>(edgemotion-k)
+
+inoremap <C-y> <Plug>(dmacro-play-macro)
+
+nnoremap tt :QuickRun<CR>
+nnoremap sa :Startify<CR>
+nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+nnoremap <C-y> <Plug>(dmacro-play-macro)
+nnoremap <ESC> :nohlsearch<CR> "Remove highlighting with [ESC] key"
+
+noremap <silent><C-e> :call <SID>start_explorer()<CR> "VFiler"
+"-----------------------------------------------------------------------------"
 
 "##############################################################################"
