@@ -1,6 +1,6 @@
-# neovim-settings : neovim preferences
+# Dotfiles
 ## Overview
-This repository contains configuration files for building the neovim environment. 
+Build my castle quickly.
 
 ## Version
 nvim : v0.7.0-dev
@@ -10,8 +10,17 @@ nvim : v0.7.0-dev
 * https://github.com/MichaelMure/mdr
 
 ## Usage
-1. Install the related plugin. 
-1. Create a symbolic link for init.vim with the following command: 
-    * '$ln -s ./init.vim ~/.config/nvim/init.vim'
-1. Execute the ": PlugInstall" command to install the plugins listed in "init.vim".
+### setup
+```shell
+./env.sh setup
+```
 
+### cleanup 
+```shell
+./env.sh cleanup 
+```
+
+### check
+```shell
+./env.sh check
+```
