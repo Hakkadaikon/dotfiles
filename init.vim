@@ -60,10 +60,14 @@ let g:enable_spelunker_vim = 1
 "lspconfig settings"
 "-----------------------------------------------------------------------------"
 lua << EOF
-require'lspconfig'.tsserver.setup{}
--- require'lspconfig'.rust_analyzer.setup{}
--- require'lspconfig'.gopls.setup{}
-require'lspconfig'.clangd.setup{}
+require'lspconfig'.tsserver.setup{
+}
+-- require'lspconfig'.rust_analyzer.setup{
+-- }
+-- require'lspconfig'.gopls.setup{
+-- }
+-- require'lspconfig'.clangd.setup{
+-- }
 require'lspconfig'.intelephense.setup{
     settings = {
         intelephense = {
