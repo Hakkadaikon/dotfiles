@@ -27,7 +27,7 @@ Plug 'kamykn/spelunker.vim'              "Spell check"
 
 "Color schemas"
 Plug 'mhinz/vim-startify'                "Show start screen when starting vim"
-Plug 'w0ng/vim-hybrid'                   "Schema for vim    (hybrid)"
+"Plug 'w0ng/vim-hybrid'"                 "Schema for vim (hybrid)"
 Plug 'bluz71/vim-nightfly-guicolors'
 Plug 'marko-cerovac/material.nvim'       "Schema for neovim (material)"
 
@@ -65,6 +65,8 @@ require'lspconfig'.ts_ls.setup{
 require'lspconfig'.rust_analyzer.setup{
 }
 require'lspconfig'.gopls.setup{
+}
+require'lspconfig'.vimls.setup{
 }
 require'lspconfig'.clangd.setup{
   cmd = {
@@ -153,8 +155,8 @@ cmp.setup({
   },
   sources = {
     { name = "nvim_lsp" },
-    -- { name = "buffer" },
-    -- { name = "path" },
+    { name = "buffer" },
+    { name = "path" },
   },
   mapping = cmp.mapping.preset.insert({
     ["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -193,7 +195,9 @@ require('lualine').setup {
 EOF
 "-----------------------------------------------------------------------------"
 
-colorscheme hybrid
+colorscheme material
+highlight LineNr guifg=#00AFFF guibg=NONE
+highlight CursorLineNr guifg=#FFFF00 guibg=NONE
 
 "vim-lsp settings"
 "------------------------------------------------------------------------------"
@@ -235,23 +239,26 @@ set hlsearch       "Highlight search results"
 "View settings"
 "-----------------------------------------------------------------------------"
 set number                     "Show line number"
+set relativenumber             "Show relative line number"
+:highlight LineNr ctermfg=239
+
 set showcmd                    "Show the command your are typing"
 set list                       "Show control characters"
-set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%"
-"set cursorline                "Highlight selected line"
-set noswapfile                 "Don't create swap file"
-"set nofoldenable              "Don't fold the source code"
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set cursorline                 "Highlight selected line"
+set noswapfile                 "Dont create swap file"
+"set nofoldenable"             "Dont fold the source code"
 set autochdir                  "Change to the directory of open files"
 set softtabstop=4              "Number of spaces for tab"
 set shiftwidth=4               "Number of spaces for smart indent, command"
 set cmdheight=2                "Number of lines the message display field"
 set laststatus=2               "Always show status line"
-set display=lastline           "Don't omit the characters displayed on the status line"
+set display=lastline           "Dont omit the characters displayed on the status line"
 set showmatch matchtime=1      "Bracket highlighting"
 set termguicolors
 "-----------------------------------------------------------------------------"
 
-" Syntax settings by extension
+" Syntax settings by extension"
 "-----------------------------------------------------------------------------"
 autocmd BufNewFile,BufRead init.vim set filetype=vim
 "-----------------------------------------------------------------------------"
