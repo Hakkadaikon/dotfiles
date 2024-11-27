@@ -269,7 +269,6 @@ set showcmd                    "Show the command your are typing"
 set list                       "Show control characters"
 set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%"
 "set cursorline                "Highlight selected line"
-set expandtab                  "Replace tab with a half-width space"
 set noswapfile                 "Don't create swap file"
 "set nofoldenable              "Don't fold the source code"
 set autochdir                  "Change to the directory of open files"
@@ -335,6 +334,58 @@ nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() 
 nnoremap <C-y> <Plug>(dmacro-play-macro)
 nnoremap <ESC> :nohlsearch<CR> "Remove highlighting with [ESC] key"
 noremap <silent><C-e> :call <SID>start_explorer()<CR> "VFiler"
+"-----------------------------------------------------------------------------"
+
+"-----------------------------------------------------------------------------"
+" Tabstop                                                                     "
+"-----------------------------------------------------------------------------"
+function! SetTabstop()
+  "C"
+  if &filetype == 'c' || &filetype == 'h'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "C++ 1"
+  elseif &filetype == 'cpp' || &filetype == 'hpp'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "C++ 2"
+  elseif &filetype == 'cxx' || &filetype == 'hxx' || &filetype == 'ixx'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "C++ 3"
+  elseif &filetype == 'cc' || &filetype == 'hh'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "C#"
+  elseif &filetype == 'cs'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "javascript / typescript"
+  elseif &filetype == 'js' || &filetype == 'ts'
+    setlocal tabstop=2 shiftwidth=2 expandtab
+  "html"
+  elseif &filetype == 'html'
+    setlocal tabstop=2 shiftwidth=2 expandtab
+  "Python"
+  elseif &filetype == 'py'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "Rust"
+  elseif &filetype == 'rs'
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  "Go"
+  elseif &filetype == 'go'
+    setlocal tabstop=4 shiftwidth=4 noexpandtab
+  "lua / vimscript"
+  elseif &filetype == 'lua' || &filetype == 'vim'
+    setlocal tabstop=2 shiftwidth=2 expandtab
+  "bourne shell / bash / fish"
+  elseif &filetype == 'bash' || &filetype == 'fish' || &filetype == 'sh'
+    setlocal tabstop=2 shiftwidth=2 expandtab
+  "Ruby"
+  elseif &filetype == 'rb'
+    setlocal tabstop=2 shiftwidth=2 expandtab
+  "Other"
+  else
+    setlocal tabstop=4 shiftwidth=4 expandtab
+  endif
+endfunction
+
+autocmd FileType * call SetTabstop()
 "-----------------------------------------------------------------------------"
 
 "##############################################################################"
