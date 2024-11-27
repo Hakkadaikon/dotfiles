@@ -62,20 +62,28 @@ let g:enable_spelunker_vim = 1
 lua << EOF
 require'lspconfig'.ts_ls.setup{
 }
--- require'lspconfig'.rust_analyzer.setup{
--- }
--- require'lspconfig'.gopls.setup{
--- }
--- require'lspconfig'.clangd.setup{
--- }
-require'lspconfig'.intelephense.setup{
-    settings = {
-        intelephense = {
-            environment = {
-                phpVersion = "8.2"
-            }
-        }
+require'lspconfig'.rust_analyzer.setup{
+}
+require'lspconfig'.gopls.setup{
+}
+require'lspconfig'.clangd.setup{
+  cmd = {
+    "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"
+  },
+  settings = {
+    clangd = {
+      fallbackFlags = { "-std=c++17" },
     }
+  }
+}
+require'lspconfig'.intelephense.setup{
+  settings = {
+    intelephense = {
+      environment = {
+          phpVersion = "8.2"
+      }
+    }
+  }
 }
 EOF
 "-----------------------------------------------------------------------------"
@@ -84,18 +92,16 @@ EOF
 "-----------------------------------------------------------------------------"
 lua << EOF
 require('mason').setup{}
-require('mason-lspconfig').setup_handlers(
-    {
-        function(server)
-            local opt = {
-              capabilities = require('cmp_nvim_lsp').default_capabilities(
-                vim.lsp.protocol.make_client_capabilities()
-              )
-            }
-            require('lspconfig')[server].setup(opt)
-        end
+require('mason-lspconfig').setup_handlers({
+  function(server)
+    local opt = {
+      capabilities = require('cmp_nvim_lsp').default_capabilities(
+        vim.lsp.protocol.make_client_capabilities()
+      )
     }
-)
+    require('lspconfig')[server].setup(opt)
+  end
+})
 EOF
 "-----------------------------------------------------------------------------"
 
@@ -113,6 +119,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     }
   }
 )
+vim.cmd([[
+  autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focus=false })
+]])
 EOF
 "-----------------------------------------------------------------------------"
 
@@ -125,8 +134,8 @@ highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline gu
 highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
 augroup lsp_document_highlight
   autocmd!
-  " autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
-  " autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
+  autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
+  autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
 augroup END
 ]]
 EOF
@@ -251,8 +260,6 @@ set ignorecase     "Case insensitive"
 set wrapscan       "Wrap around when the search is finished"
 set incsearch      "Incremental search"
 set hlsearch       "Highlight search results"
-nnoremap <ESC> :nohlsearch<CR>
-                   "Remove highlighting with [ESC] key"
 "-----------------------------------------------------------------------------"
 
 "View settings"
@@ -292,8 +299,8 @@ set clipboard^=unnamedplus
 "-----------------------------------------------------------------------------"
 source <sfile>:h/lib/osc52.vim
 augroup osc52
-    autocmd!
-    autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
+  autocmd!
+  autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
 augroup END
 
 set tags=~/repos/fork/vim/src/tags
@@ -327,7 +334,6 @@ nnoremap sa :Startify<CR>
 nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
 nnoremap <C-y> <Plug>(dmacro-play-macro)
 nnoremap <ESC> :nohlsearch<CR> "Remove highlighting with [ESC] key"
-
 noremap <silent><C-e> :call <SID>start_explorer()<CR> "VFiler"
 "-----------------------------------------------------------------------------"
 
