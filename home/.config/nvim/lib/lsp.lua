@@ -1,15 +1,22 @@
 -- LSP Config
-require'lspconfig'.ts_ls.setup{
+local lspconfig = require('lspconfig')
+
+lspconfig.ts_ls.setup{
 }
-require'lspconfig'.rust_analyzer.setup{
+
+lspconfig.rust_analyzer.setup{
 }
-require'lspconfig'.gopls.setup{
+
+lspconfig.gopls.setup{
 }
-require'lspconfig'.vimls.setup{
+
+lspconfig.vimls.setup{
 }
-require'lspconfig'.lua_ls.setup{
+
+lspconfig.lua_ls.setup{
 }
-require'lspconfig'.clangd.setup{
+
+lspconfig.clangd.setup{
   cmd = {
     "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"
   },
@@ -19,7 +26,8 @@ require'lspconfig'.clangd.setup{
     }
   }
 }
-require'lspconfig'.intelephense.setup{
+
+lspconfig.intelephense.setup{
   settings = {
     intelephense = {
       environment = {
