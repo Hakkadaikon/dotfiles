@@ -1,4 +1,4 @@
-function set_keymap()
+local function set_keymap()
   -- LSP key bindings
   vim.keymap.set('n', 'K'    , '<cmd>lua vim.lsp.buf.hover()<CR>'          , { desc = 'LSP Hover' })
   vim.keymap.set('n', 'gf'   , '<cmd>lua vim.lsp.buf.formatting()<CR>'     , { desc = 'LSP Formatting' })
@@ -37,7 +37,7 @@ function set_keymap()
         path = vim.fn.getcwd()
       end
       path = vim.fn.fnamemodify(path, ':p:h')
-  
+
       require('vfiler').start(path, {
         options = {
           auto_cd = true,
