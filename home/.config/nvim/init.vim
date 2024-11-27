@@ -57,120 +57,7 @@ call plug#end()
 "#############################################################################"
 let g:enable_spelunker_vim = 1
 
-"lspconfig settings"
-"-----------------------------------------------------------------------------"
-lua << EOF
-require'lspconfig'.ts_ls.setup{
-}
-require'lspconfig'.rust_analyzer.setup{
-}
-require'lspconfig'.gopls.setup{
-}
-require'lspconfig'.vimls.setup{
-}
-require'lspconfig'.clangd.setup{
-  cmd = {
-    "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"
-  },
-  settings = {
-    clangd = {
-      fallbackFlags = { "-std=c++17" },
-    }
-  }
-}
-require'lspconfig'.intelephense.setup{
-  settings = {
-    intelephense = {
-      environment = {
-          phpVersion = "8.2"
-      }
-    }
-  }
-}
-EOF
-"-----------------------------------------------------------------------------"
-
-"LSP Sever management"
-"-----------------------------------------------------------------------------"
-lua << EOF
-require('mason').setup{}
-require('mason-lspconfig').setup_handlers({
-  function(server)
-    local opt = {
-      capabilities = require('cmp_nvim_lsp').default_capabilities(
-        vim.lsp.protocol.make_client_capabilities()
-      )
-    }
-    require('lspconfig')[server].setup(opt)
-  end
-})
-EOF
-"-----------------------------------------------------------------------------"
-
-"LSP handlers"
-"-----------------------------------------------------------------------------"
-lua << EOF
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics,
-  {
-    -- virtual_text = false
-    virtual_text = {
-      format = function(diagnostic)
-      return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
-      end,
-    }
-  }
-)
-vim.cmd([[
-  autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focus=false })
-]])
-EOF
-"-----------------------------------------------------------------------------"
-
-"-----------------------------------------------------------------------------"
-lua << EOF
-vim.cmd [[
-set updatetime=500
-highlight LspReferenceText  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-highlight LspReferenceRead  cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-highlight LspReferenceWrite cterm=underline ctermfg=1 ctermbg=8 gui=underline guifg=#A00000 guibg=#104040
-augroup lsp_document_highlight
-  autocmd!
-  autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.document_highlight()
-  autocmd CursorMoved,CursorMovedI * lua vim.lsp.buf.clear_references()
-augroup END
-]]
-EOF
-"-----------------------------------------------------------------------------"
-
-"completion (hrsh7th/nvim-cmp)"
-"-----------------------------------------------------------------------------"
-lua << EOF
-local cmp = require("cmp")
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "buffer" },
-    { name = "path" },
-  },
-  mapping = cmp.mapping.preset.insert({
-    ["<C-p>"] = cmp.mapping.select_prev_item(),
-    ["<C-n>"] = cmp.mapping.select_next_item(),
-    ['<C-l>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ["<CR>"] = cmp.mapping.confirm { select = true },
-  }),
-  experimental = {
-    ghost_text = true,
-  },
-})
-EOF
-"-----------------------------------------------------------------------------"
+source <sfile>:h/lib/lsp.lua
 
 "quickrun settings"
 "-----------------------------------------------------------------------------"
@@ -211,10 +98,6 @@ let g:asyncomplete_smart_completion  = 1
 let g:asyncomplete_auto_popup        = 1
 let g:lsp_diagnostics_echo_cursor    = 1
 let g:asyncomplete_popup_delay       = 0
-
-nmap <silent> <C-]> :LspDefinition<CR> "Jump definition"
-nmap <silent> gd    :LspDefinition<CR> "Jump definition"
-nmap <silent> gD    :LspReferences<CR> "View caller"
 "------------------------------------------------------------------------------"
 
 "phpactor settings"
@@ -306,6 +189,7 @@ vim.keymap.set('n', '<C-y>', '<Plug>(dmacro-play-macro)'                 , { des
 vim.keymap.set('n', 'tt'   , ':QuickRun<CR>'                             , { silent = true, desc = 'QuickRun' })
 vim.keymap.set('n', 'sa'   , ':Startify<CR>'                             , { silent = true, desc = 'Startify' })
 vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>'                           , { silent = true, desc = 'Clear Highlight' })
+vim.keymap.set('n', 'q'    , ':nohlsearch<CR>'                           , { silent = true, desc = 'Clear Highlight' })
 vim.keymap.set(
   'n',
   '<C-c>',
