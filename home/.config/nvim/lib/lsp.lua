@@ -7,6 +7,8 @@ require'lspconfig'.gopls.setup{
 }
 require'lspconfig'.vimls.setup{
 }
+require'lspconfig'.lua_ls.setup{
+}
 require'lspconfig'.clangd.setup{
   cmd = {
     "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"

@@ -168,56 +168,7 @@ set tags=~/repos/fork/vim/src/tags
 "Key bindings"
 source <sfile>:h/lib/keymap.lua
 
-"-----------------------------------------------------------------------------"
-" Tabstop                                                                     "
-"-----------------------------------------------------------------------------"
-function! SetTabstop()
-  "C"
-  if &filetype == 'c' || &filetype == 'h'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "C++ 1"
-  elseif &filetype == 'cpp' || &filetype == 'hpp'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "C++ 2"
-  elseif &filetype == 'cxx' || &filetype == 'hxx' || &filetype == 'ixx'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "C++ 3"
-  elseif &filetype == 'cc' || &filetype == 'hh'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "C#"
-  elseif &filetype == 'cs'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "javascript / typescript"
-  elseif &filetype == 'js' || &filetype == 'ts'
-    setlocal tabstop=2 shiftwidth=2 expandtab
-  "html"
-  elseif &filetype == 'html'
-    setlocal tabstop=2 shiftwidth=2 expandtab
-  "Python"
-  elseif &filetype == 'py'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "Rust"
-  elseif &filetype == 'rs'
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  "Go"
-  elseif &filetype == 'go'
-    setlocal tabstop=4 shiftwidth=4 noexpandtab
-  "lua / vimscript"
-  elseif &filetype == 'lua' || &filetype == 'vim'
-    setlocal tabstop=2 shiftwidth=2 expandtab
-  "bourne shell / bash / fish"
-  elseif &filetype == 'bash' || &filetype == 'fish' || &filetype == 'sh'
-    setlocal tabstop=2 shiftwidth=2 expandtab
-  "Ruby"
-  elseif &filetype == 'rb'
-    setlocal tabstop=2 shiftwidth=2 expandtab
-  "Other"
-  else
-    setlocal tabstop=4 shiftwidth=4 expandtab
-  endif
-endfunction
-
-autocmd FileType * call SetTabstop()
-"-----------------------------------------------------------------------------"
+"Tabstop"
+source <sfile>:h/lib/tabstop.lua
 
 "##############################################################################"
