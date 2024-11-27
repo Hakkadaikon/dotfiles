@@ -57,8 +57,6 @@ call plug#end()
 "#############################################################################"
 let g:enable_spelunker_vim = 1
 
-source <sfile>:h/lib/lsp.lua
-
 "quickrun settings"
 "-----------------------------------------------------------------------------"
 "let g:quickrun_config['cpp/snip'] = {
@@ -86,32 +84,22 @@ colorscheme material
 highlight LineNr guifg=#00AFFF guibg=NONE
 highlight CursorLineNr guifg=#FFFF00 guibg=NONE
 
-"vim-lsp settings"
+"lsp settings"
 "------------------------------------------------------------------------------"
-"let lsp_log_verbose                 =1"
-"let lsp_log_file                    = expand('~/lsp.log')"
-let g:asyncomplete_remove_duplicates = 1
-let g:lsp_diagnostics_enabled        = 1
-let g:lsp_text_edit_enabled          = 1
-let g:asyncomplete_auto_completeopt  = 1
-let g:asyncomplete_smart_completion  = 1
-let g:asyncomplete_auto_popup        = 1
-let g:lsp_diagnostics_echo_cursor    = 1
-let g:asyncomplete_popup_delay       = 0
+"let lsp_log_verbose=1"
+"let lsp_log_file= expand('~/lsp.log')"
 "------------------------------------------------------------------------------"
 
 "phpactor settings"
 "------------------------------------------------------------------------------"
 "nmap <silent> ww :call phpactor#Hover()<CR>"
-""-----------------------------------------------------------------------------"
-
-"------------------------------------------------------------------------------"
+"-----------------------------------------------------------------------------"
 
 "##############################################################################"
 " Common settings                                                              "
 "##############################################################################"
 
-" Search settings
+"Search settings"
 "-----------------------------------------------------------------------------"
 set ignorecase     "Case insensitive"
 set wrapscan       "Wrap around when the search is finished"
@@ -141,11 +129,6 @@ set showmatch matchtime=1      "Bracket highlighting"
 set termguicolors
 "-----------------------------------------------------------------------------"
 
-" Syntax settings by extension"
-"-----------------------------------------------------------------------------"
-autocmd BufNewFile,BufRead init.vim set filetype=vim
-"-----------------------------------------------------------------------------"
-
 "Other setting"
 "-----------------------------------------------------------------------------"
 set noerrorbells               "Beep suppression at the time of error"
@@ -164,6 +147,9 @@ augroup END
 
 set tags=~/repos/fork/vim/src/tags
 "-----------------------------------------------------------------------------"
+
+"lsp settings"
+source <sfile>:h/lib/lsp.lua
 
 "Key bindings"
 source <sfile>:h/lib/keymap.lua
