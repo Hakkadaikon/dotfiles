@@ -145,7 +145,7 @@ augroup osc52
   autocmd TextYankPost * if v:event.operator ==# 'y' | call SendViaOSC52(getreg(v:event.regname)) | endif
 augroup END
 
-set tags=~/repos/fork/vim/src/tags
+"set tags=~/repos/fork/vim/src/tags"
 "-----------------------------------------------------------------------------"
 
 "lsp settings"
