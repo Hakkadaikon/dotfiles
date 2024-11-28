@@ -66,7 +66,7 @@ case ${1} in
   "cleanup")
     cleanup;;
   "setup")
-    setup;;
+    cleanup && setup;;
   "check")
     check;;
   *)
