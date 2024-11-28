@@ -1,3 +1,5 @@
+local mytabstop = {}
+
 local tabstop_settings = {
   c = { tabstop = 4, shiftwidth = 4, expandtab = true },
   h = { tabstop = 4, shiftwidth = 4, expandtab = true },
@@ -39,7 +41,11 @@ local function set_tabstop()
   end
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "*",
-  callback = set_tabstop,
-})
+function mytabstop.setup()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "*",
+    callback = set_tabstop,
+  })
+end
+
+return mytabstop

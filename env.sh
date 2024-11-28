@@ -10,6 +10,7 @@ FILES=(
     ".tmux.conf"
     "${NVIM_CONFIG_DIR}/init.vim"
     "${NVIM_CONFIG_DIR}/lib"
+    "${NVIM_CONFIG_DIR}/lua"
 )
 
 function usage() {

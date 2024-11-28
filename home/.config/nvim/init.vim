@@ -69,21 +69,6 @@ let g:enable_spelunker_vim = 1
 "    \ }
 "------------------------------------------------------------------------------"
 
-"lualine settings"
-"-----------------------------------------------------------------------------"
-lua << EOF
-require('lualine').setup {
-  options = {
-    theme = 'material'
-  }
-}
-EOF
-"-----------------------------------------------------------------------------"
-
-colorscheme material
-highlight LineNr guifg=#00AFFF guibg=NONE
-highlight CursorLineNr guifg=#FFFF00 guibg=NONE
-
 "lsp settings"
 "------------------------------------------------------------------------------"
 "let lsp_log_verbose=1"
@@ -148,13 +133,11 @@ augroup END
 "set tags=~/repos/fork/vim/src/tags"
 "-----------------------------------------------------------------------------"
 
-"lsp settings"
-source <sfile>:h/lib/lsp.lua
-
-"Key bindings"
-source <sfile>:h/lib/keymap.lua
-
-"Tabstop"
-source <sfile>:h/lib/tabstop.lua
+lua << EOF
+require('my/colorscheme').setup()
+require('my/lsp').setup()
+require('my/keymap').setup()
+require('my/tabstop').setup()
+EOF
 
 "##############################################################################"

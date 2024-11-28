@@ -1,4 +1,6 @@
-local function set_keymap()
+local mykeymap = {}
+
+function mykeymap.setup()
   -- LSP key bindings
   vim.keymap.set('n', 'K'    , '<cmd>lua vim.lsp.buf.hover()<CR>'          , { desc = 'LSP Hover' })
   vim.keymap.set('n', 'gf'   , '<cmd>lua vim.lsp.buf.formatting()<CR>'     , { desc = 'LSP Formatting' })
@@ -54,4 +56,4 @@ local function set_keymap()
     { silent = true, desc = 'Start VFiler Explorer' })
 end
 
-set_keymap()
+return mykeymap
