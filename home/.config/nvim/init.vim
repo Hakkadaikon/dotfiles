@@ -45,7 +45,7 @@ Plug 'mattn/ctrlp-lsp'                   "Jump the source code definition with [
 
 "External application cooperation"
 Plug 'scrooloose/vim-slumlord'           "Edit PlantUML"
-"Plug 'skanehira/preview-markdown.vim'   "Preview markdown"
+"Plug 'skanehira/preview-markdown.vim'"  "Preview markdown"
 Plug 'thinca/vim-quickrun'               ""
 Plug 'haya14busa/vim-edgemotion'         ""
 Plug 'kana/vim-smartword'                ""
@@ -80,48 +80,6 @@ let g:enable_spelunker_vim = 1
 "nmap <silent> ww :call phpactor#Hover()<CR>"
 "-----------------------------------------------------------------------------"
 
-"##############################################################################"
-" Common settings                                                              "
-"##############################################################################"
-
-"Search settings"
-"-----------------------------------------------------------------------------"
-set ignorecase     "Case insensitive"
-set wrapscan       "Wrap around when the search is finished"
-set incsearch      "Incremental search"
-set hlsearch       "Highlight search results"
-"-----------------------------------------------------------------------------"
-
-"View settings"
-"-----------------------------------------------------------------------------"
-set number                     "Show line number"
-set relativenumber             "Show relative line number"
-:highlight LineNr ctermfg=239
-
-set showcmd                    "Show the command your are typing"
-set list                       "Show control characters"
-set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
-set cursorline                 "Highlight selected line"
-set noswapfile                 "Dont create swap file"
-"set nofoldenable"             "Dont fold the source code"
-set autochdir                  "Change to the directory of open files"
-set softtabstop=4              "Number of spaces for tab"
-set shiftwidth=4               "Number of spaces for smart indent, command"
-set cmdheight=2                "Number of lines the message display field"
-set laststatus=2               "Always show status line"
-set display=lastline           "Dont omit the characters displayed on the status line"
-set showmatch matchtime=1      "Bracket highlighting"
-set termguicolors
-"-----------------------------------------------------------------------------"
-
-"Other setting"
-"-----------------------------------------------------------------------------"
-set noerrorbells               "Beep suppression at the time of error"
-set history=10000              "Number of saved vim command execution histories"
-set clipboard&                 "Copy and paste between vim and other applications"
-set clipboard^=unnamedplus
-"-----------------------------------------------------------------------------"
-
 "clipboard settings(windows only)"
 "-----------------------------------------------------------------------------"
 source <sfile>:h/lib/osc52.vim
@@ -134,10 +92,9 @@ augroup END
 "-----------------------------------------------------------------------------"
 
 lua << EOF
+require('my/common').setup()
 require('my/colorscheme').setup()
 require('my/lsp').setup()
 require('my/keymap').setup()
 require('my/tabstop').setup()
 EOF
-
-"##############################################################################"
