@@ -39,10 +39,6 @@ Plug 'kana/vim-smartinput'
 Plug 'airblade/vim-gitgutter'            "Show git diffs"
 Plug 'tpope/vim-fugitive'                "Operate git from vim"
 
-"Search plugins"
-Plug 'ctrlpvim/ctrlp.vim'                "Search for files with [Ctrl + p]"
-Plug 'mattn/ctrlp-lsp'                   "Jump the source code definition with [Ctrl + p]"
-
 "External application cooperation"
 Plug 'scrooloose/vim-slumlord'           "Edit PlantUML"
 "Plug 'skanehira/preview-markdown.vim'"  "Preview markdown"
@@ -56,18 +52,6 @@ call plug#end()
 " Plugin settings                                                             "
 "#############################################################################"
 let g:enable_spelunker_vim = 1
-
-"quickrun settings"
-"-----------------------------------------------------------------------------"
-"let g:quickrun_config['cpp/snip'] = {
-"    \ 'command'       : 'g++',
-"    \ 'exec'          : '%c %o -o %n -lgtest -lgtest_main -lpthread && ./%n',
-"    \ 'outputter'     : 'message',
-"    \ 'hook/snipe/enable' : 1,
-"    \ 'hook/snipe/prefix' : '#include <cstdio>\nint main() {\n',
-"    \ 'hook/snipe/suffix' : '\nreturn 0;\n}',
-"    \ }
-"------------------------------------------------------------------------------"
 
 "lsp settings"
 "------------------------------------------------------------------------------"
@@ -89,7 +73,6 @@ augroup osc52
 augroup END
 
 "set tags=~/repos/fork/vim/src/tags"
-"-----------------------------------------------------------------------------"
 
 lua << EOF
 require('my/common').setup()
