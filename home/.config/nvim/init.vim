@@ -46,6 +46,10 @@ Plug 'thinca/vim-quickrun'               ""
 Plug 'haya14busa/vim-edgemotion'         ""
 Plug 'kana/vim-smartword'                ""
 Plug 'tani/dmacro.vim'                   ""
+
+"Fuzzy finder"
+Plug 'vim-denops/denops.vim'             ""
+Plug 'vim-fall/fall.vim'                 ""
 call plug#end()
 
 "#############################################################################"
