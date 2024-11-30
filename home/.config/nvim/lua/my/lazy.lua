@@ -57,7 +57,7 @@ function mylazy.setup()
     'tani/dmacro.vim',
     'vim-denops/denops.vim',
     'vim-fall/fall.vim',
-  })
+  }, opts)
 end
 
 return mylazy
