@@ -19,7 +19,6 @@ EOF
 let g:enable_spelunker_vim = 1
 
 "clipboard settings(windows only)"
-"-----------------------------------------------------------------------------"
 source <sfile>:h/lib/osc52.vim
 augroup osc52
   autocmd!
