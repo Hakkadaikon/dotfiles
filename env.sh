@@ -8,6 +8,7 @@ NVIM_CONFIG_DIR=.config/nvim
 
 FILES=(
     ".tmux.conf"
+    ".vimrc"
     "${NVIM_CONFIG_DIR}/init.vim"
     "${NVIM_CONFIG_DIR}/lib"
     "${NVIM_CONFIG_DIR}/lua"
