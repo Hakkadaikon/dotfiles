@@ -55,8 +55,8 @@ function mylazy.setup()
     'haya14busa/vim-edgemotion',
     'kana/vim-smartword',
     'tani/dmacro.vim',
-    'vim-denops/denops.vim',
-    'vim-fall/fall.vim',
+    -- 'vim-denops/denops.vim',
+    -- 'vim-fall/fall.vim',
   }, opts)
 end
 
