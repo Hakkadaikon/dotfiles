@@ -19,6 +19,9 @@ function mylsp.setup()
   lspconfig.lua_ls.setup{
   }
 
+  lspconfig.jdtls.setup{
+  }
+
   lspconfig.clangd.setup{
     cmd = {
       "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"
