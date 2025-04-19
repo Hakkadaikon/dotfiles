@@ -54,9 +54,7 @@ function mylazy.setup()
     'thinca/vim-quickrun',
     'haya14busa/vim-edgemotion',
     'kana/vim-smartword',
-    'tani/dmacro.vim',
-    -- 'vim-denops/denops.vim',
-    -- 'vim-fall/fall.vim',
+    'github/copilot.vim'
   }, opts)
 end
 
