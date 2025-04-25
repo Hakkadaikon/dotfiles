@@ -22,6 +22,9 @@ function mylsp.setup()
   lspconfig.jdtls.setup{
   }
 
+  lspconfig.terraformls.setup{
+  }
+
   lspconfig.clangd.setup{
     cmd = {
       "clangd", "--background-index", "--clang-tidy", "--completion-style=detailed"
@@ -56,20 +59,20 @@ function mylsp.setup()
     end
   })
 
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics,
-    {
-      -- virtual_text = false
-      virtual_text = {
-        format = function(diagnostic)
-        return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
-        end,
-      }
-    }
-  )
-  vim.cmd([[
-    autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focus=false })
-  ]])
+  -- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  --   vim.lsp.diagnostic.on_publish_diagnostics,
+  --   {
+  --     -- virtual_text = false
+  --     virtual_text = {
+  --       format = function(diagnostic)
+  --       return string.format("%s (%s: %s)", diagnostic.message, diagnostic.source, diagnostic.code)
+  --       end,
+  --     }
+  --   }
+  -- )
+  -- vim.cmd([[
+  --   autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focus=false })
+  -- ]])
 
   vim.cmd [[
   set updatetime=500

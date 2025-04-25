@@ -2,6 +2,13 @@ local mykeymap = {}
 
 function mykeymap.setup()
   -- LSP key bindings
+  vim.keymap.set(
+    'n',
+    'gx',
+    function()
+      require("tiny-code-action").code_action()
+    end,
+    { noremap = true, silent = true })
   vim.keymap.set('n', 'K'    , '<cmd>lua vim.lsp.buf.hover()<CR>'          , { desc = 'LSP Hover' })
   vim.keymap.set('n', 'gf'   , '<cmd>lua vim.lsp.buf.formatting()<CR>'     , { desc = 'LSP Formatting' })
   vim.keymap.set('n', 'gr'   , '<cmd>lua vim.lsp.buf.references()<CR>'     , { desc = 'LSP References' })
@@ -19,6 +26,7 @@ function mykeymap.setup()
   vim.keymap.set('i', '<C-y>', '<Plug>(dmacro-play-macro)'                 , { desc = 'Play Macro' })
   vim.keymap.set('n', '<C-y>', '<Plug>(dmacro-play-macro)'                 , { desc = 'Play Macro' })
   vim.keymap.set('n', 'tt'   , ':QuickRun<CR>'                             , { silent = true, desc = 'QuickRun' })
+  vim.keymap.set('n', 'tp'   , ':Terraform plan<CR>'                       , { silent = true, desc = 'Terraform' })
   -- vim.keymap.set('n', 'ff'   , ':Fall file<CR>'                            , { silent = true, desc = 'Fuzzy finder' })
   vim.keymap.set('n', 'sa'   , ':Startify<CR>'                             , { silent = true, desc = 'Startify' })
   vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>'                           , { silent = true, desc = 'Clear Highlight' })
