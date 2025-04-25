@@ -12,6 +12,7 @@ FILES=(
     "${NVIM_CONFIG_DIR}/init.vim"
     "${NVIM_CONFIG_DIR}/lib"
     "${NVIM_CONFIG_DIR}/lua"
+    ".config/alacritty/alacritty.toml"
 )
 
 function usage() {
