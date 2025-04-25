@@ -55,6 +55,11 @@ function mylazy.setup()
     'haya14busa/vim-edgemotion',
     'kana/vim-smartword',
     'tani/dmacro.vim',
+    'hashivim/vim-terraform',
+    'rachartier/tiny-inline-diagnostic.nvim',
+    'rachartier/tiny-code-action.nvim',
+    'nvim-lua/plenary.nvim',
+    'nvim-telescope/telescope.nvim',
     -- 'vim-denops/denops.vim',
     -- 'vim-fall/fall.vim',
   }, opts)
