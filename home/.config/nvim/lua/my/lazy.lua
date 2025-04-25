@@ -60,8 +60,7 @@ function mylazy.setup()
     'rachartier/tiny-code-action.nvim',
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
-    -- 'vim-denops/denops.vim',
-    -- 'vim-fall/fall.vim',
+    'github/copilot.vim',
   }, opts)
 end
 
