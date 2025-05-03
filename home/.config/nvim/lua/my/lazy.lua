@@ -61,6 +61,7 @@ function mylazy.setup()
     'nvim-lua/plenary.nvim',
     'nvim-telescope/telescope.nvim',
     'github/copilot.vim',
+    'vim-denops/denops.vim'
   }, opts)
 end
 
