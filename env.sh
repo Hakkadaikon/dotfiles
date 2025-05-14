@@ -29,6 +29,20 @@ function echoerr() {
   echo -e "\e[37;41m${STR}\e[m"
 }
 
+function install() {
+  if [[ "$OS" == "Darwin" ]]; then
+    brew install stylua
+    brew install shfmt
+  elif [[ "$OS" == "Linux" ]]; then
+    # Support Ubuntu/Debian
+    sudo apt update
+    sudo apt install -y stylua
+    sudo apt install -y shfmt
+  else
+    echo "Unsupported OS: ${OS}"
+    exit 1
+  fi
+}
 
 function setup() {
   for FILE in "${FILES[@]}" ; do
@@ -66,6 +80,8 @@ if [ $# -ne 1 ];then
 fi
 
 case ${1} in
+  "install")
+    install;;
   "cleanup")
     cleanup;;
   "setup")
