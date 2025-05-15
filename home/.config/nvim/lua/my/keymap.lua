@@ -36,7 +36,9 @@ function mykeymap.setup()
   vim.keymap.set(
       "n", "<C-e>", function()
         local path = vim.fn.bufname(vim.fn.bufnr())
-        if vim.fn.isdirectory(path) ~= 1 then path = vim.fn.getcwd() end
+        if vim.fn.isdirectory(path) ~= 1 then
+          path = vim.fn.getcwd()
+        end
         path = vim.fn.fnamemodify(path, ":p:h")
 
         require("vfiler").start(
