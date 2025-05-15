@@ -32,13 +32,11 @@ function echoerr() {
 
 function install() {
   if [[ "${OS}" == "Darwin" ]]; then
-    brew install luarocks shfmt
-    luarocks install --local --server=http://luarocks.org/dev luaformatter
+    brew install stylua shfmt
   elif [[ "{$OS}" == "Linux" ]]; then
     # Support Ubuntu/Debian
     sudo apt update
-    sudo apt install -y luarocks shfmt
-    luarocks install --local --server=http://luarocks.org/dev luaformatter
+    sudo apt install -y stylua shfmt
   else
     echo "Unsupported OS: ${OS}"
     exit 1
