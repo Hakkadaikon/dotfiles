@@ -10,17 +10,22 @@ nvim : v0.7.0-dev
 * https://github.com/MichaelMure/mdr
 
 ## Usage
-### setup
+### Install dependencies
+```shell
+./env.sh install 
+```
+
+### Setup
 ```shell
 ./env.sh setup
 ```
 
-### cleanup 
+### Cleanup 
 ```shell
 ./env.sh cleanup 
 ```
 
-### check
+### Check
 ```shell
 ./env.sh check
 ```
