@@ -17,7 +17,11 @@ FILES=(
 )
 
 function usage() {
-  echo "usage : ${MYNAME} [cleanup|setup|check]"
+  echo "usage : ${MYNAME} [install|cleanup|setup|check]"
+  echo "  install : install dependencies"
+  echo "  cleanup : remove symlinks"
+  echo "  setup   : create symlinks"
+  echo "  check   : check symlinks"
 }
 
 function echowarn() {
