@@ -248,3 +248,8 @@ augroup osc52
 augroup END
 
 "set tags=~/repos/fork/vim/src/tags"
+
+lua << EOF
+vim.opt.runtimepath:append("~/denops/denops-getting-started")
+vim.opt.runtimepath:append("~/denops/denops-maze")
+EOF

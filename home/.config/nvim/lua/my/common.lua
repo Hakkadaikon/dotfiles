@@ -15,12 +15,12 @@ function mycommon.setup()
   vim.opt.showcmd = true -- Show the command you are typing
   vim.opt.list = true -- Show control characters
   vim.opt.listchars = { -- Define control characters for display
-    tab="»-",
-    trail="-",
-    eol="↲",
-    extends="»",
-    precedes="«",
-    nbsp="%"
+    tab = "»-",
+    trail = "-",
+    eol = "↲",
+    extends = "»",
+    precedes = "«",
+    nbsp = "%",
   }
   vim.opt.cursorline = true -- Highlight selected line
   vim.opt.swapfile = false -- Don't create swap file
