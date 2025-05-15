@@ -5,6 +5,7 @@ DOTFILES_DIR=${PWD}
 DOTFILES_HOME_DIR=${DOTFILES_DIR}/home
 HOME_DIR=~
 NVIM_CONFIG_DIR=.config/nvim
+OS=$(uname -s)
 
 FILES=(
     ".tmux.conf"
@@ -30,14 +31,14 @@ function echoerr() {
 }
 
 function install() {
-  if [[ "$OS" == "Darwin" ]]; then
-    brew install stylua
-    brew install shfmt
-  elif [[ "$OS" == "Linux" ]]; then
+  if [[ "${OS}" == "Darwin" ]]; then
+    brew install luarocks shfmt
+    luarocks install --local --server=http://luarocks.org/dev luaformatter
+  elif [[ "{$OS}" == "Linux" ]]; then
     # Support Ubuntu/Debian
     sudo apt update
-    sudo apt install -y stylua
-    sudo apt install -y shfmt
+    sudo apt install -y luarocks shfmt
+    luarocks install --local --server=http://luarocks.org/dev luaformatter
   else
     echo "Unsupported OS: ${OS}"
     exit 1
