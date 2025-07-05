@@ -34,6 +34,8 @@ function mycommon.setup()
   vim.opt.showmatch = true -- Bracket highlighting
   vim.opt.matchtime = 1 -- Time to show bracket highlighting
   vim.opt.termguicolors = true -- Enable terminal GUI colors
+  vim.opt.winblend = 0
+  vim.opt.pumblend = 0
 
   -- Other setting
   vim.opt.errorbells = false -- Beep suppression at the time of error

@@ -32,7 +32,6 @@ function mylazy.setup()
     "hrsh7th/vim-vsnip",
     "obaland/vfiler.vim",
     "machakann/vim-highlightedyank",
-    "nvim-lualine/lualine.nvim",
     "kamykn/spelunker.vim",
     "mhinz/vim-startify",
     "bluz71/vim-nightfly-guicolors",
@@ -53,6 +52,7 @@ function mylazy.setup()
     "nvim-telescope/telescope.nvim",
     "github/copilot.vim",
     "vim-denops/denops.vim",
+    "folke/tokyonight.nvim",
   }, opts)
 end
 
