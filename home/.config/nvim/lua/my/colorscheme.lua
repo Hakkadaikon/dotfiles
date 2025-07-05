@@ -1,11 +1,14 @@
 local mycolorscheme = {}
 
 function mycolorscheme.setup()
-  require("lualine").setup({ options = { theme = "material" } })
-
-  vim.cmd("colorscheme material")
-  vim.api.nvim_set_hl(0, "LineNr", { fg = "#00AFFF", bg = "NONE" })
-  vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#FFFF00", bg = "NONE" })
+  require("tokyonight").setup({
+    transparent = true,
+    styles = {
+      sidebars = "transparent",
+      floats = "transparent",
+    },
+  })
+  vim.cmd([[colorscheme tokyonight-night]])
 end
 
 return mycolorscheme
