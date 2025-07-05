@@ -1,4 +1,4 @@
-local wezterm = require 'wezterm'
+local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
@@ -28,7 +28,7 @@ config.window_background_opacity = 0.85
 config.window_decorations = "RESIZE"
 
 config.window_frame = {
-  font = wezterm.font({ family = 'Hack Nerd Font', weight = 'Bold' }),
+  font = wezterm.font({ family = "Hack Nerd Font", weight = "Bold" }),
   font_size = 18.0,
   active_titlebar_bg = "none",
   inactive_titlebar_bg = "none",
@@ -37,14 +37,14 @@ config.window_frame = {
 -- config.color_scheme = 'Dracula+'
 
 config.window_background_gradient = {
-  orientation = 'Vertical',
+  orientation = "Vertical",
   colors = {
-    '#0f0c29',
-    '#302b63',
-    '#24243e',
+    "#0f0c29",
+    "#302b63",
+    "#24243e",
   },
-  interpolation = 'Linear',
-  blend = 'Rgb',
+  interpolation = "Linear",
+  blend = "Rgb",
 }
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
