@@ -13,6 +13,7 @@ FILES=(
   "${CONFIG_DIR}/nvim/init.vim"
   "${CONFIG_DIR}/nvim/lib"
   "${CONFIG_DIR}/nvim/lua"
+  "${CONFIG_DIR}/wezterm/wezterm.lua"
 )
 
 function usage() {
@@ -56,6 +57,12 @@ function install() {
 function setup() {
   for FILE in "${FILES[@]}" ; do
     SRC_FILE=${DOTFILES_HOME_DIR}/${FILE}
+    SRC_DIR=$(dirname "${SRC_FILE}")
+    if [ ! -d "${SRC_DIR}" ]; then
+      mkdir -p "${SRC_DIR}"
+      echo "created directory: ${SRC_DIR}"
+    fi
+
     DST_LINK=${HOME_DIR}/${FILE}
     ln -s ${SRC_FILE} ${DST_LINK}
     echo "link [${SRC_FILE}] -> [${DST_LINK}]"
