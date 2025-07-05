@@ -2,4 +2,4 @@
 
 # luaformatter
 # https://github.com/Koihik/LuaFormatter?tab=readme-ov-file
-stylua home/.config/**/*.lua
+find home/.config -type f -name "*.lua" -print0 | xargs -0 stylua
