@@ -4,15 +4,15 @@ MYNAME=$0
 DOTFILES_DIR=${PWD}
 DOTFILES_HOME_DIR=${DOTFILES_DIR}/home
 HOME_DIR=~
-NVIM_CONFIG_DIR=.config/nvim
+CONFIG_DIR=.config
 OS=$(uname -s)
 
 FILES=(
-    ".tmux.conf"
-    ".vimrc"
-    "${NVIM_CONFIG_DIR}/init.vim"
-    "${NVIM_CONFIG_DIR}/lib"
-    "${NVIM_CONFIG_DIR}/lua"
+  ".tmux.conf"
+  ".vimrc"
+  "${CONFIG_DIR}/nvim/init.vim"
+  "${CONFIG_DIR}/nvim/lib"
+  "${CONFIG_DIR}/nvim/lua"
 )
 
 function usage() {
