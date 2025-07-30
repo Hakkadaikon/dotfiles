@@ -10,7 +10,6 @@ function mycommon.setup()
   -- View settings
   vim.opt.number = true -- Show line number
   vim.opt.relativenumber = true -- Show relative line number
-  vim.cmd("highlight LineNr guifg=#5a5a5a") -- Equivalent to `ctermfg=239` in terminal colors
 
   vim.opt.showcmd = true -- Show the command you are typing
   vim.opt.list = true -- Show control characters
