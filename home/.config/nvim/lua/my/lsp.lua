@@ -27,7 +27,7 @@ function mylsp.setup()
     settings = {
       clangd = {
         fallbackFlags = {
-          "-std=c++17",
+          -- "-std=c++17",
         },
       },
     },
