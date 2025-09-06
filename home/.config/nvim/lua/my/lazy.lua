@@ -50,6 +50,19 @@ function mylazy.setup()
     "github/copilot.vim",
     "vim-denops/denops.vim",
     "folke/tokyonight.nvim",
+    "azorng/goose.nvim",
+    config = function()
+      require("goose").setup({})
+    end,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "MeanderingProgrammer/render-markdown.nvim",
+        opts = {
+          anti_conceal = { enabled = false },
+        },
+      },
+    },
   }, opts)
 end
 
