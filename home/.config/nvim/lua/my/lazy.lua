@@ -48,6 +48,7 @@ function mylazy.setup()
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
     "github/copilot.vim",
+    "sindrets/diffview.nvim",
     "folke/tokyonight.nvim",
     {
       "azorng/goose.nvim",
