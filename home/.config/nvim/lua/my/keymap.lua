@@ -5,6 +5,7 @@ function mykeymap.setup()
   local mapset = require("my/lib/mapset").mapset
   local quickrun = require("my/lib/quickrun")
   local vfiler = require("my/lib/vfiler")
+  local favorite_buffer = require("my/lib/favorite_buffer")
 
   mapset.n("gx")({ desc = "Tiny code action", require("tiny-code-action").code_action })
   mapset.n("gh")({ desc = "LSP hover", vim.lsp.buf.hover })
@@ -27,6 +28,8 @@ function mykeymap.setup()
   mapset.n("q")({ desc = "Clear Highlight", ":nohlsearch<CR>" })
   mapset.n("<C-c>")({ desc = "QuickRun session cleanup", quickrun.cleanup })
   mapset.n("<C-e>")({ desc = "Start vfiler explorer", vfiler.open })
+  mapset.n("s*")({ desc = "Register favorite buffer", favorite_buffer.register })
+  mapset.n("s<Space>")({ desc = "Set the favorite buffer if exists", favorite_buffer.jump })
 end
 
 return mykeymap
