@@ -2,53 +2,31 @@ local mykeymap = {}
 
 -- LSP key bindings
 function mykeymap.setup()
-  vim.keymap.set("n", "gx", function()
-    require("tiny-code-action").code_action()
-  end, { noremap = true, silent = true })
+  local mapset = require("my/lib/mapset").mapset
+  local quickrun = require("my/lib/quickrun")
+  local vfiler = require("my/lib/vfiler")
 
-  vim.keymap.set("n", "gh", vim.lsp.buf.hover, { desc = "LSP Hover" })
-  vim.keymap.set("n", "gf", "lua <cmd>vim.lsp.buf.formatting<CR>", { desc = "LSP Formatting" })
-  vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "LSP References" })
-  vim.keymap.set("n", "qd", vim.lsp.buf.definition, { desc = "LSP Go to Definition" })
-  vim.keymap.set("n", "qD", vim.lsp.buf.declaration, { desc = "LSP Go to Declaration" })
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "LSP Go to Implementation" })
-  vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, { desc = "LSP Go to Type Definition" })
-  vim.keymap.set("n", "gn", vim.lsp.buf.rename, { desc = "LSP Rename" })
-  vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { desc = "LSP Code Action" })
-  vim.keymap.set("n", "ge", vim.diagnostic.open_float, { desc = "Show Diagnostics" })
-  vim.keymap.set("n", "g]", vim.diagnostic.goto_next, { desc = "Next Diagnostic" })
-  vim.keymap.set("n", "g[", vim.diagnostic.goto_prev, { desc = "Previous Diagnostic" })
-  vim.keymap.set("n", "<C-j>", "<Plug>(edgemotion-j)", { desc = "Edge motion down" })
-  vim.keymap.set("n", "<C-k>", "<Plug>(edgemotion-k)", { desc = "Edge motion up" })
-  vim.keymap.set("n", "tt", ":QuickRun<CR>", { silent = true, desc = "QuickRun" })
-  vim.keymap.set("n", "tp", ":Terraform plan<CR>", { silent = true, desc = "Terraform" })
-  vim.keymap.set("n", "sa", ":Startify<CR>", { silent = true, desc = "Startify" })
-  vim.keymap.set("n", "<ESC>", ":nohlsearch<CR>", { silent = true, desc = "Clear Highlight" })
-  vim.keymap.set("n", "q", ":nohlsearch<CR>", { silent = true, desc = "Clear Highlight" })
-  vim.keymap.set("n", "<C-c>", function()
-    return vim.fn["quickrun#is_running"]() == 1 and vim.fn["quickrun#sweep_sessions"]() or "<C-c>"
-  end, { expr = true, silent = true, desc = "QuickRun Session Cleanup" })
-
-  vim.keymap.set("n", "<C-e>", function()
-    local path = vim.fn.bufname(vim.fn.bufnr())
-    if vim.fn.isdirectory(path) ~= 1 then
-      path = vim.fn.getcwd()
-    end
-    path = vim.fn.fnamemodify(path, ":p:h")
-
-    require("vfiler").start(path, {
-      options = {
-        auto_cd = true,
-        auto_resize = true,
-        keep = true,
-        name = "explorer",
-        layout = "left",
-        width = 40,
-        columns = "indent,name,mode,size",
-        show_hidden_files = true,
-      },
-    })
-  end, { silent = true, desc = "Start VFiler Explorer" })
+  mapset.n("gx")({ desc = "Tiny code action", require("tiny-code-action").code_action })
+  mapset.n("gh")({ desc = "LSP hover", vim.lsp.buf.hover })
+  mapset.n("gf")({ desc = "LSP formatting", vim.lsp.buf.format })
+  mapset.n("gr")({ desc = "LSP references", vim.lsp.buf.references })
+  mapset.n("qd")({ desc = "LSP go to definition", vim.lsp.buf.definition })
+  mapset.n("qD")({ desc = "LSP go to declaration", vim.lsp.buf.declaration })
+  mapset.n("gi")({ desc = "LSP go to implementation", vim.lsp.buf.implementation })
+  mapset.n("gt")({ desc = "LSP go to type definition", vim.lsp.buf.type_definition })
+  mapset.n("gn")({ desc = "LSP rename", vim.lsp.buf.rename })
+  mapset.n("ga")({ desc = "LSP code action", vim.lsp.buf.code_action })
+  mapset.n("ge")({ desc = "Show diagnostics", vim.diagnostic.open_float })
+  mapset.n("g]")({ desc = "Next diagnostic", vim.diagnostic.goto_next })
+  mapset.n("g[")({ desc = "Previous diagnostic", vim.diagnostic.goto_prev })
+  mapset.n("<C-j>")({ desc = "Edge motion down", "<Plug>(edgemotion-j)" })
+  mapset.n("<C-k>")({ desc = "Edge motion up", "<Plug>(edgemotion-k)" })
+  mapset.n("tt")({ desc = "QuickRun", quickrun.run })
+  mapset.n("sa")({ desc = "Startify", ":Startify<CR>" })
+  mapset.n("<ESC>")({ desc = "Clear Highlight", ":nohlsearch<CR>" })
+  mapset.n("q")({ desc = "Clear Highlight", ":nohlsearch<CR>" })
+  mapset.n("<C-c>")({ desc = "QuickRun session cleanup", quickrun.cleanup })
+  mapset.n("<C-e>")({ desc = "Start vfiler explorer", vfiler.open })
 end
 
 return mykeymap
