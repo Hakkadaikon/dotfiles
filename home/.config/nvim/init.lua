@@ -3,4 +3,4 @@
 -- # Description : Files loaded when nvim starts.
 -- # Remarks     :
 -- #############################################################################
-require('my/init').setup()
+require("my/init").setup()
