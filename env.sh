@@ -54,7 +54,7 @@ function install() {
 }
 
 function setup() {
-  for FILE in "${FILES[@]}" ; do
+  for FILE in "${FILES[@]}"; do
     SRC_FILE=${DOTFILES_HOME_DIR}/${FILE}
     SRC_DIR=$(dirname "${SRC_FILE}")
     if [ ! -d "${SRC_DIR}" ]; then
@@ -69,7 +69,7 @@ function setup() {
 }
 
 function cleanup() {
-  for FILE in "${FILES[@]}" ; do
+  for FILE in "${FILES[@]}"; do
     DST_LINK=${HOME_DIR}/${FILE}
     unlink ${DST_LINK}
     echo "cleanup [${DST_LINK}]"
@@ -77,7 +77,7 @@ function cleanup() {
 }
 
 function check() {
-  for FILE in "${FILES[@]}" ; do
+  for FILE in "${FILES[@]}"; do
     DST_LINK=${HOME_DIR}/${FILE}
 
     echo -n "path [${DST_LINK}] : "
@@ -89,20 +89,25 @@ function check() {
   done
 }
 
-if [ $# -ne 1 ];then
-    usage
-    exit 1
+if [ $# -ne 1 ]; then
+  usage
+  exit 1
 fi
 
 case ${1} in
-  "install")
-    install;;
-  "cleanup")
-    cleanup;;
-  "setup")
-    cleanup && setup;;
-  "check")
-    check;;
-  *)
-    usage;;
+"install")
+  install
+  ;;
+"cleanup")
+  cleanup
+  ;;
+"setup")
+  cleanup && setup
+  ;;
+"check")
+  check
+  ;;
+*)
+  usage
+  ;;
 esac
