@@ -10,7 +10,7 @@ OS=$(uname -s)
 FILES=(
   ".tmux.conf"
   ".vimrc"
-  "${CONFIG_DIR}/nvim/init.vim"
+  "${CONFIG_DIR}/nvim/init.lua"
   "${CONFIG_DIR}/nvim/lib"
   "${CONFIG_DIR}/nvim/lua"
   "${CONFIG_DIR}/wezterm/wezterm.lua"
