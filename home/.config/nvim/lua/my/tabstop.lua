@@ -42,6 +42,8 @@ local function set_tabstop()
 end
 
 function mytabstop.setup()
+  vim.opt.softtabstop = 4 -- Number of spaces for tab
+  vim.opt.shiftwidth = 4 -- Number of spaces for smart indent, command
   vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = set_tabstop })
 end
 
