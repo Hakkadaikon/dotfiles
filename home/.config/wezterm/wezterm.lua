@@ -39,9 +39,9 @@ config.window_frame = {
 config.window_background_gradient = {
   orientation = "Vertical",
   colors = {
-    "#0f0c29",
-    "#302b63",
-    "#24243e",
+    "#001500",
+    "#000100",
+    "#001500",
   },
   interpolation = "Linear",
   blend = "Rgb",
