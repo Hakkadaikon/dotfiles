@@ -50,6 +50,7 @@ function mylazy.setup()
     "github/copilot.vim",
     "sindrets/diffview.nvim",
     "folke/tokyonight.nvim",
+    "atusy/treemonkey.nvim",
   }, opts)
 end
 

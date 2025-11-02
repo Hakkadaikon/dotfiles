@@ -5,8 +5,10 @@ function mykeymap.setup()
   local mapset = require("my/lib/mapset").mapset
   local quickrun = require("my/lib/quickrun")
   local vfiler = require("my/lib/vfiler")
+  local treemonkey = require("my/lib/treemonkey")
   local favorite_buffer = require("my/lib/favorite_buffer")
 
+  mapset.xo("m")({ desc = "Treemonkey select", treemonkey.select })
   mapset.n("gx")({ desc = "Tiny code action", require("tiny-code-action").code_action })
   mapset.n("gh")({ desc = "LSP hover", vim.lsp.buf.hover })
   mapset.n("gf")({ desc = "LSP formatting", vim.lsp.buf.format })
