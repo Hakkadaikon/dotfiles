@@ -1,7 +1,7 @@
 local mylsp = {}
 
 function mylsp.setup()
-  vim.lsp.set_log_level("off")
+  -- vim.lsp.set_log_level("off")
 
   local lspconfig = require("lspconfig")
 
