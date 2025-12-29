@@ -10,9 +10,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         nvimVersion = "0.11.5";
-
-        nvimHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; 
-        # ---------------------------------------------------------
+        nvimHash = "sha256-OsvLB9kynCbQ8PDQ2VQ+L56iy7pZ0ZP69J2cEG8Ad8A="; 
 
         pkgs = import nixpkgs {
           inherit system;
