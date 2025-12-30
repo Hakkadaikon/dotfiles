@@ -3,71 +3,77 @@ local mylsp = {}
 function mylsp.setup()
   -- vim.lsp.set_log_level("off")
 
-  local lspconfig = require("lspconfig")
+  local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-  lspconfig.rust_analyzer.setup({})
-
-  lspconfig.gopls.setup({})
-
-  lspconfig.vimls.setup({})
-
-  lspconfig.lua_ls.setup({})
-
-  lspconfig.jdtls.setup({})
-
-  lspconfig.terraformls.setup({})
-
-  lspconfig.clangd.setup({
-    cmd = {
-      "clangd",
-      "--background-index",
-      "--clang-tidy",
-      "--completion-style=detailed",
-    },
-    settings = {
-      clangd = {
-        fallbackFlags = {
-          -- "-std=c++17",
-        },
+  local server_settings = {
+    clangd = {
+      cmd = {
+        "clangd",
+        "--background-index",
+        "--clang-tidy",
+        "--completion-style=detailed",
       },
-    },
-  })
-
-  lspconfig.intelephense.setup({
-    settings = {
-      intelephense = {
-        environment = {
-          phpVersion = "8.2",
-        },
-      },
-    },
-  })
-
-  -- Mason
-  require("mason").setup({})
-  require("mason-lspconfig").setup({
-    function(server)
-      local opt = {
-        capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
-      }
-      require("lspconfig")[server].setup(opt)
-    end,
-  })
-
-  lspconfig.denols.setup({
-    root_dir = lspconfig.util.root_pattern("deno.json"),
-    init_options = {
-      lint = true,
-      unstable = true,
-      suggest = {
-        imports = {
-          hosts = {
-            ["https://deno.land"] = true,
-            ["https://cdn.nest.land"] = true,
-            ["https://crux.land"] = true,
+      settings = {
+        clangd = {
+          fallbackFlags = {
+            -- "-std=c++17",
           },
         },
       },
+    },
+    intelephense = {
+      settings = {
+        intelephense = {
+          environment = {
+            phpVersion = "8.2",
+          },
+        },
+      },
+    },
+    denols = {
+      root_dir = require("lspconfig").util.root_pattern("deno.json", "deno.jsonc"),
+      init_options = {
+        lint = true,
+        unstable = true,
+        suggest = {
+          imports = {
+            hosts = {
+              ["https://deno.land"] = true,
+              ["https://cdn.nest.land"] = true,
+              ["https://crux.land"] = true,
+            },
+          },
+        },
+      },
+    },
+  }
+
+  require("mason").setup({})
+
+  require("mason-lspconfig").setup({
+    ensure_installed = {
+      "rust_analyzer",
+      "gopls",
+      "vimls",
+      "lua_ls",
+      "jdtls",
+      "terraformls",
+      "clangd",
+      "intelephense",
+      "denols"
+    },
+    handlers = {
+      function(server_name)
+        local opts = {
+          capabilities = capabilities,
+        }
+
+        if server_settings[server_name] then
+          opts = vim.tbl_deep_extend("force", opts, server_settings[server_name])
+        end
+
+        require("lspconfig")[server_name].setup(opts)
+      end,
     },
   })
 
