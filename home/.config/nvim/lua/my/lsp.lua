@@ -60,7 +60,7 @@ function mylsp.setup()
       "terraformls",
       "clangd",
       "intelephense",
-      "denols"
+      "denols",
     },
     handlers = {
       function(server_name)
