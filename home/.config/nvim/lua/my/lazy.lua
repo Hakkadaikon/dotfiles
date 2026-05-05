@@ -51,6 +51,7 @@ function mylazy.setup()
     "sindrets/diffview.nvim",
     "folke/tokyonight.nvim",
     "atusy/treemonkey.nvim",
+    "andersevenrud/nvim_context_vt",
   }, opts)
 end
 
