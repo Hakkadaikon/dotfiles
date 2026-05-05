@@ -7,6 +7,7 @@ function mykeymap.setup()
   local vfiler = require("my/lib/vfiler")
   local treemonkey = require("my/lib/treemonkey")
   local favorite_buffer = require("my/lib/favorite_buffer")
+  local overlook = require("overlook.api")
 
   mapset.xo("m")({ desc = "Treemonkey select", treemonkey.select })
   mapset.n("gx")({ desc = "Tiny code action", require("tiny-code-action").code_action })
@@ -32,6 +33,10 @@ function mykeymap.setup()
   mapset.n("<C-e>")({ desc = "Start vfiler explorer", vfiler.open })
   mapset.n("s*")({ desc = "Register favorite buffer", favorite_buffer.register })
   mapset.n("s<Space>")({ desc = "Set the favorite buffer if exists", favorite_buffer.jump })
+
+  mapset.n("pd")({ desc = "Overlook: Peek definition", overlook.peek_definition })
+  mapset.n("pc")({ desc = "Overlook: Close all popup", overlook.close_all })
+  mapset.n("pu")({ desc = "Overlook: Restore popup", overlook.restore_popup })
 
   mapset.n("gt")({ desc = "toggle tab", ":tabnext<CR>" })
   mapset.n("tn")({ desc = "New tab", ":tabnew<CR>" })

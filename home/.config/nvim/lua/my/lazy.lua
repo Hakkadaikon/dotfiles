@@ -52,6 +52,7 @@ function mylazy.setup()
     "folke/tokyonight.nvim",
     "atusy/treemonkey.nvim",
     "andersevenrud/nvim_context_vt",
+    "WilliamHsieh/overlook.nvim",
   }, opts)
 end
 
