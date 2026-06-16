@@ -13,6 +13,11 @@ FILES=(
   "${CONFIG_DIR}/nvim/init.lua"
   "${CONFIG_DIR}/nvim/lua"
   "${CONFIG_DIR}/wezterm/wezterm.lua"
+  ".claude/settings.json"
+  ".claude/skills"
+  ".claude/commands"
+  ".claude/agents"
+  ".claude/rules"
 )
 
 function usage() {
@@ -63,6 +68,7 @@ function setup() {
     fi
 
     DST_LINK=${HOME_DIR}/${FILE}
+    mkdir -p "$(dirname "${DST_LINK}")"
     ln -s ${SRC_FILE} ${DST_LINK}
     echo "link [${SRC_FILE}] -> [${DST_LINK}]"
   done
