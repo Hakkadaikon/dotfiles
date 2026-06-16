@@ -51,6 +51,7 @@
     }
   },
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(git push -f * feature*)",
       "Bash(git push --force * feature*)"
