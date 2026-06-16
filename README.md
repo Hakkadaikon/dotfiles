@@ -29,3 +29,11 @@ nvim : v0.7.0-dev
 ```shell
 ./env.sh check
 ```
+
+## Claude Code
+`home/.claude/settings.json` enables the bash sandbox with `failIfUnavailable: true`.
+This requires `bwrap` (bubblewrap); without it Claude Code fails to start.
+
+```shell
+sudo apt install bubblewrap
+```
