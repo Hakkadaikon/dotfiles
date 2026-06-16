@@ -34,8 +34,8 @@ nvim : v0.7.0-dev
 `home/.claude/settings.json` enables the bash sandbox with `failIfUnavailable: true`,
 so Claude Code fails to start if the sandbox backend is unavailable.
 
-- **Linux / WSL**: requires `bwrap` (bubblewrap).
+- **Linux / WSL**: requires `bwrap` (bubblewrap) and `socat`.
   ```shell
-  sudo apt install bubblewrap
+  sudo apt install bubblewrap socat
   ```
 - **macOS**: uses the built-in Seatbelt (`sandbox-exec`); no install needed.
