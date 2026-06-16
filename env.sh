@@ -20,6 +20,7 @@ FILES=(
   ".claude/commands"
   ".claude/agents"
   ".claude/rules"
+  ".claude/workflows"
 )
 
 function usage() {
