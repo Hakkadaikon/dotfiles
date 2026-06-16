@@ -50,7 +50,7 @@ function install() {
     echo "Nix installed. Open a new shell (or source the nix profile) and re-run: ${MYNAME} install"
     return
   fi
-  nix profile install "${DOTFILES_DIR}#tools"
+  nix profile add "${DOTFILES_DIR}#tools"
 }
 
 function setup() {
