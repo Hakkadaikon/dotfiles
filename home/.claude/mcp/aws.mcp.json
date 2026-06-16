@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "aws": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@1.6.0",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--skip-auth",
+        "--metadata",
+        "INSTALL_SOURCE=agent-toolkit"
+      ],
+      "env": {
+        "AWS_REGION": "${AWS_REGION:-ap-northeast-1}"
+      }
+    }
+  }
+}

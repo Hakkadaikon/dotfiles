@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "terraform": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "TFE_ADDRESS",
+        "-e",
+        "TFE_TOKEN",
+        "hashicorp/terraform-mcp-server:1.0.0"
+      ],
+      "env": {
+        "TFE_ADDRESS": "${TFE_ADDRESS:-https://app.terraform.io}",
+        "TFE_TOKEN": "${TFE_TOKEN:-}"
+      }
+    },
+    "aws": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-proxy-for-aws@1.6.0",
+        "https://aws-mcp.us-east-1.api.aws/mcp",
+        "--skip-auth",
+        "--metadata",
+        "INSTALL_SOURCE=agent-toolkit"
+      ],
+      "env": {
+        "AWS_REGION": "${AWS_REGION:-ap-northeast-1}"
+      }
+    }
+  }
+}
