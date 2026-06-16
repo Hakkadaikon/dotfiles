@@ -15,6 +15,7 @@ FILES=(
   "${CONFIG_DIR}/wezterm/wezterm.lua"
   ".claude/settings.json"
   ".claude/statusline.sh"
+  ".claude/CLAUDE.md"
   ".claude/skills"
   ".claude/commands"
   ".claude/agents"
