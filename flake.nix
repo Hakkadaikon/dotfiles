@@ -15,12 +15,7 @@
 
   flake-utils.lib.eachDefaultSystem (system:
     let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          (import ./config/nvim.nix)
-        ];
-      };
+      pkgs = import nixpkgs { inherit system; };
       tools = [
         pkgs.neovim
         pkgs.wezterm
