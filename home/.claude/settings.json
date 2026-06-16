@@ -41,10 +41,8 @@
         "**/.env.*",
         "**/*.pem",
         "**/*.key",
-        "**/id_rsa",
-        "**/id_ed25519",
-        "**/.aws/credentials",
-        "**/.ssh/id_*"
+        "**/id_*",
+        "**/.aws/credentials"
       ]
     }
   },
@@ -80,10 +78,8 @@
       "Read(**/.env.*)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
-      "Read(**/id_rsa)",
-      "Read(**/id_ed25519)",
-      "Read(**/.aws/credentials)",
-      "Read(**/.ssh/id_*)"
+      "Read(**/id_*)",
+      "Read(**/.aws/credentials)"
     ],
     "ask": [
       "Bash(sudo *)"
