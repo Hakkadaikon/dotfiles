@@ -2,12 +2,8 @@
 ## Overview
 Build my castle quickly.
 
-## Version
-nvim : v0.7.0-dev
-
 ## related plugin
-* https://github.com/junegunn/vim-plug
-* https://github.com/MichaelMure/mdr
+* https://github.com/folke/lazy.nvim
 
 ## Usage
 ### Install dependencies
@@ -18,6 +14,11 @@ nvim : v0.7.0-dev
 ### Setup
 ```shell
 ./env.sh setup
+```
+
+### Register MCP servers
+```shell
+./env.sh mcp
 ```
 
 ### Cleanup 
