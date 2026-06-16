@@ -14,4 +14,5 @@ if status is-interactive
 
     # bobthefish: never show user@host in the prompt.
     set -g theme_display_user no
+    set -g theme_display_hostname no
 end
