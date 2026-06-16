@@ -36,5 +36,29 @@
     "enabled": true,
     "autoAllowBashIfSandboxed": true
   },
+  "permissions": {
+    "allow": [
+      "Bash(git push -f * feature*)",
+      "Bash(git push --force * feature*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(git push -f * master*)",
+      "Bash(git push -f * main*)",
+      "Bash(git push -f * develop*)",
+      "Bash(git push -f * staging*)",
+      "Bash(git push -f * stg*)",
+      "Bash(git push --force * master*)",
+      "Bash(git push --force * main*)",
+      "Bash(git push --force * develop*)",
+      "Bash(git push --force * staging*)",
+      "Bash(git push --force * stg*)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f*)"
+    ]
+  },
   "theme": "dark"
 }
