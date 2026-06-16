@@ -1,5 +1,8 @@
 {
   "model": "opus[1m]",
+  "env": {
+    "TZ": "Asia/Tokyo"
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh",
@@ -86,5 +89,9 @@
       "Bash(sudo *)"
     ]
   },
-  "theme": "dark"
+  "alwaysThinkingEnabled": false,
+  "autoMemoryEnabled": false,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true,
+  "theme": "dark-daltonized"
 }
