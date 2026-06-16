@@ -43,23 +43,14 @@ function echoerr() {
 }
 
 function install() {
-  if [[ "${OS}" == "Darwin" ]]; then
-    brew install stylua shfmt
-    brew install --cask wezterm@nightly
-  elif [[ "{$OS}" == "Linux" ]]; then
-    # Support Ubuntu/Debian
-
-    # Add WezTerm repository
-    curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
-    echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
-    sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
-
-    sudo apt update
-    sudo apt install -y stylua shfmt wezterm@nightly
-  else
-    echo "Unsupported OS: ${OS}"
-    exit 1
+  # Install Nix (Determinate Systems installer) if missing, then install all
+  # tools (neovim/wezterm/stylua/shfmt) from flake.nix into the user profile.
+  if ! command -v nix >/dev/null 2>&1; then
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+    echo "Nix installed. Open a new shell (or source the nix profile) and re-run: ${MYNAME} install"
+    return
   fi
+  nix profile install "${DOTFILES_DIR}#tools"
 }
 
 function setup() {
