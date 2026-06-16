@@ -21,15 +21,26 @@
           (import ./config/nvim.nix)
         ];
       };
+      tools = [
+        pkgs.neovim
+        pkgs.wezterm
+        pkgs.stylua
+        pkgs.shfmt
+      ];
     in
     {
       packages = {
         default = pkgs.neovim;
         neovim = pkgs.neovim;
+        # `nix profile install .#tools` installs everything env.sh used to apt/brew.
+        tools = pkgs.buildEnv {
+          name = "dotfiles-tools";
+          paths = tools;
+        };
       };
 
       devShells.default = pkgs.mkShell {
-        buildInputs = [ pkgs.neovim ];
+        buildInputs = tools;
       };
     }
   );
