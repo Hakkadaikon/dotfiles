@@ -13,6 +13,7 @@ FILES=(
   "${CONFIG_DIR}/nvim/init.lua"
   "${CONFIG_DIR}/nvim/lua"
   "${CONFIG_DIR}/wezterm/wezterm.lua"
+  "${CONFIG_DIR}/fish/conf.d/nix-profile.fish"
   ".claude/settings.json"
   ".claude/statusline.sh"
   ".claude/CLAUDE.md"
