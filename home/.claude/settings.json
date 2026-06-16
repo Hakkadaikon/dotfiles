@@ -57,7 +57,16 @@
       "Bash(git push --force * staging*)",
       "Bash(git push --force * stg*)",
       "Bash(git reset --hard *)",
-      "Bash(git clean -f*)"
+      "Bash(git clean -f*)",
+      "Bash(git filter-branch *)",
+      "Bash(git push --mirror *)",
+      "Bash(dd *)",
+      "Bash(mkfs*)",
+      "Bash(chmod -R *)",
+      "Bash(chown -R *)"
+    ],
+    "ask": [
+      "Bash(sudo *)"
     ]
   },
   "theme": "dark"
