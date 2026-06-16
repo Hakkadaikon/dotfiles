@@ -7,8 +7,12 @@ Build my castle quickly.
 
 ## Usage
 ### Install dependencies
+Tools (neovim, wezterm, stylua, shfmt) are installed via Nix from `flake.nix`.
+The first run installs Nix itself with the
+[Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer);
+open a new shell afterward and run it again to install the tools.
 ```shell
-./env.sh install 
+./env.sh install
 ```
 
 ### Setup
