@@ -24,10 +24,11 @@ FILES=(
 )
 
 function usage() {
-  echo "usage : ${MYNAME} [install|cleanup|setup|check]"
+  echo "usage : ${MYNAME} [install|cleanup|setup|mcp|check]"
   echo "  install : install dependencies"
   echo "  cleanup : remove symlinks"
   echo "  setup   : create symlinks"
+  echo "  mcp     : register user-scope MCP servers"
   echo "  check   : check symlinks"
 }
 
@@ -85,6 +86,17 @@ function cleanup() {
   done
 }
 
+function mcp() {
+  # user スコープに MCP サーバーを登録する。~/.claude.json は dotfiles 管理外(可変)なので
+  # 設定実体は home/.claude/mcp/*.mcp.json テンプレに置き、ここから add-json で流し込む。冪等。
+  MCP_DIR="${DOTFILES_HOME_DIR}/.claude/mcp"
+  for name in terraform aws; do
+    SERVER_JSON=$(python3 -c "import json; d=json.load(open('${MCP_DIR}/${name}.mcp.json')); print(json.dumps(d['mcpServers']['${name}']))")
+    claude mcp remove -s user "${name}" >/dev/null 2>&1
+    claude mcp add-json -s user "${name}" "${SERVER_JSON}" && echo "mcp registered: ${name}"
+  done
+}
+
 function check() {
   for FILE in "${FILES[@]}"; do
     DST_LINK=${HOME_DIR}/${FILE}
@@ -112,6 +124,9 @@ case ${1} in
   ;;
 "setup")
   cleanup && setup
+  ;;
+"mcp")
+  mcp
   ;;
 "check")
   check
