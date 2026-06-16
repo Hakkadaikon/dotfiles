@@ -34,7 +34,19 @@
   "skipDangerousModePermissionPrompt": true,
   "sandbox": {
     "enabled": true,
-    "autoAllowBashIfSandboxed": true
+    "autoAllowBashIfSandboxed": true,
+    "filesystem": {
+      "denyRead": [
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/id_rsa",
+        "**/id_ed25519",
+        "**/.aws/credentials",
+        "**/.ssh/id_*"
+      ]
+    }
   },
   "permissions": {
     "allow": [
@@ -63,7 +75,15 @@
       "Bash(dd *)",
       "Bash(mkfs*)",
       "Bash(chmod -R *)",
-      "Bash(chown -R *)"
+      "Bash(chown -R *)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/.aws/credentials)",
+      "Read(**/.ssh/id_*)"
     ],
     "ask": [
       "Bash(sudo *)"
