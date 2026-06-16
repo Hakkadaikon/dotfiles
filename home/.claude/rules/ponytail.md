@@ -1,6 +1,6 @@
 # ponytail 開発時 常時適用
 
-コード書く/変更する作業中 ponytail スキル(full)発動。最小・最短・最遅延の解を選ぶ。
+コード書く/変更する作業中 ponytail スキル(full)発動。最小・最短、YAGNI 優先の解を選ぶ。
 
 - 実装・修正・リファクタ・機能追加 → ponytail:ponytail (full) 常時ON
 - コミット直前 or 差分レビュー依頼 → ponytail:ponytail-review (過剰設計のみ指摘)
