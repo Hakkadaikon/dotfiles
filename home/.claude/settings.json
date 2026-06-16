@@ -32,5 +32,9 @@
     }
   },
   "skipDangerousModePermissionPrompt": true,
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  },
   "theme": "dark"
 }
