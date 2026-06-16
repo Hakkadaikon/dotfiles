@@ -21,6 +21,9 @@
         pkgs.wezterm
         pkgs.stylua
         pkgs.shfmt
+        pkgs.fish
+        pkgs.fishPlugins.z
+        pkgs.fishPlugins.bobthefish
       ];
     in
     {
