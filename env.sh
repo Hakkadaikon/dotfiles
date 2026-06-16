@@ -14,6 +14,8 @@ FILES=(
   "${CONFIG_DIR}/nvim/lua"
   "${CONFIG_DIR}/wezterm/wezterm.lua"
   "${CONFIG_DIR}/fish/conf.d/nix-profile.fish"
+  "${CONFIG_DIR}/fish/conf.d/rustup.fish"
+  "${CONFIG_DIR}/fish/conf.d/uv.env.fish"
   ".claude/settings.json"
   ".claude/statusline.sh"
   ".claude/CLAUDE.md"
