@@ -35,6 +35,7 @@
     }
   },
   "skipDangerousModePermissionPrompt": true,
+  "enableAllProjectMcpServers": true,
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": true,
