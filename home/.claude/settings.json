@@ -129,6 +129,28 @@
       "Bash(sudo *)"
     ]
   },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/detect-leaked-toolcall.py"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/detect-leaked-toolcall.py"
+          }
+        ]
+      }
+    ]
+  },
   "alwaysThinkingEnabled": false,
   "autoMemoryEnabled": false,
   "skipAutoPermissionPrompt": true,
