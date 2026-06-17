@@ -50,6 +50,40 @@
         "**/id_*",
         "**/.aws/credentials"
       ]
+    },
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.githubusercontent.com",
+        "api.github.com",
+        "codeload.github.com",
+        "*.npmjs.org",
+        "registry.npmjs.org",
+        "nodejs.org",
+        "repo.yarnpkg.com",
+        "registry.yarnpkg.com",
+        "get.pnpm.io",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "proxy.golang.org",
+        "sum.golang.org",
+        "index.golang.org",
+        "go.dev",
+        "golang.org",
+        "static.rust-lang.org",
+        "index.crates.io",
+        "static.crates.io",
+        "crates.io",
+        "sh.rustup.rs",
+        "center2.conan.io",
+        "cmake.org",
+        "*.kernel.org",
+        "dl.deno.land",
+        "deno.land",
+        "jsr.io",
+        "npm.jsr.io",
+        "esm.sh"
+      ]
     }
   },
   "permissions": {
