@@ -50,11 +50,12 @@ function install() {
   # Install Nix (Determinate Systems installer) if missing, then install all
   # tools (neovim/wezterm/stylua/shfmt) from flake.nix into the user profile.
   if ! command -v nix >/dev/null 2>&1; then
-    curl -fsSL https://install.determinate.systems/nix | sh -s -- install
-    echo "Nix installed. Open a new shell (or source the nix profile) and re-run: ${MYNAME} install"
-    return
+    curl -fsSL https://install.determinate.systems/nix | sh -s -- install --no-confirm
+    # installer が書く profile スクリプトを source し、新シェルなしで継続する。
+    NIX_PROFILE="/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
+    [ -e "${NIX_PROFILE}" ] && . "${NIX_PROFILE}"
   fi
-  nix profile add "${DOTFILES_DIR}#tools"
+  nix profile install "${DOTFILES_DIR}#tools"
 }
 
 function setup() {
