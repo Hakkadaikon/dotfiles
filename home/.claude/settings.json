@@ -1,94 +1,8 @@
 {
-  "model": "opus[1m]",
   "env": {
     "TZ": "Asia/Tokyo"
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
-  },
-  "enabledPlugins": {
-    "example-skills@anthropic-agent-skills": true,
-    "document-skills@anthropic-agent-skills": true,
-    "deploy-on-aws@claude-plugins-official": true,
-    "ponytail@ponytail": true
-  },
-  "extraKnownMarketplaces": {
-    "anthropic-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/skills"
-      }
-    },
-    "agent-plugins-for-aws": {
-      "source": {
-        "source": "github",
-        "repo": "awslabs/agent-plugins"
-      }
-    },
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
-      }
-    }
-  },
-  "skipDangerousModePermissionPrompt": true,
-  "enableAllProjectMcpServers": false,
-  "sandbox": {
-    "enabled": true,
-    "failIfUnavailable": true,
-    "autoAllowBashIfSandboxed": true,
-    "allowUnsandboxedCommands": false,
-    "filesystem": {
-      "denyRead": [
-        "**/.env",
-        "**/.env.*",
-        "**/*.pem",
-        "**/*.key",
-        "**/id_*",
-        "**/.aws/credentials"
-      ]
-    },
-    "network": {
-      "allowedDomains": [
-        "github.com",
-        "*.githubusercontent.com",
-        "api.github.com",
-        "codeload.github.com",
-        "gist.github.com",
-        "gist.githubusercontent.com",
-        "registry.npmjs.org",
-        "nodejs.org",
-        "repo.yarnpkg.com",
-        "registry.yarnpkg.com",
-        "get.pnpm.io",
-        "pypi.org",
-        "files.pythonhosted.org",
-        "proxy.golang.org",
-        "sum.golang.org",
-        "index.golang.org",
-        "go.dev",
-        "golang.org",
-        "static.rust-lang.org",
-        "index.crates.io",
-        "static.crates.io",
-        "crates.io",
-        "sh.rustup.rs",
-        "center2.conan.io",
-        "cmake.org",
-        "*.kernel.org",
-        "dl.deno.land",
-        "deno.land",
-        "jsr.io",
-        "npm.jsr.io",
-        "esm.sh"
-      ]
-    }
-  },
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(git push -f * feature*)",
       "Bash(git push --force * feature*)"
@@ -127,8 +41,11 @@
     ],
     "ask": [
       "Bash(sudo *)"
-    ]
+    ],
+    "defaultMode": "bypassPermissions"
   },
+  "model": "opus[1m]",
+  "enableAllProjectMcpServers": false,
   "hooks": {
     "Stop": [
       {
@@ -151,9 +68,99 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true,
+    "document-skills@anthropic-agent-skills": true,
+    "deploy-on-aws@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "terrashark@terrashark": true
+  },
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    },
+    "agent-plugins-for-aws": {
+      "source": {
+        "source": "github",
+        "repo": "awslabs/agent-plugins"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "terrashark": {
+      "source": {
+        "source": "github",
+        "repo": "LukasNiessen/terrashark"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "autoAllowBashIfSandboxed": true,
+    "allowUnsandboxedCommands": false,
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.githubusercontent.com",
+        "api.github.com",
+        "codeload.github.com",
+        "gist.github.com",
+        "gist.githubusercontent.com",
+        "registry.npmjs.org",
+        "nodejs.org",
+        "repo.yarnpkg.com",
+        "registry.yarnpkg.com",
+        "get.pnpm.io",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "proxy.golang.org",
+        "sum.golang.org",
+        "index.golang.org",
+        "go.dev",
+        "golang.org",
+        "static.rust-lang.org",
+        "index.crates.io",
+        "static.crates.io",
+        "crates.io",
+        "sh.rustup.rs",
+        "center2.conan.io",
+        "cmake.org",
+        "*.kernel.org",
+        "dl.deno.land",
+        "deno.land",
+        "jsr.io",
+        "npm.jsr.io",
+        "esm.sh"
+      ]
+    },
+    "filesystem": {
+      "denyRead": [
+        "**/.env",
+        "**/.env.*",
+        "**/*.pem",
+        "**/*.key",
+        "**/id_*",
+        "**/.aws/credentials"
+      ]
+    }
+  },
   "alwaysThinkingEnabled": false,
   "autoMemoryEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "theme": "dark-daltonized"
+  "voiceEnabled": true
 }
