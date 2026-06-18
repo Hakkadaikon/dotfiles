@@ -114,8 +114,10 @@
     "network": {
       "allowedDomains": [
         "github.com",
+        "*.github.com",
         "*.githubusercontent.com",
         "api.github.com",
+        "uploads.github.com",
         "codeload.github.com",
         "gist.github.com",
         "gist.githubusercontent.com",
