@@ -145,10 +145,16 @@
         "deno.land",
         "jsr.io",
         "npm.jsr.io",
-        "esm.sh"
+        "esm.sh",
+        "*.amazonaws.com",
+        "*.awsapps.com",
+        "*.aws.dev"
       ]
     },
     "filesystem": {
+      "allowWrite": [
+        "~/.aws"
+      ],
       "denyRead": [
         "**/.env",
         "**/.env.*",
