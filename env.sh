@@ -24,6 +24,7 @@ FILES=(
   ".claude/commands"
   ".claude/agents"
   ".claude/rules"
+  ".claude/hooks"
   ".claude/workflows"
 )
 
