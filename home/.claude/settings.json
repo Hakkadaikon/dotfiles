@@ -144,6 +144,8 @@
         "*.kernel.org",
         "dl.deno.land",
         "deno.land",
+        "releases.lean-lang.org",
+        "reservoir.lean-lang.org",
         "jsr.io",
         "npm.jsr.io",
         "esm.sh",
@@ -154,7 +156,8 @@
     },
     "filesystem": {
       "allowWrite": [
-        "~/.aws"
+        "~/.aws",
+        "~/.elan"
       ],
       "denyRead": [
         "**/.env",
