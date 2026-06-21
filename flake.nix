@@ -24,6 +24,7 @@
         pkgs.fish
         pkgs.fishPlugins.z
         pkgs.fishPlugins.bobthefish
+        pkgs.elan # formal verification: Lean 4 toolchain manager (lake + lean)
       ];
     in
     {
