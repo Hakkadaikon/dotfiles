@@ -57,6 +57,8 @@ function install() {
     [ -e "${NIX_PROFILE}" ] && . "${NIX_PROFILE}"
   fi
   nix profile install "${DOTFILES_DIR}#tools"
+  # Lean 4 本体は elan が別管理。tools に含まれる elan で stable toolchain を入れる(冪等)。
+  command -v elan >/dev/null 2>&1 && elan default stable
 }
 
 function setup() {
