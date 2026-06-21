@@ -78,7 +78,8 @@
     "document-skills@anthropic-agent-skills": true,
     "deploy-on-aws@claude-plugins-official": true,
     "ponytail@ponytail": true,
-    "terrashark@terrashark": true
+    "terrashark@terrashark": true,
+    "vercel@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
