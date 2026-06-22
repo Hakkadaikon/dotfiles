@@ -88,6 +88,8 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 - この feature は「この振る舞いは起きてはならない」失敗例。設計を直して反例が消えるまで外/中ループへ戻す。
 - 設計が固まったら、正の受け入れシナリオ(EARS の正常系)を `.feature` に足し、実装の受け入れテストにする。
 
+生成された `.feature` はそのまま実行可能テストにできる。`bin/gherkin_steps.py` が `Given/When/Then` の語彙(`<var> = <value>` / `<action>` / `<var> becomes <value>`)に対応する pytest-bdd の step を持つ。プロジェクト固有なのは「実装を1ステップ動かして状態を返す」`Model.step` だけ。conftest.py で `register_steps()` を呼び、自分の実装を叩く `Model` サブクラスを `model` fixture で渡せば、正しい実装で緑・壊れた実装で赤になる(`pip install pytest-bdd` が要る)。
+
 ## 3 ループの回し方
 
 外(要求形式化)→ 中(設計検査 + 検査の強さ検証)→ 内(反例の受け入れ仕様化)→ 直して外へ、を反例と survivor が尽きるまで回す。3 つは独立した検証層で、下の層の出力が上の層の入力になる。
