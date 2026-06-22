@@ -17,8 +17,12 @@ description: >
 
 - `elan` … Lean toolchain manager。`lake` / `lean` を供給する。
 - 初回のみ `elan default stable` で Lean 4 本体を入れる(これをやるまで `lake` は "no default toolchain" で落ちる)。
-- 新規プロジェクト: `lake new <name> math`(Mathlib 付き)or `lake new <name>`(素)。
+- 新規プロジェクト: `lake new <name> math`(Mathlib 付き)or `lake new <name>`(素)。Mathlib は重い。roundtrip / 範囲 / 単射性 / 状態機械程度なら素の `Init`/`Std` で足り、`lake build` も速い。**本当に必要になるまで Mathlib を足さない**(YAGNI)。
 - ビルド/証明チェック: `lake build`。エラーが証明の穴。
+
+**プロジェクト構造の罠**: `lake new Foo` はルート直下の `Foo.lean`(ライブラリルート)と `Foo/Basic.lean`(実体)を作る。ビルド連鎖は `Foo.lean` が `import Foo.Basic` で `Foo/Basic.lean` を引く。**証明は `Foo/Basic.lean`(サブディレクトリ側)に書く**。ルート直下にうっかり別の `Basic.lean` を置くとビルド対象外になり「証明したのにビルドに反映されない」事故になる(実際に起きた)。新モジュールを足すときは `Foo.lean` に `import Foo.<Mod>` を必ず追記する。
+
+**実行時の罠**: サンドボックス等では `export ELAN_HOME="${ELAN_HOME:-$HOME/.elan}"` と `export TMPDIR="${TMPDIR:-/tmp}"` を `lake build` の前に。これが無いと toolchain 解決や一時ファイルでこける。
 
 未導入なら導入を促し、勝手に大規模インストールしない。
 
@@ -79,7 +83,9 @@ theorem chunking_invariant (c1 c2 : List (List Byte)) (h : c1.flatten = c2.flatt
 - tactic を提案 → 実行 → 結果を見る。失敗したら lemma 追加 or 戦略変更。
 - 自動化を使う: `simp` / `omega` / `decide` / `exact?` / `apply?`。Mathlib があれば `exact?` で既存補題を探す。
 - 1 証明が重いなら補題に分解する。
+- **`sorry` を埋める前に、定義(`def`)が証明できる形かを先に確かめる**。型がそもそも通らない定義は証明以前に直す。よくある罠は `Bool`(`&&`/`||`)と `Prop`(`∧`/`∨`)の混在で、判定述語を書くときに起きやすい。`decide (...)` を使う純 `Bool` 述語へ書き直して解消する。定義のシグネチャは実装(C/Rust 等)と1対1で対応させるため安易に変えないが、**証明の都合で本体を等価変形したらその理由を仕様/コメントに1行残す**。
 - **埋まらない `sorry` は残さず明示する**。「ここは未証明」と報告する。嘘の `sorry` を通った証明と偽らない。
+- **証明の真正性を `#print axioms <thm>` で確認する**。依存が標準 3 公理(`propext` / `Classical.choice` / `Quot.sound`)だけなら本物。`sorryAx` が出たら穴が残っている。`native_decide` はコンパイラを信頼基盤に加える(`Lean.ofReduceBool` 公理が増える)ので、カーネル検証で済むなら `decide` を使い、`native_decide` は避ける。「sorry 無しで通った」と「カーネルが本当に検証した」は別物——後者まで確認して初めて「保証された」と言える。
 
 ### 4. test-first 実装へ橋渡し
 
