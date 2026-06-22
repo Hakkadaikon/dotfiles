@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Inner-loop glue (other half of trace_to_gherkin.py): turn a machine-generated
 Gherkin feature into a C test that drives the implementation through the same
-state-machine actions and CHECKs the post-state. For freestanding / no-libc /
-non-Python runtimes where pytest-bdd (see gherkin_steps.py) can't run.
+state-machine actions and CHECKs the post-state. For freestanding / no-libc
+targets where no Cucumber runner exists. LAST RESORT: any hosted language has a
+native Cucumber (pytest-bdd, godog, cucumber-js/-jvm/-rs, ...) -- use that and
+write glue, don't reach for a per-language generator. This exists only because
+freestanding C has no runner (cucumber-cpp needs C++/libc + a Ruby wire peer).
 
 It consumes the *regular* form trace_to_gherkin.py emits:
 
