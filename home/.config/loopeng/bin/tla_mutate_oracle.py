@@ -37,8 +37,14 @@ MUTATIONS = [
 ]
 
 
-def run_tlc(spec_path, cfg, workers):
-    """Return (passed, output). passed=True means TLC found no violation."""
+def run_tlc(spec_path, cfg, workers, timeout=600):
+    """Return (passed, output). passed=True means TLC found no violation.
+
+    A TLC run that exceeds `timeout` counts as NOT passed (killed): a mutant
+    that diverges the state space no longer behaves like the correct spec, so
+    the design distinguishes it. This also stops one runaway mutant (e.g. a
+    sign flip that loops forever in Nat) from hanging the whole oracle.
+    """
     jar = os.environ.get("TLA_JAR")
     # Prefer the flake `tlc` wrapper (bundles its own JDK). Only fall back to
     # `java -cp $TLA_JAR` when no wrapper exists AND java is actually present.
@@ -52,10 +58,13 @@ def run_tlc(spec_path, cfg, workers):
     if cfg:
         cmd += ["-config", cfg]
     cmd.append(os.path.basename(spec_path))
-    proc = subprocess.run(
-        cmd, cwd=os.path.dirname(spec_path) or ".",
-        capture_output=True, text=True, timeout=600,
-    )
+    try:
+        proc = subprocess.run(
+            cmd, cwd=os.path.dirname(spec_path) or ".",
+            capture_output=True, text=True, timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return False, f"TLC timed out after {timeout}s (treated as killed)"
     out = proc.stdout + proc.stderr
     # TLC exits non-zero on a violation; "No error" appears on a clean run.
     passed = proc.returncode == 0 and "Error:" not in out
@@ -77,6 +86,8 @@ def main():
     ap.add_argument("spec", help="path to the .tla spec")
     ap.add_argument("--cfg", help="TLC config (defaults to <spec>.cfg if present)")
     ap.add_argument("--workers", default="auto")
+    ap.add_argument("--mut-timeout", type=int, default=60,
+                    help="per-mutant TLC timeout in seconds (default 60)")
     args = ap.parse_args()
 
     spec = os.path.abspath(args.spec)
@@ -109,7 +120,7 @@ def main():
                 tf.write(re.sub(r"^----+ MODULE \w+", f"---- MODULE {mod}", mutated, count=1))
                 mut_path = tf.name
             try:
-                passed, _ = run_tlc(mut_path, cfg, args.workers)
+                passed, _ = run_tlc(mut_path, cfg, args.workers, args.mut_timeout)
             finally:
                 os.unlink(mut_path)
             if passed:
