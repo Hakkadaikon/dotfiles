@@ -85,7 +85,7 @@ theorem chunking_invariant (c1 c2 : List (List Byte)) (h : c1.flatten = c2.flatt
 - 1 証明が重いなら補題に分解する。
 - **`sorry` を埋める前に、定義(`def`)が証明できる形かを先に確かめる**。型がそもそも通らない定義は証明以前に直す。よくある罠は `Bool`(`&&`/`||`)と `Prop`(`∧`/`∨`)の混在で、判定述語を書くときに起きやすい。`decide (...)` を使う純 `Bool` 述語へ書き直して解消する。定義のシグネチャは実装(C/Rust 等)と1対1で対応させるため安易に変えないが、**証明の都合で本体を等価変形したらその理由を仕様/コメントに1行残す**。
 - **埋まらない `sorry` は残さず明示する**。「ここは未証明」と報告する。嘘の `sorry` を通った証明と偽らない。
-- **証明の真正性を `#print axioms <thm>` で確認する**。依存が標準 3 公理(`propext` / `Classical.choice` / `Quot.sound`)だけなら本物。`sorryAx` が出たら穴が残っている。`native_decide` はコンパイラを信頼基盤に加える(`Lean.ofReduceBool` 公理が増える)ので、カーネル検証で済むなら `decide` を使い、`native_decide` は避ける。「sorry 無しで通った」と「カーネルが本当に検証した」は別物——後者まで確認して初めて「保証された」と言える。
+- **証明の真正性を `#print axioms <thm>` で確認する**。依存が標準 3 公理(`propext` / `Classical.choice` / `Quot.sound`)だけなら本物。`sorryAx` が出たら穴が残っている。`native_decide` はコンパイラを信頼基盤に加える(`Lean.ofReduceBool` 公理が増える)ので、カーネル検証で済むなら `decide` を使い、`native_decide` は避ける。「sorry 無しで通った」と「カーネルが本当に検証した」は別物だ。後者まで確認して初めて「保証された」と言える。
 
 ### 4. test-first 実装へ橋渡し
 

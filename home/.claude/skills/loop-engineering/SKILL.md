@@ -34,7 +34,7 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 
 順に進む。各ループで止まって検証する。`SPEC=<Name>` を通して呼ぶ。
 
-### 1. 外ループ — NL を EARS + 状態/ドメインモデルへ
+### 1. 外ループ: NL を EARS + 状態/ドメインモデルへ
 
 雑な NL 要求を、まず2つに構造化する。曖昧な点はモデル化前にユーザーへ確認する。
 
@@ -56,7 +56,7 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 
 `<Name>.cfg` に `INIT` / `NEXT` / `INVARIANT`(必要なら状態空間を絞る `CONSTANT`)を書く。
 
-### 2. 中ループ — TLA+ で設計を検査し、検査の強さ自体を検証する
+### 2. 中ループ: TLA+ で設計を検査し、検査の強さ自体を検証する
 
 `loop-middle SPEC=<Name>` を回す。2段ある:
 
@@ -80,7 +80,7 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 
 **打ち切り基準**: 「全 mutant kill(survivor 0)」を機械的に要求しない。AST 非対応の regex oracle では原理的に 0 にできない。基準は **「真の安全性 survivor が 0」**。残った survivor が全て上記 equivalent クラスか、源泉が明示的に Lean/test へ委譲した性質(決定性・全域性など)であることを1つずつ確認し、その分類を報告に残す。そこで打ち切ってよい。
 
-### 3. 内ループ — TLC の反例を Gherkin の受け入れ仕様へ
+### 3. 内ループ: TLC の反例を Gherkin の受け入れ仕様へ
 
 `Inv` を破る反例が出たら、それは設計レベルのバグであると同時に**実行可能な反例**。`loop-inner SPEC=<Name>` で TLC のエラートレースを `<Name>.feature` の Gherkin Scenario に変換する(`trace_to_gherkin.py`)。
 
