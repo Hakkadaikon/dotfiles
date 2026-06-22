@@ -59,7 +59,13 @@ function install() {
     NIX_PROFILE="/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
     [ -e "${NIX_PROFILE}" ] && . "${NIX_PROFILE}"
   fi
-  nix profile install "${DOTFILES_DIR}#tools"
+  # `nix profile install` skips an already-present `tools`, so a re-run won't
+  # pick up flake changes. Upgrade if installed, install otherwise. Idempotent.
+  if nix profile list 2>/dev/null | grep -q "tools$"; then
+    nix profile upgrade tools
+  else
+    nix profile install "${DOTFILES_DIR}#tools"
+  fi
   # Lean 4 本体は elan が別管理。tools に含まれる elan で stable toolchain を入れる(冪等)。
   command -v elan >/dev/null 2>&1 && elan default stable
 }
@@ -75,6 +81,15 @@ function setup() {
 
     DST_LINK=${HOME_DIR}/${FILE}
     mkdir -p "$(dirname "${DST_LINK}")"
+    # A stale symlink (or a dir symlink left by an older FILES layout) makes
+    # `ln -s` create the link *inside* it. Drop any existing symlink first; back
+    # up a real file/dir so we never clobber user data silently.
+    if [ -L "${DST_LINK}" ]; then
+      rm -f "${DST_LINK}"
+    elif [ -e "${DST_LINK}" ]; then
+      mv "${DST_LINK}" "${DST_LINK}.bak.$$"
+      echowarn "backed up existing ${DST_LINK} -> ${DST_LINK}.bak.$$"
+    fi
     ln -s ${SRC_FILE} ${DST_LINK}
     echo "link [${SRC_FILE}] -> [${DST_LINK}]"
   done
