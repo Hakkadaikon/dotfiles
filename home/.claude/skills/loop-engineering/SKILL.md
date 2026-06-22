@@ -92,13 +92,25 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 >
 > **取りこぼす種類のバグがある**: `trace_to_gherkin.py` は「**変化した**変数」だけを `Then` に出す。よって「違反時に**不変であるべき値が変わってしまう**」型のバグ(例: close 時に frag を破棄し忘れ、frag が前状態のまま残る)は、その変数が反例トレース上で前後不変なら `Then` に現れず、生成テストでは捕まらない。これはトレース→Gherkin の構造的限界。捕まえたいなら全変数を毎ステップ `Then` に出すか、その不変条件を中ループ(mutation oracle / 別 invariant)側で締める。
 
-#### 生成 `.feature` を実行可能テストにする(配線は環境で2通り)
+#### 生成 `.feature` を実行可能テストにする
 
-`.feature` は受け入れ仕様の**ソース**であって、実装に当てる配線は別レイヤー。プロジェクトのランタイムで道が割れる:
+`.feature` は受け入れ仕様の**ソース**であって、実装に当てる配線は別レイヤー。**まず言語純正の Cucumber 系 OSS を使う**。これらは「step 定義(glue)を書けば `.feature` がそのまま走る」モデルで、言語ごとに変換スクリプトを書く必要はない:
 
-- **ホスト環境(libc あり・Python 可)**: `bin/gherkin_steps.py` が `Given/When/Then` の語彙(`<var> = <value>` / `<action>` / `<var> becomes <value>`)に対応する pytest-bdd の step を持つ。プロジェクト固有なのは「実装を1ステップ動かして状態を返す」`Model.step` だけ。conftest.py で `register_steps()` を呼び、自分の実装を叩く `Model` サブクラスを `model` fixture で渡せば、正しい実装で緑・壊れた実装で赤になる(`pip install pytest-bdd` が要る)。
-- **freestanding / no-libc / 別言語ランタイム不可**: pytest-bdd も godog も入らない(別ランタイム+libc 必須)。`bin/feature_to_c.py` が機械形式の `.feature`(`trace_to_gherkin.py` が出す `When <Action>` / `Then <var> becomes <value>`)を **C の `CHECK` 列に変換**する。鍵は「**実装側に TLA+ の Next アクションと 1:1 対応する内部ヘルパが在るか**」。在れば `When <Action>` をそのヘルパ呼び出しに、`Then <var> becomes <value>` をフィールド比較に落とせる。プロジェクト固有なのは抽象→具象のマッピング(action 名→C 文、TLA 変数→C フィールドと列挙値、ヘッダ)だけで、これは `gherkin_steps.py` の `Model.step` と同じく**プロジェクト側に置く JSON 設定**に隔離する(`feature_to_c.py --map <map>.json <Name>.feature`、雛形は `--example`)。生成器本体はドメイン非依存。生成 C を既存の自前テストハーネスに 1 TU でリンクして走らせる。**配線の生死は緑/赤の両方で実証する**: 正しい実装で緑、実装をわざと壊して赤が出ることを必ず確認する(出力形式だけ合って実装を見ていない死んだ配線を防ぐ)。
-- どちらの生成器も、**手書きの自然文 feature ではなく `trace_to_gherkin.py` 由来の機械形式専用**。可読性優先で人が書いた散文 Then は機械変換の対象外で、従来どおり手で実装テストに落とす。
+| 言語 | OSS ランナー | 導入 |
+| --- | --- | --- |
+| Python | pytest-bdd / behave | `nixpkgs#python3Packages.pytest-bdd`(or behave) |
+| Ruby | cucumber-ruby | `nixpkgs#cucumber` |
+| JS/TS | cucumber-js | npm(nixpkgs 無し) |
+| Go | godog | `go install`(nixpkgs 無し) |
+| Rust | cucumber-rs | cargo(外部ランナー不要) |
+| Java/Kotlin | cucumber-jvm | maven/gradle |
+| .NET | Reqnroll | nuget |
+
+glue の書き方は OSS ごとに違うが、本質は同じで「`When <Action>` を実装の1ステップ呼び出しに、`Then <var> becomes <value>` を post 状態の比較に落とす」だけ。Python の手本として `bin/gherkin_steps.py` を置いてある(`Given/When/Then` の語彙に対応する pytest-bdd の step。conftest.py で `register_steps()` を呼び、実装を叩く `Model.step` を `model` fixture で渡す)。他言語でも同じ薄さの glue を1つ書けば足り、それ以上の自作はしない。
+
+**例外は freestanding / no-libc の C** だけ。ここは `.feature` をそのまま走らせる既製 OSS が無い(cucumber-cpp は C++/libc に加え wire 経由で Ruby プロセスが要る。gherkin-c はパーサのみでランナーでない)。この環境に限り `bin/feature_to_c.py` で機械形式の `.feature` を **C の `CHECK` 列に変換**する。`When <Action>` をヘルパ呼び出し、`Then <var> becomes <value>` をフィールド比較に落とす。抽象→具象マッピング(action 名→C 文、TLA 変数→C フィールドと列挙値、ヘッダ)は `--map <map>.json` のプロジェクト設定に隔離し、生成器本体はドメイン非依存(`feature_to_c.py --map <map>.json <Name>.feature`、雛形は `--example`)。生成 C を自前テストハーネスに 1 TU でリンクして走らせる。
+
+どの道でも **配線の生死は緑/赤の両方で実証する**: 正しい実装で緑、実装をわざと壊して赤が出ることを必ず確認する(出力形式だけ合って実装を見ていない死んだ配線を防ぐ)。いずれの生成器も**手書きの散文 feature ではなく `trace_to_gherkin.py` 由来の機械形式専用**。人が可読性優先で書いた散文 Then は対象外で、従来どおり手で実装テストに落とす。
 
 ## 3 ループの回し方
 
