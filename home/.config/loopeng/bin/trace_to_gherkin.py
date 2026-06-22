@@ -19,7 +19,8 @@ import re
 import sys
 
 STATE_RE = re.compile(r"^State (\d+):(?:\s*<([^>]*)>)?")
-ASSIGN_RE = re.compile(r"^([A-Za-z_]\w*)\s*=\s*(.+)$")
+# TLC prints state vars either flat (`x = 1`) or as conjuncts (`/\ x = 1`); accept both.
+ASSIGN_RE = re.compile(r"^(?:/\\\s*)?([A-Za-z_]\w*)\s*=\s*(.+)$")
 
 
 def parse_states(text):
@@ -102,6 +103,11 @@ y = TRUE
     assert "When Inc" in g, g
     assert "Then x becomes 1" in g, g
     assert "y becomes" not in g, "unchanged var must not appear in Then"
+    # TLC 1.8 prints conjunct-form state vars (`/\ x = 1`); they must parse too.
+    conj = parse_states("State 1: <Initial predicate>\n/\\ x = 0\nState 2: <Inc>\n/\\ x = 1\n")
+    gc = to_gherkin(conj)
+    assert "Given x = 0" in gc, gc
+    assert "Then x becomes 1" in gc, gc
     print("selfcheck OK")
 
 
