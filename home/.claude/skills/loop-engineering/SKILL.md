@@ -88,7 +88,17 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 - この feature は「この振る舞いは起きてはならない」失敗例。設計を直して反例が消えるまで外/中ループへ戻す。
 - 設計が固まったら、正の受け入れシナリオ(EARS の正常系)を `.feature` に足し、実装の受け入れテストにする。
 
-生成された `.feature` はそのまま実行可能テストにできる。`bin/gherkin_steps.py` が `Given/When/Then` の語彙(`<var> = <value>` / `<action>` / `<var> becomes <value>`)に対応する pytest-bdd の step を持つ。プロジェクト固有なのは「実装を1ステップ動かして状態を返す」`Model.step` だけ。conftest.py で `register_steps()` を呼び、自分の実装を叩く `Model` サブクラスを `model` fixture で渡せば、正しい実装で緑・壊れた実装で赤になる(`pip install pytest-bdd` が要る)。
+> **TLC のトレース形式に注意(実地で踏んだ)**: TLC 1.8 系は状態変数を `/\ var = value`(conjunct 形式)で出す。古い `var = value`(flat 形式)前提のパーサだと**全変数を取りこぼし、空の `Then the state is unchanged` を吐く**。`trace_to_gherkin.py` の `ASSIGN_RE` は両形式を受ける(`^(?:/\\\s*)?...`)。検証ツールの selfcheck は**対象 TLC が実際に出す形式**で書くこと。flat 形式だけで self-check すると、この回帰を素通りさせる。
+>
+> **取りこぼす種類のバグがある**: `trace_to_gherkin.py` は「**変化した**変数」だけを `Then` に出す。よって「違反時に**不変であるべき値が変わってしまう**」型のバグ(例: close 時に frag を破棄し忘れ、frag が前状態のまま残る)は、その変数が反例トレース上で前後不変なら `Then` に現れず、生成テストでは捕まらない。これはトレース→Gherkin の構造的限界。捕まえたいなら全変数を毎ステップ `Then` に出すか、その不変条件を中ループ(mutation oracle / 別 invariant)側で締める。
+
+#### 生成 `.feature` を実行可能テストにする(配線は環境で2通り)
+
+`.feature` は受け入れ仕様の**ソース**であって、実装に当てる配線は別レイヤー。プロジェクトのランタイムで道が割れる:
+
+- **ホスト環境(libc あり・Python 可)**: `bin/gherkin_steps.py` が `Given/When/Then` の語彙(`<var> = <value>` / `<action>` / `<var> becomes <value>`)に対応する pytest-bdd の step を持つ。プロジェクト固有なのは「実装を1ステップ動かして状態を返す」`Model.step` だけ。conftest.py で `register_steps()` を呼び、自分の実装を叩く `Model` サブクラスを `model` fixture で渡せば、正しい実装で緑・壊れた実装で赤になる(`pip install pytest-bdd` が要る)。
+- **freestanding / no-libc / 別言語ランタイム不可**: pytest-bdd も godog も入らない(別ランタイム+libc 必須)。`bin/feature_to_c.py` が機械形式の `.feature`(`trace_to_gherkin.py` が出す `When <Action>` / `Then <var> becomes <value>`)を **C の `CHECK` 列に変換**する。鍵は「**実装側に TLA+ の Next アクションと 1:1 対応する内部ヘルパが在るか**」。在れば `When <Action>` をそのヘルパ呼び出しに、`Then <var> becomes <value>` をフィールド比較に落とせる。プロジェクト固有なのは抽象→具象のマッピング(action 名→C 文、TLA 変数→C フィールドと列挙値、ヘッダ)だけで、これは `gherkin_steps.py` の `Model.step` と同じく**プロジェクト側に置く JSON 設定**に隔離する(`feature_to_c.py --map <map>.json <Name>.feature`、雛形は `--example`)。生成器本体はドメイン非依存。生成 C を既存の自前テストハーネスに 1 TU でリンクして走らせる。**配線の生死は緑/赤の両方で実証する**: 正しい実装で緑、実装をわざと壊して赤が出ることを必ず確認する(出力形式だけ合って実装を見ていない死んだ配線を防ぐ)。
+- どちらの生成器も、**手書きの自然文 feature ではなく `trace_to_gherkin.py` 由来の機械形式専用**。可読性優先で人が書いた散文 Then は機械変換の対象外で、従来どおり手で実装テストに落とす。
 
 ## 3 ループの回し方
 
