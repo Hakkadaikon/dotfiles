@@ -42,9 +42,10 @@ check-spec:
 	@echo "== TLC: $(TLA) =="
 	$(TLC) -deadlock $(TLA)
 
+MUT_TIMEOUT ?= 60
 mutate:
 	@echo "== mutation oracle: $(TLA) =="
-	python3 $(BIN)/tla_mutate_oracle.py $(TLA)
+	python3 $(BIN)/tla_mutate_oracle.py $(TLA) --mut-timeout $(MUT_TIMEOUT)
 
 ## inner: turn the latest TLC counterexample into a Gherkin scenario
 loop-inner:
