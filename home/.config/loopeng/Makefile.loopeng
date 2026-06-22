@@ -17,8 +17,9 @@ TLA          := $(SPEC).tla
 FEATURE      ?= $(SPEC).feature
 NAME         ?= $(SPEC)
 
-# tlc wrapper (flake) if present, else java -cp $(TLA_JAR)
-TLC := $(if $(TLA_JAR),java -cp $(TLA_JAR) tlc2.TLC,tlc)
+# Prefer the flake `tlc` wrapper (bundles its own JDK); fall back to
+# java -cp $(TLA_JAR) only when no wrapper is on PATH (needs java present).
+TLC := $(if $(shell command -v tlc),tlc,java -cp $(TLA_JAR) tlc2.TLC)
 
 .PHONY: loop-outer loop-middle loop-inner check-spec mutate help
 

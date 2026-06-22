@@ -40,12 +40,14 @@ MUTATIONS = [
 def run_tlc(spec_path, cfg, workers):
     """Return (passed, output). passed=True means TLC found no violation."""
     jar = os.environ.get("TLA_JAR")
-    if jar:
-        cmd = ["java", "-cp", jar, "tlc2.TLC"]
-    elif shutil.which("tlc"):
+    # Prefer the flake `tlc` wrapper (bundles its own JDK). Only fall back to
+    # `java -cp $TLA_JAR` when no wrapper exists AND java is actually present.
+    if shutil.which("tlc"):
         cmd = ["tlc"]
+    elif jar and shutil.which("java"):
+        cmd = ["java", "-cp", jar, "tlc2.TLC"]
     else:
-        sys.exit("error: neither TLA_JAR nor a `tlc` wrapper is available")
+        sys.exit("error: no `tlc` wrapper on PATH and no java+TLA_JAR fallback")
     cmd += ["-workers", str(workers), "-deadlock"]
     if cfg:
         cmd += ["-config", cfg]
