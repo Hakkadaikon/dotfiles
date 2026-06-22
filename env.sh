@@ -18,7 +18,7 @@ FILES=(
   "${CONFIG_DIR}/fish/conf.d/rustup.fish"
   "${CONFIG_DIR}/fish/conf.d/uv.env.fish"
   "${CONFIG_DIR}/fish/conf.d/loopeng.fish"
-  "${CONFIG_DIR}/fish/functions/loop-make.fish"
+  "${CONFIG_DIR}/fish/functions"
   "${CONFIG_DIR}/loopeng"
   ".claude/settings.json"
   ".claude/statusline.sh"
