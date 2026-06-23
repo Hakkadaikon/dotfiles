@@ -18,6 +18,47 @@ LLM が要求を構造化し、TLC が網羅探索で厳密に検査するハイ
 設計の正しさは **TLA+**(このループ)、実装そのものの数学的証明は **formal-verification(Lean 4)**。
 役割が違う。無理に結線しない(YAGNI)。
 
+```mermaid
+flowchart TD
+    SPEC[元仕様<br/>RFC / 標準 / NL] --> L0
+
+    subgraph L0[0. 抽出ループ]
+        direction TB
+        E1[全件走査<br/>採番チェックリスト] --> E2[抽出台帳<br/>Name.extract.md]
+        E2 --> E3[トレーサビリティ表<br/>条項→要件→形式手法→テスト]
+    end
+
+    L0 -->|要件| L1
+
+    subgraph L1[1. 外ループ: 要求形式化]
+        direction TB
+        O1[EARS 記法<br/>+ 状態/ドメインモデル] --> O2[Name.tla / Name.feature]
+    end
+
+    L1 -->|spec| L2
+
+    subgraph L2[2. 中ループ: 設計検証]
+        direction TB
+        M1[TLC でモデル検査] --> M2[mutation oracle<br/>spec 自体を検証]
+        M2 -->|survivor=invariant 弱い| M1
+    end
+
+    L2 -->|反例トレース| L3
+
+    subgraph L3[3. 内ループ: 受け入れ仕様化]
+        direction TB
+        I1[trace_to_gherkin] --> I2[失敗する Gherkin<br/>受け入れテスト]
+    end
+
+    L3 --> OUT[固めた設計<br/>+ 受け入れ仕様/テスト]
+
+    L2 -.->|critical な実装片| LEAN[formal-verification<br/>Lean 4 で証明]
+    LEAN -.-> OUT
+```
+
+各ループは検証器を検証対象より上位層に置く。
+0段が漏れの入口を守り、外→中→内で要求を spec→反例→テストへ落とす。
+
 ## 前提ツール
 
 flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
