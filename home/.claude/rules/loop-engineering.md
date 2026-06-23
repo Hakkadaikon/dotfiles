@@ -37,6 +37,8 @@ paths:
 
 ツール実体は flake の `tlaplus`(TLC/SANY)と `apalache`。env は `conf.d/loopeng.fish`(`TLA_JAR`/`APALACHE_BIN`/`LOOPENG_HOME`)。Doorstop による要件トレーサビリティが要るときだけ `uv pip install doorstop`。
 
+成果物の置き場(デフォルト): 生成物(`.tla`/`.cfg`/`.feature`、TLC のスクラッチ等)は `tasks/loopeng/` 配下で作り込み、`tasks/todo.md` と同じく**リポジトリの git 管理には含めない**。git 管理下のドキュメント(README・設計文書・コミットメッセージ・PR)に設計検証(TLA+/EARS/Gherkin)の存在を書かない。裏方で回し、結果(固めた設計・派生した受け入れ仕様/テスト)だけを成果に反映する。ユーザーが「リポジトリに入れて」「spec をコミット」等と明示したときだけ git 管理下へ置く。
+
 ## Lean 4 形式検証との使い分け(疎結合)
 
 この TLA+ ループと既存の formal-verification(Lean 4)は**並立**。役割で選ぶ:
