@@ -15,7 +15,7 @@ description: >
 
 `elan`(flake の tools に含む)が入っていること。なければ `nix profile add .#tools`。
 
-- `elan` … Lean toolchain manager。`lake` / `lean` を供給する。
+- `elan`：Lean toolchain manager。`lake` / `lean` を供給する。
 - 初回のみ `elan default stable` で Lean 4 本体を入れる(これをやるまで `lake` は "no default toolchain" で落ちる)。
 - 新規プロジェクト: `lake new <name> math`(Mathlib 付き)or `lake new <name>`(素)。Mathlib は重い。roundtrip / 範囲 / 単射性 / 状態機械程度なら素の `Init`/`Std` で足り、`lake build` も速い。**本当に必要になるまで Mathlib を足さない**(YAGNI)。
 - ビルド/証明チェック: `lake build`。エラーが証明の穴。
