@@ -64,6 +64,7 @@ description: >
 | 良い単体テストの規範(4本柱・学派・実装詳細を避ける・モックの使いどころ) | [`reference/good-test-principles.md`](reference/good-test-principles.md) |
 | テストダブルの使い分け(ダミー/スタブ/モック/スパイ/フェイク・Testcontainers) | [`reference/test-doubles.md`](reference/test-doubles.md) |
 | 期待値が用意しにくい(PBT・fuzzing・差分・メタモルフィック・形式検証連携) | [`reference/modern-generative.md`](reference/modern-generative.md) |
+| 出力が非決定的(LLM/生成モデルを組み込んだシステム・揺らぎを層で封じ込める) | [`reference/modern-generative.md`](reference/modern-generative.md) |
 | 非機能(性能・負荷・a11y・セキュリティ…)・運用(BDD・カナリア・CI ゲート)・静的・並行 | [`reference/nonfunctional-process.md`](reference/nonfunctional-process.md) |
 
 各 reference は手法ごとに **概要 / 目的・いつ使う / TypeScript example / 落とし穴** を厳密に定義している。
