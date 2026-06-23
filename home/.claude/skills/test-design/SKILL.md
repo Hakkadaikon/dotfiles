@@ -43,7 +43,7 @@ description: >
 1. **曖昧な用語と暗黙の要求を先に定義する**：抽出の前に、対象に出てくる語の意味を一つずつ確定させる。「翌営業日」なら「営業日とは? 休日とは(日曜、指定土曜、祝日)? 月跨ぎは?」まで割る。語の定義が曖昧なまま振る舞いを出すと、境界(連休、月末)と異常系がそっくり抜ける。**用語の未定義は最大の抽出漏れ源**。併せて「当たり前要求」(セキュリティ、実行効率、法令)など暗黙のニーズも、非機能の種別として明示に引き上げる。
 2. **走査アンカーを選ぶ**：対象の構造単位を決める。受け入れ条件、関数シグネチャ、コードの分岐、状態遷移、API エンドポイント×メソッド、不変条件のいずれかを使う。仕様視点(ブラックボックス)とコード視点(ホワイトボックス)で**独立に**出して union を取ると漏れにくい。
 3. **採番チェックリスト台帳に落とす**：[`assets/test-extract-template.md`](assets/test-extract-template.md) を作業領域(`tasks/` 配下など git 管理外)にコピーし、振る舞いごとに `T-001` から連番で1行立てる。頭の中で済ませない。
-4. **各振る舞いに種別を振る**：正常系、境界、異常系(unwanted)、非機能のいずれかを振る。各正常系に「不正入力なら? 境界なら? 並行なら?」を必ず問い、異常系の行を系統的に生やす。履歴依存があるものは「**起きてはいけない振る舞い(禁止される列)**は何か」も問う。途中まで正常で一手で初めて禁止になる列(二重支払い、期限切れ後の操作)が、ここで異常系の行になる(導出は [`reference/blackbox-systematic.md`](reference/blackbox-systematic.md) の禁止仕様からのテスト導出)。
+4. **各振る舞いに種別を振る**：正常系、境界、異常系(unwanted)、非機能のいずれかを振る。先に**事前条件**(対象が規定の振る舞いを保証する入力・状態の範囲)を確定させ、その内側だけを網羅対象にする。事前条件違反のうち**応答を保証したい分だけ**を事後条件へ引き上げて異常系に積む(契約の詳細は [`reference/good-test-principles.md`](reference/good-test-principles.md))。そのうえで各正常系に「不正入力なら? 境界なら? 並行なら?」を必ず問い、異常系の行を系統的に生やす。履歴依存があるものは「**起きてはいけない振る舞い(禁止される列)**は何か」も問う。途中まで正常で一手で初めて禁止になる列(二重支払い、期限切れ後の操作)が、ここで異常系の行になる(導出は [`reference/blackbox-systematic.md`](reference/blackbox-systematic.md) の禁止仕様からのテスト導出)。
 5. **全 ID が `[x]` で欠番なしになったら抽出を閉じる**。未チェックが残る=抽出途中。
 
 > レビュー用途のときは、既存テストを台帳の右側(テスト名)に先に埋める。
@@ -64,7 +64,7 @@ description: >
 | 経験や業務フローから導く(ユースケース、シナリオ、エラー推測、探索的、アドホック) | [`reference/blackbox-experience.md`](reference/blackbox-experience.md) |
 | 構造網羅やカバレッジ、テストの強さ(C0/C1、MC/DC、データフロー、mutation) | [`reference/whitebox-coverage.md`](reference/whitebox-coverage.md) |
 | TDD の手順とテスト構成(Red→Green→Refactor、三角測量、AAA、Given-When-Then) | [`reference/tdd-workflow.md`](reference/tdd-workflow.md) |
-| 良い単体テストの規範(4本柱、学派、実装詳細を避ける、モックの使いどころ) | [`reference/good-test-principles.md`](reference/good-test-principles.md) |
+| 良い単体テストの規範(4本柱、学派、実装詳細を避ける、モックの使いどころ、事前条件・事後条件による境界) | [`reference/good-test-principles.md`](reference/good-test-principles.md) |
 | テストダブルの使い分け(ダミー/スタブ/モック/スパイ/フェイク、Testcontainers) | [`reference/test-doubles.md`](reference/test-doubles.md) |
 | 期待値が用意しにくい(PBT、fuzzing、差分、メタモルフィック、形式検証連携) | [`reference/modern-generative.md`](reference/modern-generative.md) |
 | 出力が非決定的(LLM/生成モデルを組み込んだシステム、揺らぎを層で封じ込める) | [`reference/ai-nondeterministic.md`](reference/ai-nondeterministic.md) |
