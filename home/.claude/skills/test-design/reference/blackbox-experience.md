@@ -1,0 +1,178 @@
+# ブラックボックス設計技法: 経験・シナリオベース
+
+仕様の構造から機械的に導くのではなく、業務フローや経験・直感から欠陥を狙う非形式的な技法群。
+体系的(仕様ベース)な技法(同値分割/境界値/デシジョンテーブル/状態遷移/ペアワイズ等)は [`blackbox-systematic.md`](blackbox-systematic.md) を参照。
+
+これらは体系的技法の網を補う仕上げであり、単独で網羅性を主張しない。
+見つけた欠陥は体系的技法へ書き戻して資産化(回帰テスト化)する。
+
+## 目次
+
+- [ユースケーステスト(Use Case Testing)](#ユースケーステストuse-case-testing)
+- [シナリオテスト(Scenario Testing)](#シナリオテストscenario-testing)
+- [エラー推測(Error Guessing)](#エラー推測error-guessing)
+- [探索的テスト(Exploratory Testing)](#探索的テストexploratory-testing)
+- [アドホックテスト(Ad Hoc Testing)](#アドホックテストad-hoc-testing)
+
+---
+
+## ユースケーステスト(Use Case Testing)
+
+### 概要
+アクターとシステムの相互作用の流れ(主成功シナリオと拡張/例外フロー)を1本ずつテストケースに写す。
+
+### 目的/いつ使う
+要件がユースケース記述で与えられ、エンドツーエンドの業務フローが正しく完結するかを確かめたいとき。
+基本フローだけでなく代替・例外フローを各々ケース化する。
+個々の関数の単体検証には粒度が粗すぎる。
+
+### TypeScript example
+「ログイン → カート追加 → 決済」の主成功フローと、在庫切れの例外フローをそれぞれ1ケースにする。
+
+```ts
+import { describe, it, expect } from "vitest";
+import { Shop } from "./shop";
+
+describe("purchase use case", () => {
+  it("main success flow: login -> add -> checkout", () => {
+    const shop = new Shop({ stock: { sku1: 1 } });
+    shop.login("alice");
+    shop.addToCart("sku1");
+    expect(shop.checkout().status).toBe("completed");
+  });
+
+  it("extension: out of stock blocks checkout", () => {
+    const shop = new Shop({ stock: { sku1: 0 } });
+    shop.login("alice");
+    expect(() => shop.addToCart("sku1")).toThrow(/out of stock/);
+  });
+});
+```
+
+### 落とし穴
+- 主成功フローだけ書いて、例外/代替フローを落とす。価値はむしろ例外側にある。
+- ステップを細かく検証しすぎて単体テストの寄せ集めになる。フローの完結を見る。
+
+---
+
+## シナリオテスト(Scenario Testing)
+
+### 概要
+実利用に即した一連の操作の物語(複数ユースケースをまたぐ現実的な経路)を組み、通しで検証する。
+
+### 目的/いつ使う
+個々の機能は通るのに、組み合わせた現実の使い方で破綻しないかを見たいとき(登録 → 解約 → 再登録、長期セッションでの状態蓄積など)。
+ユースケーステストより広い文脈・複数機能の連鎖を対象にする。
+単機能の検証には重い。
+
+### TypeScript example
+解約後の再登録でデータが正しく引き継がれる/されないかを、現実的な操作列として1本に綴る。
+
+```ts
+import { describe, it, expect } from "vitest";
+import { Account } from "./account";
+
+describe("scenario: churn and return", () => {
+  it("re-registration starts fresh after cancellation", () => {
+    const acc = new Account("bob");
+    acc.subscribe("pro");
+    acc.cancel();
+    acc.subscribe("free"); // 戻ってきた
+    expect(acc.plan).toBe("free");
+    expect(acc.history).toHaveLength(3); // 履歴は保持
+  });
+});
+```
+
+### 落とし穴
+- シナリオが壊れたとき、どのステップが原因か切り分けにくい。要所に中間アサーションを置く。
+- 「ありそうな話」を盛り込みすぎて非現実的な経路を検証しがち。実データ・実ログを下敷きにする。
+
+---
+
+## エラー推測(Error Guessing)
+
+### 概要
+テスト担当者の経験と直感から、欠陥が潜みそうな入力(空・null・ゼロ・巨大値・特殊文字・重複・並行)を狙い撃ちする。
+
+### 目的/いつ使う
+体系的技法の網を補う仕上げとして、既知の障害パターンや過去のバグ傾向を当て込むとき。
+チェックリスト化すると属人性を下げられる。
+体系的設計の代わりにこれだけで済ませてはいけない(網羅性を保証しない)。
+
+### TypeScript example
+典型的な「壊しに行く」入力をチェックリスト由来の配列にして文字列処理 `slugify` へ叩き込む。
+
+```ts
+import { describe, it, expect } from "vitest";
+import { slugify } from "./slug";
+
+describe("slugify: error guessing", () => {
+  const nasty = [
+    { input: "", desc: "empty" },
+    { input: "   ", desc: "whitespace only" },
+    { input: "a".repeat(10_000), desc: "very long" },
+    { input: "héllo/wörld?", desc: "non-ascii & reserved" },
+    { input: "../../etc", desc: "path traversal-ish" },
+  ] as const;
+
+  it.each(nasty)("handles $desc without crashing", ({ input }) => {
+    expect(() => slugify(input)).not.toThrow();
+  });
+});
+```
+
+### 落とし穴
+- 当てずっぽうに依存し再現性が低い。見つけたパターンは必ずチェックリストへ昇格させ資産化する。
+- これを主軸にすると網羅性が証明できない。同値分割・境界値の補完として位置づける。
+
+---
+
+## 探索的テスト(Exploratory Testing)
+
+### 概要
+テスト設計・実行・学習を同時に進め、直前の結果から次の操作を決めながら対象を調べる、構造化された即興。
+
+### 目的/いつ使う
+仕様が不完全/流動的なとき、新機能の初見調査、自動テストでは気づけない使用感・整合の破れを探るとき。
+時間を区切ったセッション(セッションベース管理)と憲章(チャーター)で散漫さを防ぐ。
+回帰の自動化や厳密な合否判定には向かない。
+
+### コード例は不要 — セッションノートで残す
+即興ゆえテストコードに固定しない。チャーターとセッションノートで記録する。
+
+```text
+Charter: 決済フォームの入力検証を、貼り付け・IME・オートフィル経由で探る
+Timebox: 60 min   Tester: @you   Build: 2026.6.1
+
+Notes
+- [bug] カード番号を全角で貼り付け→ 検証を素通り、API で 500
+- [q]   有効期限の過去月、UI は通すが確定時のみ弾く。仕様か?
+- [idea] オートフィルで姓名が逆。別チャーターで追う
+Coverage: 検証ロジック 70% / 異常系の手応えは薄い
+```
+
+セッションで見つけた再現手順は、確定バグとして体系的技法(境界値・エラー推測)へ書き戻し、回帰テスト化する。
+
+### 落とし穴
+- 記録を残さず「触ってみた」で終わると再現も共有もできない。ノートが成果物。
+- チャーター無しだと同じ所ばかり触る。範囲を宣言してから始める。
+
+---
+
+## アドホックテスト(Ad Hoc Testing)
+
+### 概要
+事前設計も記録の枠組みも持たず、思いついたまま試す最も非形式的なテスト。探索的テストからチャーター/ノートの規律を外したもの。
+
+### 目的/いつ使う
+ごく短時間のスモーク確認、デモ前の最終チェック、不具合の素早い当たり付けなど、軽さが価値になる局面に限る。
+品質保証の中心には絶対に置かない。
+
+### コード例は不要 — その場の確認に留める
+記録の型を持たないのが定義なので、コードもチェックリストも作らない。
+価値が出たら(=同じ確認を繰り返したくなったら)それは即座に探索的テスト(ノート化)か体系的技法(コード化)へ格上げする合図。アドホックのまま放置しない。
+
+### 落とし穴
+- 再現性・追跡性ゼロ。見つけた欠陥の条件をその場でメモしないと消える。
+- 「テストした」と錯覚させる。網羅も合否基準も無いことを常に明示する。

@@ -1,0 +1,324 @@
+# 良いテストの規範
+
+良い単体テストとは何かを測る基準をまとめる。
+出典は Vladimir Khorikov『単体テストの考え方/使い方』(Unit Testing Principles, Practices, and Patterns)。
+TDD の手順は [`tdd-workflow.md`](tdd-workflow.md)、テストダブルの使い分けは [`test-doubles.md`](test-doubles.md) を参照。
+
+各項目は「概要」「目的/いつ使う」「TypeScript example(vitest 想定)」「落とし穴」の構成で示す。
+
+## 目次
+
+- [古典学派とロンドン学派](#古典学派とロンドン学派)
+- [観察可能な振る舞いのテスト](#観察可能な振る舞いのテスト)
+- [良いテストの4本柱](#良いテストの4本柱)
+- [テストの脆さの回避](#テストの脆さの回避)
+- [モック濫用の回避](#モック濫用の回避)
+- [出力ベース、状態ベース、コミュニケーションベースの検証](#出力ベース状態ベースコミュニケーションベースの検証)
+- [Humble Object パターン](#humble-object-パターン)
+- [テスト対象の四象限](#テスト対象の四象限)
+
+---
+
+## 古典学派とロンドン学派
+
+### 概要
+単体テストの「単体」の捉え方をめぐる二つの立場。
+**古典学派**(Detroit / Chicago 学派)は、振る舞いの単位を一単位とし、協力オブジェクトは可能な限り本物を使う。
+**ロンドン学派**(Mockist)は、クラス単位を一単位とし、依存はすべてモックへ差し替えて隔離する。
+
+### 目的/いつ使う
+Khorikov は古典学派を推す。
+理由は、ロンドン学派のように協力オブジェクトを一律モック化すると、テストが実装の協調手順へ結合し、リファクタリング耐性を失うからである。
+ロンドン学派が有利なのは、依存グラフが深くテスト準備が困難なときに限られる。
+ただしその困難さ自体が設計の不備を示すことが多い。
+
+### TypeScript example
+```ts
+import { describe, it, expect, vi } from "vitest";
+import { Order } from "./order";
+import { PriceTable } from "./price-table";
+
+// 古典学派: 協力オブジェクト PriceTable は本物を使う
+it("classical: uses real collaborator", () => {
+  const order = new Order(new PriceTable({ apple: 100 }));
+  expect(order.total(["apple", "apple"])).toBe(200);
+});
+
+// ロンドン学派: 協力オブジェクトもモック化して隔離する
+it("london: mocks the collaborator", () => {
+  const priceTable = { priceOf: vi.fn().mockReturnValue(100) };
+  const order = new Order(priceTable);
+  expect(order.total(["apple", "apple"])).toBe(200);
+});
+```
+
+### 落とし穴
+- ロンドン学派の流儀でプロセス内の協力オブジェクトまでモック化し、内部構造を変えた途端にテストが壊れる。
+- 古典学派でも、共有された可変状態を持つ協力オブジェクトを本物のまま使い、テスト間が干渉する。
+
+---
+
+## 観察可能な振る舞いのテスト
+
+### 概要
+テストは、クライアントから観察できる振る舞い(公開された結果や、外部に与える副作用)だけを検証し、実装の詳細(private メソッド、内部の中間状態、呼び出し手順)には触れない。
+
+### 目的/いつ使う
+常に守るべき原則である。
+観察可能な振る舞いをテストすれば、内部を入れ替えてもテストは緑のままで、リファクタリングを支えられる。
+逆に実装詳細を検証するテストは、振る舞いが正しくても内部変更で壊れ、偽の警報(false positive)を出す。
+迷ったら問う。「このテストは利用者が気にする結果を確かめているか、それとも内部の作り方を確かめているか」。
+
+### TypeScript example
+```ts
+import { describe, it, expect } from "vitest";
+import { Stack } from "./stack";
+
+// 良い: 観察可能な振る舞い(pop の戻り値)を検証する
+it("pops the last pushed value", () => {
+  const s = new Stack<number>();
+  s.push(1);
+  s.push(2);
+  expect(s.pop()).toBe(2);
+});
+
+// 悪い: 内部配列という実装詳細に触れる。配列を連結リストへ替えただけで壊れる
+// expect((s as any).items).toEqual([1, 2]);
+```
+
+### 落とし穴
+- private を無理にこじ開けてテストするのは、振る舞いではなく構造をテストしている兆候である。
+- 内部状態の検証が必要に感じたら、その状態を観察可能な振る舞いとして公開すべきか、テスト対象の分割を疑う。
+
+---
+
+## 良いテストの4本柱
+
+### 概要
+Khorikov は良い単体テストを四つの柱で測る。
+
+- **退行に対する保護(protection against regressions)**：壊れたコードをどれだけ検出できるか。
+- **リファクタリングへの耐性(resistance to refactoring)**：振る舞いを変えない内部変更で、誤って壊れないか。
+- **高速なフィードバック(fast feedback)**：実行がどれだけ速いか。
+- **保守のしやすさ(maintainability)**：テスト自体がどれだけ読みやすく、壊れにくいか。
+
+### 目的/いつ使う
+テストの価値を評価し、何を直すか決める物差しに使う。
+要点は、前三者が同時に最大化できないトレードオフの関係にあることだ。
+退行保護と高速性を両立させると、広い範囲を高速に回すために実物の依存をモックへ替えがちで、リファクタリング耐性が下がる。
+リファクタリング耐性は実装詳細に触れないことで得られるが、これは譲ってはならない柱とされる。
+したがって実務では、リファクタリング耐性を固定し、残る退行保護と高速性のあいだで均衡を探る。
+
+### TypeScript example
+```ts
+import { describe, it, expect } from "vitest";
+import { parseAmount } from "./amount";
+
+// 退行保護: 異常系まで検出する。リファクタリング耐性: 戻り値だけ見て内部に触れない
+// 高速: I/O なしの純粋関数。保守性: 入出力が一目で読める
+describe("parseAmount", () => {
+  it("parses a valid amount", () => expect(parseAmount("1,000")).toBe(1000));
+  it("rejects a negative amount", () => expect(() => parseAmount("-1")).toThrow());
+});
+```
+
+### 落とし穴
+- 四本すべてを同時に満点にしようとする。前三者はトレードオフであり、同時最大化はできない。
+- 高速性ほしさに純粋なロジックまでモックで固め、退行保護を削ってしまう。
+
+---
+
+## テストの脆さの回避
+
+### 概要
+振る舞いは正しいのに、内部実装を変えただけで失敗するテストを脆い(fragile)テストと呼ぶ。
+脆さの正体は、テストが実装詳細へ結合していることである。
+
+### 目的/いつ使う
+リファクタリングのたびに無関係なテストが赤くなる状況を避けたいときに点検する。
+脆いテストは偽の警報を出し、やがて開発者がテストの赤を信用しなくなる。
+治療は、検証対象を実装詳細から観察可能な振る舞いへ移すことだ。
+
+### TypeScript example
+```ts
+import { describe, it, expect, vi } from "vitest";
+import { Report } from "./report";
+
+// 脆い: 内部でどのヘルパーを何回呼んだかという手順に結合している
+it("fragile: asserts internal call sequence", () => {
+  const fmt = vi.fn((x: number) => `$${x}`);
+  const report = new Report(fmt);
+  report.render([1, 2]);
+  expect(fmt).toHaveBeenCalledTimes(2); // 内部実装を変えると壊れる
+});
+
+// 頑健: 最終出力という観察可能な結果だけを検証する
+it("robust: asserts the observable output", () => {
+  const report = new Report((x) => `$${x}`);
+  expect(report.render([1, 2])).toBe("$1, $2");
+});
+```
+
+### 落とし穴
+- 呼び出し回数や呼び出し順序の検証は、プロセス内協力者に対しては脆さの典型である。
+- セットアップを共有しすぎて、一つの変更が広範囲のテストを巻き込み赤くする。
+
+---
+
+## モック濫用の回避
+
+### 概要
+Khorikov の核心的な主張。
+モックは**管理下にないプロセス外依存**(unmanaged out-of-process dependencies)へ向かう通信を検証するときにだけ使う。
+プロセス内の協力オブジェクトや、管理下にあるプロセス外依存(自前のデータベースなど)には使わない。
+
+### 目的/いつ使う
+何をモックにすべきかを切り分けるときに使う、最重要の指針である。
+依存は次のように分かれる。
+
+- **管理下にないプロセス外依存**：他システムから観測される副作用。メール送信、外部 API への呼び出し、メッセージバスへの発行など。これらへの通信はアプリケーションの観察可能な振る舞いの一部なので、モックで検証してよい。
+- **管理下にあるプロセス外依存**：自分だけが使うデータベースなど。これは実物(または Testcontainers の本物)を使い、最終状態で検証する。モックにすると実装詳細に結合する。
+- **プロセス内の協力オブジェクト**：同じプロセス内のクラス。モックにすると内部構造へ結合し、脆くなる。本物を使う。
+
+### TypeScript example
+```ts
+import { describe, it, expect, vi } from "vitest";
+import { Signup } from "./signup";
+
+// 良い: メール送信(管理下にないプロセス外依存)への通信をモックで検証する
+it("sends a welcome email on signup", () => {
+  const emailGateway = { send: vi.fn() };
+  const repo = new InMemoryUserRepo(); // 管理下の依存はフェイクで実物相当に
+  const signup = new Signup(repo, emailGateway);
+
+  signup.register("a@example.com");
+
+  expect(emailGateway.send).toHaveBeenCalledWith("a@example.com");
+  expect(repo.findByEmail("a@example.com")).toBeDefined(); // DB は状態で検証
+});
+```
+
+### 落とし穴
+- リポジトリ(管理下の DB)への保存呼び出しをモックで検証し、実装詳細に結合する。状態で確かめる。
+- プロセス内のドメインオブジェクトをモック化し、協調手順をテストへ固定してしまう。
+
+---
+
+## 出力ベース、状態ベース、コミュニケーションベースの検証
+
+### 概要
+検証スタイルの三分類。
+
+- **出力ベース**：入力を与え、戻り値だけを検証する。副作用のない純粋関数に適す。
+- **状態ベース**：操作後のシステムの状態を検証する。
+- **コミュニケーションベース**：協力者への呼び出しをモックで検証する。
+
+### 目的/いつ使う
+Khorikov は出力ベースを最良とする。
+最も脆くなりにくく、リファクタリング耐性と保守性が高いからである。
+状態ベースは次点。
+コミュニケーションベースは脆さを招きやすいため、管理下にないプロセス外依存に限って使う。
+設計を関数型寄り(副作用を端へ追い出す)に保つほど、出力ベースで書ける割合が増える。
+
+### TypeScript example
+```ts
+import { describe, it, expect, vi } from "vitest";
+import { calcTax } from "./tax";
+import { Wallet } from "./wallet";
+import { Notifier } from "./notifier";
+
+// 出力ベース: 戻り値だけを見る(最も望ましい)
+it("output-based", () => expect(calcTax(1000)).toBe(100));
+
+// 状態ベース: 操作後の状態を見る
+it("state-based", () => {
+  const w = new Wallet(1000);
+  w.withdraw(300);
+  expect(w.balance).toBe(700);
+});
+
+// コミュニケーションベース: 外部への通信を検証する(プロセス外依存に限る)
+it("communication-based", () => {
+  const sms = { send: vi.fn() };
+  new Notifier(sms).alert("hi");
+  expect(sms.send).toHaveBeenCalledWith("hi");
+});
+```
+
+### 落とし穴
+- 純粋関数化できるロジックをわざわざ状態ベースやコミュニケーションベースで書き、脆さを呼び込む。
+- コミュニケーションベースをプロセス内協力者へ適用し、リファクタリングで壊れるテストを作る。
+
+---
+
+## Humble Object パターン
+
+### 概要
+テストしにくい層(UI、データベース、外部 I/O)から、テストしやすいロジックを引き剥がす設計。
+テスト困難な層は、ロジックを持たない薄い「控えめな(humble)」殻にする。
+
+### 目的/いつ使う
+ロジックが I/O やフレームワークと絡んでテストできないときに使う。
+判断や計算をプレーンな関数やドメインモデルへ抜き出し、出力ベースで単体テストする。
+殻に残るのは委譲だけなので、そこは単体テストの対象から外し、必要なら少数の結合テストで覆う。
+これは四象限でいう「過度に複雑なコード」を、ドメインモデルとコントローラへ割るための主要な道具である。
+
+### TypeScript example
+```ts
+import { describe, it, expect } from "vitest";
+
+// 抜き出したロジック(テスト容易・純粋)
+export const nextRetryDelay = (attempt: number): number =>
+  Math.min(1000 * 2 ** attempt, 30_000);
+
+// 控えめな殻(I/O のみ。ロジックを持たないので単体テスト対象外)
+// async function retryLoop(task) { await sleep(nextRetryDelay(n)); ... }
+
+it("caps the retry delay", () => {
+  expect(nextRetryDelay(0)).toBe(1000);
+  expect(nextRetryDelay(10)).toBe(30_000); // 上限に張り付く境界
+});
+```
+
+### 落とし穴
+- 殻にロジックが残ったまま分離した気になり、結局テストできない判断が I/O 層に居座る。
+- 抜き出した関数が外部状態へ依存し、純粋でなくなる。入力は引数で受け、出力は戻り値で返す。
+
+---
+
+## テスト対象の四象限
+
+### 概要
+コードを、ドメインの複雑さと協力者への依存の二軸で四つに分ける。
+
+- **ドメインモデルとアルゴリズム**(複雑さ高、依存少)：単体テストの費用対効果が最も高い。最優先で厚く書く。
+- **取るに足らないコード**(複雑さ低、依存少)：単純な getter など。テスト不要。
+- **コントローラ**(複雑さ低、依存多)：依存を束ねて流すだけの層。少数の結合テストで覆う。
+- **過度に複雑なコード**(複雑さ高、依存多)：最も危険。テストが高くつき、しかも書かないと事故る。
+
+### 目的/いつ使う
+どこにテストの労力を注ぐかを決める地図に使う。
+過度に複雑なコードは、そのまま正面からテストしようとせず、Humble Object でドメインモデル(複雑さ高、依存少)とコントローラ(複雑さ低、依存多)へ割る。
+割ったあとは、ドメインモデルを出力ベースで厚くテストし、コントローラは結合テストへ回す。
+
+### TypeScript example
+```ts
+import { describe, it, expect } from "vitest";
+
+// ドメインモデル(複雑さ高・依存少): 出力ベースで厚くテストする価値が最も高い
+export const isLeapYear = (y: number): boolean =>
+  y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0);
+
+describe("isLeapYear: domain model gets the most tests", () => {
+  it.each([
+    [2000, true],  // 400 で割れる
+    [1900, false], // 100 で割れるが 400 では割れない(境界)
+    [2024, true],
+    [2023, false],
+  ])("%i -> %s", (y, expected) => expect(isLeapYear(y)).toBe(expected));
+});
+```
+
+### 落とし穴
+- 取るに足らないコードに丁寧なテストを書き、保守コストだけ増やす。
+- 過度に複雑なコードを分割せず正面からテストし、脆く高価なテストを抱える。

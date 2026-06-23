@@ -1,0 +1,366 @@
+# ホワイトボックス技法とカバレッジ
+
+コードの内部構造（命令・分岐・条件・経路）を見て、どこまでテストが到達したかを測る技法群。
+「何を検証すべきか」をブラックボックスが決めるのに対し、ここでは「コードのどこを通したか」を網羅基準にする。
+ただしカバレッジは到達の指標であって検証の指標ではない。通したことと正しさを確かめたことは別物で、その溝をミューテーションテストで詰める。
+
+## 目次
+
+- [ステートメントカバレッジ（命令網羅 C0）](#ステートメントカバレッジ命令網羅-c0)
+- [ブランチ/デシジョンカバレッジ（分岐網羅 C1）](#ブランチデシジョンカバレッジ分岐網羅-c1)
+- [コンディションカバレッジ（条件網羅）](#コンディションカバレッジ条件網羅)
+- [MC/DC（改良条件判定網羅）](#mcdc改良条件判定網羅)
+- [パスカバレッジ（経路網羅）](#パスカバレッジ経路網羅)
+- [ループテスト（0回/1回/最大/境界回）](#ループテスト0回1回最大境界回)
+- [データフローテスト（def-use 連鎖）](#データフローテストdef-use-連鎖)
+- [ミューテーションテスト（テストの強さを測るメタテスト）](#ミューテーションテストテストの強さを測るメタテスト)
+- [まとめ: カバレッジの限界とミューテーションの位置づけ](#まとめ-カバレッジの限界とミューテーションの位置づけ)
+
+## ステートメントカバレッジ（命令網羅 C0）
+
+### 概要
+すべての実行可能な命令文を最低1回実行したかを測る、最も緩い構造基準。
+
+### 目的/いつ使う
+未到達コード（デッドコード、テストし忘れた分岐の中身）の洗い出しに使う。
+最低ラインの足切りとして CI に置く程度で、これ単体を品質目標にしてはいけない。
+C0 100% でも分岐の偽側を一度も通していない、条件式の評価結果を一度も確かめていない、という穴が普通に残る。
+
+### TypeScript example
+```ts
+// grade.ts
+export function grade(score: number): string {
+  let label = "fail";        // 文1
+  if (score >= 60) {
+    label = "pass";          // 文2
+  }
+  return label;              // 文3
+}
+```
+```ts
+// grade.test.ts
+import { describe, it, expect } from "vitest";
+import { grade } from "./grade";
+
+describe("grade C0", () => {
+  // この1ケースで全3文を実行 = C0 100%
+  // だが score < 60 の経路（if 偽）は一度も通っていない
+  it("通過点で全文を踏む", () => {
+    expect(grade(80)).toBe("pass");
+  });
+});
+```
+
+### 落とし穴
+- C0 100% は「全部書いた」ではなく「全部の行に触れた」だけ。if の偽側は踏まずに 100% に達する。
+- 三項演算子や短絡評価が1行に詰まっていると、行単位の計測では分岐の片側を見逃す。
+
+## ブランチ/デシジョンカバレッジ（分岐網羅 C1）
+
+### 概要
+各判定（if, while, switch, 三項）の真・偽の両方の分岐を最低1回ずつ通したかを測る。
+
+### 目的/いつ使う
+C0 の主要な穴である「分岐の片側未踏」を埋める。実務の構造カバレッジの標準的な目標はここに置くことが多い。
+注意: C1 は判定全体の真偽だけを見るので、`a || b` のような複合条件の中で個々の条件 `a` `b` がどう効いたかは問わない。そこは条件網羅・MC/DC の領分。
+
+### TypeScript example
+```ts
+// discount.ts
+export function discount(member: boolean, total: number): number {
+  if (member && total >= 1000) {
+    return total * 0.9;
+  }
+  return total;
+}
+```
+```ts
+// discount.test.ts
+import { describe, it, expect } from "vitest";
+import { discount } from "./discount";
+
+describe("discount C1", () => {
+  // 判定 (member && total>=1000) の真と偽を両方踏む
+  it("真分岐: 会員かつ閾値以上", () => {
+    expect(discount(true, 1000)).toBe(900);
+  });
+  it("偽分岐: 非会員", () => {
+    expect(discount(false, 1000)).toBe(1000);
+  });
+});
+```
+
+### 落とし穴
+- 判定の真偽は埋まっても、複合条件の各項の寄与は検証できていない。上例は `total>=1000` を偽にするケースが無くても C1 100% になりうる。
+- switch の default を省くと未踏分岐が残りやすい。
+
+## コンディションカバレッジ（条件網羅）
+
+### 概要
+判定を構成する個々の真偽条件（atomic condition）それぞれが、真・偽の両値を取ったかを測る。
+
+### 目的/いつ使う
+複合条件 `a && b`, `a || b` で、各オペランドが効いているかを確かめたいときに使う。
+ただし条件網羅は「各条件が両値を取った」だけを要求し、判定全体の真偽が両方出ることは保証しない。
+そのため C1 を満たさないケースセットでも条件網羅 100% になりうる（判定/条件カバレッジ＝両方満たす形が安全）。
+
+### TypeScript example
+```ts
+// access.ts
+export function canAccess(admin: boolean, active: boolean): boolean {
+  return admin || active; // 条件: admin, active
+}
+```
+```ts
+// access.test.ts
+import { describe, it, expect } from "vitest";
+import { canAccess } from "./access";
+
+describe("canAccess 条件網羅", () => {
+  // admin: T/F、active: T/F を各々出す2ケース
+  it("admin=T, active=F", () => {
+    expect(canAccess(true, false)).toBe(true);
+  });
+  it("admin=F, active=T", () => {
+    expect(canAccess(false, true)).toBe(true);
+  });
+  // 注意: この2ケースは「全体が偽(F,F)」を踏んでいない → 条件網羅100%でもC1未達
+});
+```
+
+### 落とし穴
+- 条件網羅だけでは判定全体の偽（または真）が欠ける場合がある。判定/条件カバレッジで両立させる。
+- 短絡評価により後段の条件が評価されないことがある。「評価された上で両値を取った」かを意識する。
+
+## MC/DC（改良条件判定網羅）
+
+### 概要
+各条件が、他の条件を固定したまま単独で判定結果を反転させる、という独立した影響を1組のペアで示す網羅基準。
+DO-178C のレベル A（航空など安全性クリティカル）で要求される。
+
+### 目的/いつ使う
+複合条件の各条件が結果に独立して効くことを、組合せ爆発（全パターン 2^n）を避けつつ証明したいとき。
+n 条件で必要なケースは概ね n+1 と少なく、安全性が要る分岐ロジックに向く。
+過剰: 安全性要件の無い普通のアプリで全分岐にこれを課すのは YAGNI。critical な判定に絞る。
+
+### TypeScript example
+判定 `A && (B || C)` の真理値表と、各条件の独立影響を示す最小ケースセット。
+各条件について「その条件だけ反転すると結果も反転するペア」を1組ずつ用意する。
+
+| # | A | B | C | 結果 |
+|---|---|---|---|------|
+| 1 | T | T | F | T |
+| 2 | F | T | F | F | （Aの独立影響: #1↔#2）
+| 3 | T | F | F | F | （Bの独立影響: #1↔#3）
+| 4 | T | F | T | T | （Cの独立影響: #3↔#4）
+
+```ts
+// guard.ts
+export function guard(a: boolean, b: boolean, c: boolean): boolean {
+  return a && (b || c);
+}
+```
+```ts
+// guard.test.ts
+import { describe, it, expect } from "vitest";
+import { guard } from "./guard";
+
+// n=3 条件を 4 ケースで MC/DC 達成
+describe("guard MC/DC", () => {
+  it.each([
+    { a: true,  b: true,  c: false, expected: true  }, // #1 基準
+    { a: false, b: true,  c: false, expected: false }, // #2 Aの影響(#1と#2でAのみ差→結果反転)
+    { a: true,  b: false, c: false, expected: false }, // #3 Bの影響(#1と#3でBのみ差→結果反転)
+    { a: true,  b: false, c: true,  expected: true  }, // #4 Cの影響(#3と#4でCのみ差→結果反転)
+  ])("a=$a b=$b c=$c -> $expected", ({ a, b, c, expected }) => {
+    expect(guard(a, b, c)).toBe(expected);
+  });
+});
+```
+
+### 落とし穴
+- 影響ペアは「対象条件だけが違い、他は同一で、結果が反転する」を満たす必要がある。ペアの選び方を誤ると MC/DC を満たさない。
+- 短絡評価のある言語では、固定したつもりの条件が実際には評価されていないことがある。マスキング MC/DC か unique-cause MC/DC かを決めて扱う。
+
+## パスカバレッジ（経路網羅）
+
+### 概要
+制御フロー上の実行可能な経路（分岐の組合せ）を網羅する、最も強い構造基準。
+
+### 目的/いつ使う
+分岐どうしの相互作用に起因するバグを狙うとき。
+ただし経路数は分岐数に対して指数的、ループがあれば事実上無限になり、完全な経路網羅は通常は非現実的。
+実務では基底パステスト（McCabe の循環的複雑度 = 線形独立な基底経路数）で代表経路だけ選ぶ妥協が一般的。
+
+### TypeScript example
+```ts
+// fee.ts
+export function fee(member: boolean, weekend: boolean): number {
+  let f = 100;
+  if (member) f -= 30;     // 分岐1
+  if (weekend) f += 50;    // 分岐2
+  return f;
+}
+```
+```ts
+// fee.test.ts
+import { describe, it, expect } from "vitest";
+import { fee } from "./fee";
+
+// 2分岐の全4経路を網羅（独立2分岐なので 2^2 = 4）
+describe("fee 経路網羅", () => {
+  it.each([
+    { member: false, weekend: false, expected: 100 },
+    { member: true,  weekend: false, expected: 70  },
+    { member: false, weekend: true,  expected: 150 },
+    { member: true,  weekend: true,  expected: 120 },
+  ])("m=$member w=$weekend -> $expected", ({ member, weekend, expected }) => {
+    expect(fee(member, weekend)).toBe(expected);
+  });
+});
+```
+
+### 落とし穴
+- 経路数は分岐数に対し指数的。ループ込みでは完全網羅は不可能で、基底パスへの絞り込みが必須。
+- 到達不能経路（条件が論理的に両立しない組合せ）を数えてカバレッジ率を下げてしまわないこと。
+
+## ループテスト（0回/1回/最大/境界回）
+
+### 概要
+ループの反復回数に着目し、0回・1回・典型回・最大回・最大±1回といった境界で挙動を確かめる技法。
+
+### 目的/いつ使う
+オフバイワン、空入力、上限超過といったループ固有の欠陥を狙うとき。配列処理・ページング・リトライ上限などに有効。
+全反復回数を試すのは無駄なので、0/1/境界に絞るのが要点。
+
+### TypeScript example
+```ts
+// sum.ts
+export function sumFirstN(xs: number[], n: number): number {
+  let s = 0;
+  for (let i = 0; i < n && i < xs.length; i++) s += xs[i];
+  return s;
+}
+```
+```ts
+// sum.test.ts
+import { describe, it, expect } from "vitest";
+import { sumFirstN } from "./sum";
+
+describe("sumFirstN ループ境界", () => {
+  it("0回: n=0", () => expect(sumFirstN([1, 2, 3], 0)).toBe(0));
+  it("1回: n=1", () => expect(sumFirstN([1, 2, 3], 1)).toBe(1));
+  it("最大(配列長で頭打ち): n>長", () => expect(sumFirstN([1, 2, 3], 99)).toBe(6));
+  it("空入力でも落ちない", () => expect(sumFirstN([], 5)).toBe(0));
+});
+```
+
+### 落とし穴
+- ループ脱出条件の `<` と `<=` の取り違えは境界（最大±1）でしか露見しない。典型回だけでは見逃す。
+- ネストループは内外の境界の組合せで考える。外側0回のとき内側が一度も実行されない経路を忘れない。
+
+## データフローテスト（def-use 連鎖）
+
+### 概要
+変数の定義（def: 値の代入）から使用（use）までの連鎖を追い、各 def-use ペアを通すケースを設計する技法。
+
+### 目的/いつ使う
+未初期化使用、代入したのに使われない値、再代入で上書きされる前提のロジックなど、データの流れに起因する欠陥を狙うとき。
+制御フローだけでは見えない「どの代入がどの参照に届くか」を検証したいときに有効。
+
+### TypeScript example
+```ts
+// pricing.ts
+export function priceWith(taxRate: number, base: number): number {
+  let price = base;            // def1: price
+  if (taxRate > 0) {
+    price = base * (1 + taxRate); // def2: price（条件付き再定義）
+  }
+  return price;                // use: price
+}
+```
+```ts
+// pricing.test.ts
+import { describe, it, expect } from "vitest";
+import { priceWith } from "./pricing";
+
+describe("priceWith def-use", () => {
+  // def1 -> use（再定義を通らず初期定義が届く経路）
+  it("税率0: def1がuseに届く", () => {
+    expect(priceWith(0, 100)).toBe(100);
+  });
+  // def2 -> use（条件付き再定義がuseに届く経路）
+  it("税率>0: def2がuseに届く", () => {
+    expect(priceWith(0.1, 100)).toBeCloseTo(110);
+  });
+});
+```
+
+### 落とし穴
+- すべての def-use ペアの網羅はパス網羅に近づき高コスト。重要な変数（金額・権限フラグ）に絞る。
+- 再代入で死ぬ def（どの use にも届かない代入）は、それ自体がバグの兆候。気づいたら設計を疑う。
+
+## ミューテーションテスト（テストの強さを測るメタテスト）
+
+### 概要
+コードに意図的な小さな欠陥（ミュータント: `>` を `>=` に、`+` を `-` に、条件の反転など）を注入し、
+既存テストがそれを失敗として検出（kill）できるかを測る。テストを試験する側のテスト。
+
+### 目的/いつ使う
+カバレッジ率が高いのにバグが漏れる、という状況の正体を暴くときに使う。
+C0/C1 は「行や分岐を通したか」しか見ず、通した結果が正しいかをアサートし忘れていても 100% になる。
+ミューテーションは「コードを壊したらテストが落ちるか」を問うので、その通過≠検証の穴を直接突く。
+生き残ったミュータント（survived）＝そのコードを壊してもどのテストも落ちなかった箇所＝アサーション不足の証拠。
+注意: 計算コストが高い（ミュータント数 × テスト時間）。critical なモジュールに絞って回す。
+
+### TypeScript example
+最小の Stryker 設定。`@stryker-mutator/core` を使う。
+```jsonc
+// stryker.config.json
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "coverageAnalysis": "perTest",
+  "mutate": ["src/**/*.ts", "!src/**/*.test.ts"]
+}
+```
+```ts
+// abs.ts
+export function abs(n: number): number {
+  return n < 0 ? -n : n;
+}
+```
+```ts
+// abs.test.ts — C0/C1 100% だがアサーションが甘い例
+import { describe, it, expect } from "vitest";
+import { abs } from "./abs";
+
+describe("abs (穴あり)", () => {
+  it("負も正も通す", () => {
+    expect(abs(-3)).toBeGreaterThanOrEqual(0); // 値を固定していない
+    expect(abs(3)).toBeGreaterThanOrEqual(0);
+  });
+});
+```
+このテストは両分岐を踏むので C1 100%。だが `-n` を `n` に変えるミュータント（abs を恒等関数化）を入れても
+`abs(-3)` は `-3`… ではなく、`>= 0` だけ見ているので検出できる場合とできない場合が条件依存になる。
+`toBe(3)` で値を固定すれば確実に kill できる。読み方は次の通り。
+
+- `Killed`: ミュータントを注入したらテストが落ちた。良い（そのコードは守られている）。
+- `Survived`: 壊したのにテストが通った。テストの穴。`toBe` 等で値を厳密に固定して塞ぐ。
+- `No coverage`: そのコードを実行するテストが無い。まず C0/C1 を埋める。
+- `Timeout` / `Runtime error`: 多くは無限ループ化など。実害は薄く Killed 相当に扱える。
+
+Mutation Score = Killed / (生成ミュータント − 等価ミュータント)。これがカバレッジ率より実態に近いテスト強度の指標。
+
+### 落とし穴
+- 等価ミュータント（注入しても挙動が変わらず原理的に kill 不能なもの）が survived に混じる。スコアを 100% に強要しない。
+- 全コードに回すと遅い。差分や critical モジュールに限定し、CI では夜間や対象限定で動かす。
+
+## まとめ: カバレッジの限界とミューテーションの位置づけ
+
+構造カバレッジ（C0 → C1 → 条件 → MC/DC → 経路）は右へ行くほど強いが、いずれも「コードのどこを通したか」しか測れない。
+通すこととアサートで正しさを確かめることは別であり、アサーションが甘ければ高カバレッジでもバグは漏れる。
+ミューテーションテストはコードを壊してテストが落ちるかを直接問うことで、この通過≠検証の溝を埋める。
+カバレッジ率は穴（未到達）を見つける道具、ミューテーションスコアはテストの強さを測る道具、と役割で使い分ける。
+どちらも目標値の達成自体を目的化しない（高カバレッジ≠良いテスト）。
