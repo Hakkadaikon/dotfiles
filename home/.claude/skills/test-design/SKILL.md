@@ -69,7 +69,7 @@ description: >
 | テストダブルの使い分け(ダミー/スタブ/モック/スパイ/フェイク、Testcontainers) | [`reference/test-doubles.md`](reference/test-doubles.md) |
 | 期待値が用意しにくい(PBT、fuzzing、差分、メタモルフィック、形式検証連携) | [`reference/modern-generative.md`](reference/modern-generative.md) |
 | 出力が非決定的(LLM/生成モデルを組み込んだシステム、揺らぎを層で封じ込める) | [`reference/ai-nondeterministic.md`](reference/ai-nondeterministic.md) |
-| AI/LLM にテストを書かせる(信頼は限定的、観点出しの叩き台) | [`reference/ai-nondeterministic.md`](reference/ai-nondeterministic.md) |
+| AI/LLM にテストを書かせる・レビューさせる(信頼は限定的、観点出しの叩き台、指摘の偽陽性対策) | [`reference/ai-nondeterministic.md`](reference/ai-nondeterministic.md) |
 | 非機能(性能、負荷、a11y、セキュリティ…)や運用(BDD、カナリア、CI ゲート)、静的、並行 | [`reference/nonfunctional-process.md`](reference/nonfunctional-process.md) |
 
 各 reference は手法ごとに **概要 / 目的といつ使うか / TypeScript example / 落とし穴** を厳密に定義している。
