@@ -18,6 +18,22 @@ LLM が要求を構造化し、TLC が網羅探索で厳密に検査するハイ
 設計の正しさは **TLA+**(このループ)、実装そのものの数学的証明は **formal-verification(Lean 4)**。
 役割が違う。無理に結線しない(YAGNI)。
 
+## 使うとき / 使わないとき
+
+**使う**: 並行・状態機械・プロトコルの**設計レベル**の正しさを実装前に固めたいとき。複数アクターの interleaving、ロック/キュー/リトライ、接続のライフサイクル、分割入力の結合・順序保証など、人手のテストでは網羅しきれない状態空間があるとき。
+
+**使わない(こちらが多数派)**: 通常の CRUD・UI・ビジネスロジック、状態遷移も並行性も無い逐次処理、時間制約の厳しいタスク。これらは通常の TDD で足りる。**TLA+ が価値を持つ場面はそもそも稀**だと自覚する。
+
+## 着手前の判断(必ず最初に1回)
+
+ループを回す前に自問する。1つでも引っかかったら**ループを使わず通常のテストへ逃がす**。
+
+1. **状態遷移・並行性・プロトコルが本当にあるか?** 無ければ過剰。やめる。
+2. **状態空間が有限化できそうか?** カウンタや無制限コレクションが絡んで爆発しそうなら、TLC は即死する。最初から諦めて property-based testing(生成入力で不変条件を叩く)に落とす。`CONSTANT` で値域を絞れる範囲で抽象化できるときだけ TLA+。
+3. **コストに見合うか?** 導入(ツール・台帳・hook)と学習のコストを、固めたい設計の critical さが上回るときだけ。迷ったら通常テスト。
+
+この判断を通った要件だけ 0段へ進む。
+
 ```mermaid
 flowchart TD
     SPEC[元仕様<br/>RFC / 標準 / NL] --> L0
@@ -51,6 +67,7 @@ flowchart TD
 - [`reference/mutation-oracle.md`](reference/mutation-oracle.md) — equivalent-mutant の見分けと打ち切り基準。survivor を潰すとき。
 - [`reference/gherkin-runners.md`](reference/gherkin-runners.md) — 生成 `.feature` を実行可能テストにする(言語別 OSS、C 例外)。
 - [`reference/lessons.md`](reference/lessons.md) — 抽出漏れの実地教訓(RFC 6455)。0段の重要性の裏付け。
+- [`reference/example-counter.md`](reference/example-counter.md) — Counter を 0段→3ループ通した最小完全例。初回はこれをなぞる。
 
 ## 前提ツール
 
@@ -197,6 +214,8 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 
 外(要求形式化)→ 中(設計検査 + 検査の強さ検証)→ 内(反例の受け入れ仕様化)→ 直して外へ、を反例と survivor が尽きるまで回す。
 3 つは独立した検証層で、下の層の出力が上の層の入力になる。
+
+**本題に広げる前に、最小例で3ループ通すことを必ず確認する。** 0段→外→中→内を1周した完全な手本(台帳・`.tla`・mutation・反例→Gherkin・本体への落とし方)が [`reference/example-counter.md`](reference/example-counter.md)。初回はこれをなぞってから本題の spec を書く。
 
 ## 成果物の置き場(デフォルトは裏方)
 
