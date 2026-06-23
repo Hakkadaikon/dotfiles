@@ -264,6 +264,8 @@ Inv    == n <= Max              \* 「Max を超えない」= 安全性
 設計が固まった後、**critical な実装片**(アルゴリズム・セキュリティ性質)は Lean で証明 → `formal-verification` skill / `prover` agent。
 TLA+ で「設計が正しい」、Lean で「実装が設計通り」を分担。どちらの成果も Gherkin / property test に落とす。両者を機械的に変換しようとしない(YAGNI)。
 
+反例由来の Gherkin や証明済み述語を、機能レベルのテスト群(正常系・境界・異常系)へ展開する段では `test-design` skill を使う。設計の網羅は TLA+ がやるので、`test-design` は残りの機能テストの手法選定(同値分割・境界値・property-based 等)を担う。
+
 ## やらないこと
 
 - **0段の抽出台帳を省いて EARS / TLA+ へ進まない。** 採番チェックリストが未完(`[ ]` 残り or 欠番)なら抽出は終わっていない。後埋めした体にしない。毎ループの必須ゲートで、`loop-*` 実行時に PreToolUse hook が機械的に強制する(意志に依存しない)。
