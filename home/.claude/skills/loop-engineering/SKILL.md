@@ -224,7 +224,30 @@ flake の `tools` に含む(`./env.sh install` 済みなら入っている)。
 外(要求形式化)→ 中(設計検査 + 検査の強さ検証)→ 内(反例の受け入れ仕様化)→ 直して外へ、を反例と survivor が尽きるまで回す。
 3 つは独立した検証層で、下の層の出力が上の層の入力になる。
 
-**本題に広げる前に、最小例で3ループ通すことを必ず確認する。** 0段→外→中→内を1周した完全な手本(台帳・`.tla`・mutation・反例→Gherkin・本体への落とし方)が [`reference/example-counter.md`](reference/example-counter.md)。初回はこれをなぞってから本題の spec を書く。
+**本題に広げる前に、最小例で3ループ通すことを必ず確認する。** 初回はまず下の Counter 骨格を1周し、それから本題の spec を書く。完全な手本(台帳・mutation・反例→Gherkin・本体への落とし方)は [`reference/example-counter.md`](reference/example-counter.md)。
+
+```
+# 0段: 台帳 (tasks/loopeng/Counter.extract.md)
+- [x] S-001 「counter は 0..Max。inc で +1、Max を超えない」
+      → WHILE n < Max WHEN inc the system SHALL increment n.  (state+event)
+      → IF n = Max THEN the system SHALL NOT increment.        (unwanted)
+
+# 外: Counter.tla — EARS 各節を 1 disjunct に
+VARIABLES n
+TypeOK == n \in 0..Max          \* 値域=網羅アンカー
+Init   == n = 0
+Inc    == n < Max /\ n' = n + 1 \* event/state 節
+Next   == Inc \/ UNCHANGED n
+Inv    == n <= Max              \* 「Max を超えない」= 安全性
+# Counter.cfg: INIT Init / NEXT Next / INVARIANT Inv / CONSTANT Max = 3
+
+# 中: loop-middle SPEC=Counter
+#   model-check → No error なら設計OK
+#   mutation → Inc を「n' = n + 2」に変異 → TLC が Inv 違反で killed なら oracle 緑
+
+# 内: もし Inv が破れたら loop-inner が反例トレースを Counter.feature の
+#   Given n=3 / When inc / Then n stays 3  へ機械変換。直って消えるまで外/中へ戻す
+```
 
 ## 成果物の置き場(デフォルトは裏方)
 
