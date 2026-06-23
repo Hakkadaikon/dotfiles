@@ -7,10 +7,10 @@ paths:
 
 自然言語の要求を、検証器を検証対象の上位層に置く 3 重フィードバックループで段階的に厳密化したい局面 → `loop-engineering` skill 発動。生成物は手編集せずソースから再生成する。
 
-発動条件:
+発動条件(共通の軸: **遷移の途中状態・順序・並行があるか**。あれば起動、無ければ過剰):
 - ユーザーが「ループエンジニアリング」「EARS」「TLA+」「Gherkin」「設計を検証」「状態機械を検査」「要求を形式化」と言う
 - 並行・状態遷移・プロトコルの設計を、コードを書く前にモデル検査で固めたいと判断したとき
-- IaC(Terraform/Pulumi/SST/CloudFormation 等)の**動的側面**(create/replace/destroy ライフサイクル・依存順序・並行 apply / state lock・失敗時のロールバック整合)を厳密に固めたいとき。静的な宣言・命名・ポリシー妥当性は対象外(`terraform validate`/tflint/OPA/`terrashark` の領分)
+- IaC(Terraform/Pulumi/SST/CloudFormation 等)の**動的側面**(ライフサイクル・apply 順序・並行 apply / state lock・失敗時のロールバック整合)を厳密に固めたいとき。静的な宣言・命名・ポリシー妥当性は対象外(`terraform validate`/tflint/OPA/`terrashark` の領分)
 - 仕様(RFC、標準、仕様書)を要件へ落とすとき、抽出の網羅性とトレーサビリティを担保したいとき(0段の抽出ループ)
 
 動作: 0段(仕様→要件の網羅的抽出。採番チェックリスト+トレーサビリティ表が必須ゲート)→ 外ループ(EARS + 状態/ドメインモデル → TLA+ spec)→ 中ループ(TLC でモデル検査 + spec 自体を mutation testing)→ 内ループ(反例トレース → Gherkin 受け入れ仕様)を反例と survivor が尽きるまで回す。抽出の原則は **過剰抽出は安全、漏れは危険**(迷ったら採る)。
