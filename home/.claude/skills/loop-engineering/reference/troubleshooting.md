@@ -15,6 +15,25 @@ _JAVA_OPTIONS="-Djava.io.tmpdir=$TMPDIR/tla"
 
 `loop-middle` 等が動かないときはこれを疑う。
 
+## cfg と module の名前ミスマッチで `Cannot find source file for module`
+
+1つの `.tla` を複数の cfg で検査する運用(safety と action property と liveness を別々の cfg に分ける)でよく踏む。
+`tlc -config Foo.cfg Foo.tla` を前提にした薄いラッパーに `Foo.cfg` だけ渡すと、ラッパーが `Foo.tla` を探し、それが存在せず即死する。
+cfg 名が module 名と一致するとは限らないからである。
+
+cfg は SPECIFICATION や INVARIANT、PROPERTY を指す設定にすぎず、検査対象の `.tla` とは独立している。
+正しくは、対象 module の `.tla` と使いたい cfg を別々に渡す。
+
+```sh
+# NG: ラッパーが ReliableQueueProp.tla を探して落ちる
+run-tlc.sh ReliableQueueProp
+# OK: 同じ spec に別 cfg を当てる
+java ... tlc2.TLC -config ReliableQueueProp.cfg ReliableQueue.tla
+```
+
+ラッパーを書くなら、module 名と cfg 名を別の引数にする。
+`-config` を握りつぶして `${MOD}.cfg ${MOD}.tla` 固定にすると、この multi-cfg 運用ができなくなる。
+
 ## TLC がスクラッチを撒く
 
 TLC は作業ディレクトリに `states/` などのスクラッチを吐く。
