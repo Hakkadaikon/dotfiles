@@ -57,6 +57,7 @@ description: >
 | 何を検証したいか | 読む reference |
 | --- | --- |
 | 粒度の選択(unit/integration/E2E/contract…)、ピラミッド配分 | [`reference/levels.md`](reference/levels.md) |
+| テストを関心事で階層化(完結単位・コンテキスト・フローと状態・影響の局限) | [`reference/levels.md`](reference/levels.md) |
 | 仕様から機械的に導く(同値分割・境界値・デシジョンテーブル・状態遷移・ペアワイズ) | [`reference/blackbox-systematic.md`](reference/blackbox-systematic.md) |
 | 経験・業務フローから導く(ユースケース・シナリオ・エラー推測・探索的・アドホック) | [`reference/blackbox-experience.md`](reference/blackbox-experience.md) |
 | 構造網羅・カバレッジ・テストの強さ(C0/C1・MC/DC・データフロー・mutation) | [`reference/whitebox-coverage.md`](reference/whitebox-coverage.md) |
