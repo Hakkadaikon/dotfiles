@@ -6,6 +6,29 @@ spec に機械的ミューテーション(`<`→`\leq`、`=`→`#`、`/\`→`\/`
 **survivor が出たら spec が弱い。**
 ミューテーションを TLC が捕まえられない = 不変条件や `Next` がそのバグを区別できない。
 
+## killed も信じるな(変異が当たったか先に確認する)
+
+survivor を侮るのと逆向きの罠がある。
+`killed` の判定を「TLC がエラーを吐いたか」だけで下すと、変異が一度も当たっていないケースを killed と誤認する。
+実地で踏んだ。
+
+regex や perl、sed の置換が一致せず空振りし、変異体が原本と byte 単位で同一になっていた。
+それでも別の壊れた版が緑か赤を出すと、verdict 関数が「変異なし(元の spec の結果)」をそのまま killed か survivor に流し、置換ミスを killed と取り違えた。
+survivor は怪しんで調べるが、killed は安心して放置する。
+だから false-killed の方が気づきにくい。
+
+verdict を出す前に、必ず次を通す。
+
+1. 変異体と原本の diff が空でないことを確認する。空なら変異が未適用で、killed でも survivor でもなく検査が成立していない。
+   ```sh
+   diff -q "$mutant.tla" "$base.tla" && { echo "MUTATION NOT APPLIED: $name"; exit 1; }
+   ```
+2. 置換が変えた行数を assert する(perl なら `-i` の戻り値、sed なら前後の `wc -l` 差や grep でのマーカ確認)。
+3. それでも不安なら、変異後の該当行を grep して、意図した字面になっているかを目視する。
+
+**「全 mutant killed」を報告する前に、各 mutant が原本と異なることを示す。**
+diff の確認を伴わない killed は無効である。
+
 ## equivalent-mutant を見分ける(知らないと永遠に終わらない)
 
 regex ベースの oracle は意味を理解せず字面を変異させるので、survivor の多くは「設計の穴」ではなく **equivalent-mutant**(変異しても振る舞いが変わらない=原理的に kill 不能)である。
