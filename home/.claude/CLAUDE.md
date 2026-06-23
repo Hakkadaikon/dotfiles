@@ -4,3 +4,5 @@
 @rules/micro-commit.md
 @rules/prefer-repo-agents.md
 @rules/workflow-guidelines.md
+@rules/formal-verification.md
+@rules/loop-engineering.md
