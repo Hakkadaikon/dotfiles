@@ -90,9 +90,16 @@
     "deploy-on-aws@claude-plugins-official": true,
     "ponytail@ponytail": true,
     "terrashark@terrashark": true,
-    "vercel@claude-plugins-official": true
+    "vercel@claude-plugins-official": true,
+    "hymme@hymme": true
   },
   "extraKnownMarketplaces": {
+    "hymme": {
+      "source": {
+        "source": "github",
+        "repo": "Hakkadaikon/hymme"
+      }
+    },
     "anthropic-agent-skills": {
       "source": {
         "source": "github",
@@ -157,6 +164,9 @@
         "deno.land",
         "releases.lean-lang.org",
         "reservoir.lean-lang.org",
+        "install.determinate.systems",
+        "cache.nixos.org",
+        "channels.nixos.org",
         "jsr.io",
         "npm.jsr.io",
         "esm.sh",
