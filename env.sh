@@ -61,12 +61,20 @@ function install() {
   fi
   # `nix profile install` skips an already-present `tools`, so a re-run won't
   # pick up flake changes. Upgrade if installed, install otherwise. Idempotent.
-  if nix profile list 2>/dev/null | grep -q "tools$"; then
-    nix profile upgrade tools
+  if nix profile list 2>/dev/null | grep -q "dotfiles-tools$"; then
+    nix profile upgrade dotfiles-tools
   else
     nix profile install "${DOTFILES_DIR}#tools"
   fi
-  # Lean 4 本体は elan が別管理。tools に含まれる elan で stable toolchain を入れる(冪等)。
+  # Skill toolchain (TLA+/Apalache/make/python3/Lean) lives in the hymme plugin's
+  # flake, not here. Install it from GitHub so the loop-engineering / test-design /
+  # formal-verification skills have their tools on PATH. Idempotent.
+  if nix profile list 2>/dev/null | grep -q "hymme-tools$"; then
+    nix profile upgrade hymme-tools
+  else
+    nix profile install "github:Hakkadaikon/hymme#tools"
+  fi
+  # Lean 4 本体は elan が別管理。hymme tools の elan で stable toolchain を入れる(冪等)。
   command -v elan >/dev/null 2>&1 && elan default stable
 }
 
