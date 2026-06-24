@@ -60,12 +60,13 @@ function install() {
     [ -e "${NIX_PROFILE}" ] && . "${NIX_PROFILE}"
   fi
   # Upgrade by profile-entry Name if present, add otherwise. Idempotent.
+  # --refresh on both bypasses Nix's cached github flake rev (e.g. a pre-push one).
   #   $1 = profile Name, $2 = add ref, $3.. = extra add flags
   _profile_ensure() {
     # `nix profile list` colorizes the Name even without a TTY; strip ANSI first.
     if nix profile list 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' \
        | grep -qE "^Name:[[:space:]]+$1\$"; then
-      nix profile upgrade "$1"
+      nix profile upgrade --refresh "$1"
     else
       nix profile add "${@:2}"
     fi
@@ -76,8 +77,8 @@ function install() {
   # flake so the loop-engineering / test-design / formal-verification skills find
   # their tools on PATH; profile Name: skill-tools. python3 collides with dotfiles'
   # transitive python3, so give hymme lower priority (higher number) to defer the
-  # shared file.
-  _profile_ensure skill-tools "github:Hakkadaikon/hymme#skill-tools" --priority 6
+  # shared file. --refresh bypasses Nix's cached (pre-push) github flake rev.
+  _profile_ensure skill-tools "github:Hakkadaikon/hymme#skill-tools" --refresh --priority 6
   # Lean 4 本体は elan が別管理。hymme tools の elan で stable toolchain を入れる(冪等)。
   command -v elan >/dev/null 2>&1 && elan default stable
 }
