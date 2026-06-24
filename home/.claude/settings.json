@@ -168,7 +168,8 @@
     "filesystem": {
       "allowWrite": [
         "~/.aws",
-        "~/.elan"
+        "~/.elan",
+        "~/.config/gh"
       ],
       "denyRead": [
         "**/.env",
