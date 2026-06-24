@@ -71,6 +71,16 @@ function install() {
       nix profile add "${@:2}"
     fi
   }
+  # Migrate older installs: hymme used to publish its bundle as `tools` too, which
+  # collided with dotfiles' `tools` by name. If a profile entry named `tools` is
+  # sourced from hymme (not dotfiles), drop it so the rename to `skill-tools` below
+  # installs cleanly. awk reads the entry as a block (Name .. URL on separate lines).
+  if nix profile list 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' | awk '
+      /^Name:/            { name=$2 }
+      /^Original flake URL:/ { if (name=="tools" && $0 ~ /Hakkadaikon\/hymme/) found=1 }
+      END { if (found) exit 0; else exit 1 }'; then
+    nix profile remove tools 2>/dev/null || true
+  fi
   # dotfiles tools (neovim/wezterm/stylua/shfmt/fish); profile Name: tools.
   _profile_ensure tools "${DOTFILES_DIR}#tools"
   # Skill toolchain (TLA+/Apalache/make/python3/Lean) lives in the hymme plugin's
