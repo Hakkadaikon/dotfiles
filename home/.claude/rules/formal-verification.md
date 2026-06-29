@@ -19,4 +19,4 @@ paths:
 
 非対象: 通常のユニットテストで足りる検証・証明が過剰な小タスク(YAGNI)。形式化自体が目的化しないこと。`sorry` 入りを「保証済み」と偽らない。
 
-詳細規範: skills/formal-verification/SKILL.md
+詳細規範: hymme:formal-verification スキル(SKILL.md)

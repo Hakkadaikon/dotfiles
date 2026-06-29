@@ -21,4 +21,4 @@ paths:
 
 非対象: 状態遷移も並行性も無い単純なロジック(通常テストで足りる)。形式化が目的化しないこと(YAGNI)。
 
-詳細規範・各ループの手順・実行時の罠: `skills/loop-engineering/SKILL.md` と同 `reference/`。
+詳細規範・各ループの手順・実行時の罠: `hymme:loop-engineering` スキル(SKILL.md)と同 `reference/`。
