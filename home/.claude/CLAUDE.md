@@ -1,3 +1,5 @@
+Think in English. Write your final response to the user in Japanese.
+
 @rules/genshijin.md
 @rules/japanese-tech-writing.md
 @rules/ponytail.md
