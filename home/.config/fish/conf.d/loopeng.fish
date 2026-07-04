@@ -1,8 +1,10 @@
 # Loop engineering: NL -> EARS+model -> TLA+ -> Gherkin.
 # Tools (tlc/sany/apalache-mc) come from the nix profile bin via flake.nix.
 # Here we just export the paths the oracles and Makefile.loopeng look for.
+# Makefile.loopeng/bin/templates live in the hymme plugin repo, not dotfiles,
+# so the fish functions always pick up the latest checked-out version.
 
-set -gx LOOPENG_HOME "$HOME/.config/loopeng"
+set -gx LOOPENG_HOME "$HOME/repos/hakkadaikon/hymme/loopeng"
 
 # tla2tools.jar lives under the tlaplus derivation's share/ (linked into profile).
 set -l _tla_jar "$HOME/.nix-profile/share/tlaplus/tla2tools.jar"
