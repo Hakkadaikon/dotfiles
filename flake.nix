@@ -29,6 +29,8 @@
         pkgs.fish
         pkgs.fishPlugins.z
         pkgs.fishPlugins.bobthefish
+        pkgs.bubblewrap
+        pkgs.socat
       ];
     in
     {

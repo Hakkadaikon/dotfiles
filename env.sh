@@ -52,7 +52,7 @@ function echoerr() {
 
 function install() {
   # Install Nix (Determinate Systems installer) if missing, then install all
-  # tools (neovim/wezterm/stylua/shfmt) from flake.nix into the user profile.
+  # tools (neovim/wezterm/stylua/shfmt/bubblewrap/socat) from flake.nix into the user profile.
   if ! command -v nix >/dev/null 2>&1; then
     curl -fsSL https://install.determinate.systems/nix | sh -s -- install --no-confirm
     # installer が書く profile スクリプトを source し、新シェルなしで継続する。
@@ -81,7 +81,7 @@ function install() {
       END { if (found) exit 0; else exit 1 }'; then
     nix profile remove tools 2>/dev/null || true
   fi
-  # dotfiles tools (neovim/wezterm/stylua/shfmt/fish); profile Name: tools.
+  # dotfiles tools (neovim/wezterm/stylua/shfmt/fish/bubblewrap/socat); profile Name: tools.
   _profile_ensure tools "${DOTFILES_DIR}#tools"
   # Skill toolchain (TLA+/Apalache/make/python3/Lean) lives in the hymme plugin's
   # flake so the loop-engineering / test-design / formal-verification skills find
