@@ -87,7 +87,9 @@ function install() {
   # flake so the loop-engineering / test-design / formal-verification skills find
   # their tools on PATH; profile Name: skill-tools. python3 collides with dotfiles'
   # transitive python3, so give hymme lower priority (higher number) to defer the
-  # shared file. --refresh bypasses Nix's cached (pre-push) github flake rev.
+  # shared file. profile add/upgrade's own --refresh only bypasses the derivation
+  # cache, not the flake input's cached rev, so force that separately first.
+  nix flake prefetch --refresh github:Hakkadaikon/hymme >/dev/null
   _profile_ensure skill-tools "github:Hakkadaikon/hymme#skill-tools" --refresh --priority 6
   # Lean 4 本体は elan が別管理。hymme tools の elan で stable toolchain を入れる(冪等)。
   command -v elan >/dev/null 2>&1 && elan default stable
