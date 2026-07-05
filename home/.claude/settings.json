@@ -44,7 +44,6 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "opusplan",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "Stop": [
