@@ -31,6 +31,7 @@
         pkgs.fishPlugins.bobthefish
         pkgs.bubblewrap
         pkgs.socat
+        pkgs.keychain
       ];
     in
     {
