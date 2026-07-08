@@ -167,7 +167,13 @@
       "allowWrite": [
         "~/.aws",
         "~/.elan",
-        "~/.config/gh"
+        "~/.config/gh",
+        "~/.cache/nix",
+        "~/go",
+        "~/.cache/go-build",
+        "~/.cargo",
+        "~/.rustup",
+        "~/.npm"
       ],
       "denyRead": [
         "**/.env",
