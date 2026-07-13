@@ -1,0 +1,17 @@
+# tasks/todo.md や tasks/fv, tasks/loopeng の中間生成物は git 管理対象外
+/tasks/
+__pycache__/
+
+# sandbox が実行時に生成するダミーファイル（実体は /dev/null、git 管理対象外）
+/.bash_profile
+/.bashrc
+/.claude/
+/.gitconfig
+/.gitmodules
+/.idea
+/.mcp.json
+/.profile
+/.ripgreprc
+/.vscode
+/.zprofile
+/.zshrc
