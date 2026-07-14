@@ -5,7 +5,10 @@
   "permissions": {
     "allow": [
       "Bash(git push -f * feature*)",
-      "Bash(git push --force * feature*)"
+      "Bash(git push --force * feature*)",
+      "Bash(docker *)",
+      "Bash(docker-compose *)",
+      "Bash(nix *)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -118,6 +121,11 @@
     "failIfUnavailable": true,
     "autoAllowBashIfSandboxed": true,
     "allowUnsandboxedCommands": false,
+    "excludedCommands": [
+      "docker",
+      "docker-compose",
+      "nix"
+    ],
     "network": {
       "allowedDomains": [
         "github.com",
