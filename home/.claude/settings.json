@@ -1,6 +1,8 @@
 {
+  "cleanupPeriodDays": 876000,
   "env": {
-    "TZ": "Asia/Tokyo"
+    "TZ": "Asia/Tokyo",
+    "ENABLE_TOOL_SEARCH": "true"
   },
   "permissions": {
     "allow": [
@@ -194,6 +196,9 @@
     }
   },
   "alwaysThinkingEnabled": false,
+  "promptSuggestionEnabled": false,
+  "showClearContextOnPlanAccept": true,
+  "askUserQuestionTimeout": "never",
   "tui": "fullscreen",
   "autoMemoryEnabled": false,
   "skipDangerousModePermissionPrompt": true,
