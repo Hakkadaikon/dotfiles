@@ -26,6 +26,7 @@
         pkgs.wezterm
         pkgs.stylua
         pkgs.shfmt
+        pkgs.nodejs
         pkgs.fish
         pkgs.fishPlugins.z
         pkgs.fishPlugins.bobthefish
