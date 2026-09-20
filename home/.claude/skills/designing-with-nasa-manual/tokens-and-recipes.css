@@ -1,0 +1,436 @@
+/* Tokens and layout recipes after the 1976 NASA Graphics Standards Manual
+   (NHB 1430.2). Copy this file as-is and build the page from these classes;
+   the manual's page codes are cited next to each decision.
+
+   Contents: tokens · base type · page frame (.page .masthead .rule .folio)
+   · signs (.sign .link .caption .notice) · cover (.cover .form .field
+   .tiles) · directory (.room .rail .peers .status) · ruled rows
+   (.messages .message .compose) · narrow breakpoint */
+
+/* Palette (1.3, 1.4, 1.5, 5.2): white paper, black ink, NASA Red, NASA Warm
+   Gray. --mark is what the wordmark and "you" accents use: red on white,
+   white on black, so red never lands on a dark ground. */
+:root {
+  --red: #fc3d21;
+  --gray: #a19d94;
+  --gray-light: #e8e6e1;
+  --ink: #000;
+  --paper: #fff;
+  --mark: var(--red);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gray-light: #3f3c38;
+    --ink: #fff;
+    --paper: #000;
+    --mark: #fff;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Type (1.2, 5.2, 5.3, 6.2): Helvetica, Light body, flush-left ragged-right,
+   letter-spacing normal. 300 falls back to 400 on Arial/Liberation. */
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+  border-radius: 0;
+}
+
+fieldset {
+  border: 0;
+}
+
+/* Print has no focus ring; screens need one. Keep it in ink. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Page frame (5.14-5.20): masthead, hairline, body, folio. */
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 64em;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 1.5em;
+}
+
+/* Stem-word masthead (5.1, 5.8, 5.9): mark + one Light word on a shared
+   baseline; identification block (1.2, 2.2, 7.4) at the right. */
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1em 2em;
+  padding: 1.5em 0 0.75em;
+}
+
+.masthead__brand {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5em;
+  color: var(--mark);
+}
+
+.masthead__stem {
+  font-size: 1.6em;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.masthead__id {
+  font-size: 0.8em;
+}
+
+.masthead__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--ink);
+}
+
+/* Folio (5.14): small figures in the outer margin. */
+.folio {
+  margin-top: auto;
+  padding: 1em 0;
+  font-size: 0.75em;
+  color: var(--gray);
+  text-align: right;
+}
+
+/* Signs (6.1, 6.2): black panel/white text; red panel/white text; white
+   panel/black outline. Arrows are text in the label, not icons. */
+.sign {
+  padding: 0.6em 1em;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sign:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sign--red {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+
+.sign--outline {
+  background: transparent;
+  color: var(--ink);
+}
+
+.link {
+  align-self: flex-start;
+  margin-top: 1em;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.caption {
+  font-size: 0.8em;
+  color: var(--gray);
+}
+
+/* Warning panel (6.2): bold heading, Light body, outlined sign on the right.
+   Ink/paper tokens make it invert in dark mode without a second rule set. */
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em 1em;
+  margin-top: 0.75em;
+  padding: 0.75em 1em;
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.notice strong {
+  display: block;
+}
+
+.notice .sign--outline {
+  border-color: var(--paper);
+  color: var(--paper);
+}
+
+/* Cover (3.1 letterhead, 5.14 publication cover): heading column, form
+   column, the big mark in the empty space below. */
+.cover {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-rows: auto 1fr;
+  gap: 2em;
+  flex: 1;
+  padding: 2em 0;
+}
+
+.cover h1 {
+  margin-bottom: 0.5em;
+  font-size: 1.5em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cover__lede {
+  max-width: 22em;
+}
+
+.cover__mark {
+  grid-column: 1 / -1;
+  align-self: end;
+  color: var(--mark);
+}
+
+/* Form (4.1): one hairline per row; the row rule is the input's underline.
+   No borders on the input itself, no card around the form. */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: block;
+  padding: 0.75em 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.field__label {
+  display: block;
+  margin-bottom: 0.35em;
+  font-size: 0.8em;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.25em 0;
+  border: 0;
+  background: transparent;
+}
+
+.field__hint {
+  margin-top: 0.35em;
+}
+
+/* Sign tiles (6.1): white panel/black outline; the pressed one is the black
+   panel. State lives in aria-pressed, so the markup is accessible for free. */
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 0.35em;
+}
+
+.tile {
+  padding: 0.5em 0.9em;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Scripted (button + aria-pressed) and script-free (label + hidden radio)
+   pickers share one look. */
+.tile[aria-pressed="true"],
+.tile:has(input:checked) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.tile input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.tile:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.form .sign--red {
+  align-self: flex-start;
+  margin-top: 1.5em;
+}
+
+/* Directory (5.16 interior grid, 7.4 identification stack): fixed rail on
+   the left, body on the right. */
+.room {
+  display: grid;
+  grid-template-columns: 14em 1fr;
+  gap: 2em;
+  flex: 1;
+  min-height: 0;
+  padding: 1em 0;
+}
+
+.rail h2,
+.body h2 {
+  margin-bottom: 0.25em;
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.rail section + section {
+  margin-top: 1.5em;
+}
+
+.peers {
+  list-style: none;
+}
+
+.peers li::before {
+  content: "\2192  ";
+}
+
+.you {
+  color: var(--mark);
+}
+
+/* "In use" indicator (6.2): word + colour block. Red is a filled block, never
+   a coloured word, so it is legal on both schemes. */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.25em;
+}
+
+.status__block {
+  width: 1.2em;
+  height: 1.2em;
+  border: 1px solid var(--ink);
+}
+
+.status__block[data-status="connected"] {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.status__block[data-status="connecting"] {
+  border-color: var(--gray);
+  background: var(--gray);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Ruled list rows (5.17 tabular pages): sender | text | time on one baseline,
+   a light hairline between rows, no bubbles. grid-area reorders visually so
+   the DOM can keep the time away from the text's tail. */
+.messages {
+  flex: 1;
+  min-height: 0;
+  margin-top: 0.5em;
+  overflow-y: auto;
+  border-top: 1px solid var(--ink);
+}
+
+.message {
+  display: grid;
+  grid-template-columns: 7em 1fr auto;
+  gap: 0.75em;
+  align-items: baseline;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.message__sender {
+  grid-area: 1 / 1;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.message__time {
+  grid-area: 1 / 3;
+}
+
+.message__text {
+  grid-area: 1 / 2;
+  overflow-wrap: anywhere;
+}
+
+.message__failed {
+  grid-area: 2 / 2;
+  color: var(--mark);
+}
+
+.compose {
+  display: flex;
+  gap: 0.5em;
+  padding: 0.75em 0;
+  border-top: 1px solid var(--ink);
+}
+
+.compose input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4em 0;
+  border: 0;
+  border-bottom: 1px solid var(--gray);
+  background: transparent;
+}
+
+/* Narrow: stack the grids, drop the decorative mark, shorten the sender col. */
+@media (max-width: 40em) {
+  .cover,
+  .room {
+    grid-template-columns: 1fr;
+  }
+
+  .cover__mark {
+    display: none;
+  }
+
+  .message {
+    grid-template-columns: 5em 1fr auto;
+  }
+}
