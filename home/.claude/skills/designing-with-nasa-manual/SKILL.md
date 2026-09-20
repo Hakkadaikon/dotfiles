@@ -18,13 +18,13 @@ letters with the same construction rules; never reproduce the worm.
 
 Files in this skill:
 
-- `manual-rules.md`: the nine rules R1–R9 with section numbers, the web
+- `references/manual-rules.md`: the nine rules R1–R9 with section numbers, the web
   translation of each, and what does not translate. Read it once per project.
-- `tokens-and-recipes.css`: a complete stylesheet to copy in. Read it when
+- `references/tokens-and-recipes.css`: a complete stylesheet to copy in. Read it when
   writing CSS.
-- `wordmark.md`: constructing a uniform-stroke SVG wordmark. Read it when
+- `references/wordmark.md`: constructing a uniform-stroke SVG wordmark. Read it when
   the brief needs a logo.
-- `verification.md`: the screenshot matrix script and checklist. Read it
+- `references/verification.md`: the screenshot matrix script and checklist. Read it
   before declaring the design done.
 
 ## Scope
@@ -75,7 +75,7 @@ ground. Do not "brighten the red" to fix contrast; remove the red.
 | R1 Four colours; red on white only; white on black | 1.3–1.5, 5.2 | tokens above; red only as `--mark` on light or as a panel | `--red --gray --gray-light --ink --paper --mark` |
 | R2 Helvetica; Light body, Medium headings; flush-left; upper & lower case; normal spacing | 1.2, 5.2, 5.3, 6.2 | `font-weight: 300` body, `700` headings; `text-align: left`; no `text-transform`, `letter-spacing: normal` | `body`, `h1`, `.field__label` |
 | R3 Heading band, hairline, body; rules not boxes | 5.14–5.20 | masthead → `hr.rule` → body → folio | `.page .masthead .rule .folio` |
-| R4 Uniform-stroke logotype, no outline/shadow/box | 1.1, 1.6, 1.7, 9.1 | own SVG, `stroke="currentColor"`, one `stroke-width` | see `wordmark.md` |
+| R4 Uniform-stroke logotype, no outline/shadow/box | 1.1, 1.6, 1.7, 9.1 | own SVG, `stroke="currentColor"`, one `stroke-width` | see `references/wordmark.md` |
 | R5 Stem-word masthead | 5.1, 5.8, 5.9 | mark at 1.6em + one Light word on the baseline | `.masthead__brand .masthead__stem` |
 | R6 Identification block, 2 Light lines + 1 Medium, flush-left | 1.2, 2.2, 7.4 | small paragraph with `<br>` at the masthead's right | `.masthead__id` |
 | R7 Signs: black/white, red/white, white/black; arrows precede words | 6.1, 6.2 | buttons are panels; arrows are text ("→ Join") | `.sign .sign--red .sign--outline .tile .notice .status__block` |
@@ -84,7 +84,7 @@ ground. Do not "brighten the red" to fix contrast; remove the red.
 
 ## Layout recipes
 
-Class names are in `tokens-and-recipes.css`; copy that file, do not retype.
+Class names are in `references/tokens-and-recipes.css`; copy that file, do not retype.
 
 - Page frame: `main.page` (max-width 64em, 1.5em gutters, flex column,
   `min-height: 100dvh`), then `header.masthead`, `hr.rule`, the body,
@@ -144,12 +144,12 @@ height 70, arches of radius 20, stadium rects for round letters, and the
 colour taken from `--mark` through the parent's `color`. Size it with
 `height` in em. Render it to PNG and look at it before committing; the
 numbers need one or two nudges. Full construction table, letter recipes and
-the render loop: `wordmark.md`.
+the render loop: `references/wordmark.md`.
 
 ## Verification loop
 
 1. Build, then render the screenshot matrix: light/dark × 1280/400
-   (`verification.md` has the script).
+   (`references/verification.md` has the script).
 2. At 400, confirm `scrollWidth == innerWidth`.
 3. Read the four PNGs as images and check: no red text or hairline on the
    dark ground, wordmark white in dark, everything flush-left except the
@@ -158,7 +158,7 @@ the render loop: `wordmark.md`.
 4. States that need a backend (connected, lost, failed) are rendered
    statically: a scratch HTML linking the built stylesheet with the markup
    hand-written, same four shots.
-5. Run the mechanical greps in `verification.md`; expected empty.
+5. Run the mechanical greps in `references/verification.md`; expected empty.
 
 ## Test-harness coupling
 
@@ -182,15 +182,15 @@ visually with `grid-area`, as the `.message` recipe does.
 | Centered hero heading and lede | 5.2: flush-left, ragged-right | left column of the cover grid |
 | Decorative numbering ("4.1 Entry") with no citation | numbers in the manual are page codes, not ornament | cite the section in a comment next to the rule it drives |
 | A second accent or pastel tint | 1.5: no pastels, no second saturated colour | delete it |
-| Redrawing the NASA worm or insignia | 14 CFR 1221 | own letters, same construction (`wordmark.md`) |
-| Committing the SVG without rendering it | first-guess arcs never align | PNG loop in `wordmark.md` |
+| Redrawing the NASA worm or insignia | 14 CFR 1221 | own letters, same construction (`references/wordmark.md`) |
+| Committing the SVG without rendering it | first-guess arcs never align | PNG loop in `references/wordmark.md` |
 | Removing `:focus-visible` because print has no focus | accessibility | keep the 2px ink outline |
 
 ## Applying the method to another manual
 
 1. Read the manual and extract the rules that drive layout, type, colour and
    marks; keep each with its section number (the table format in
-   `manual-rules.md`). Over-extract; drop later.
+   `references/manual-rules.md`). Over-extract; drop later.
 2. Write the tokens first: paper, ink, the one or two accent inks, and a
    derived token for anything that must change on a dark ground.
 3. Translate each rule into a class or a one-line CSS decision, and write
