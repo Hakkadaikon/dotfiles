@@ -1,7 +1,7 @@
 Think in English. Write your final response to the user in Japanese.
 
 @rules/genshijin.md
-@rules/japanese-tech-writing.md
+@rules/yomiyasu.md
 @rules/ponytail.md
 @rules/micro-commit.md
 @rules/prefer-repo-agents.md
