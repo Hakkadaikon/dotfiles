@@ -35,7 +35,6 @@
       "Bash(mkfs*)",
       "Bash(chmod -R *)",
       "Bash(chown -R *)",
-      "Bash(curl *)",
       "Bash(wget *)",
       "Read(**/.env)",
       "Read(**/.env.*)",
