@@ -85,7 +85,8 @@
     "terrashark@terrashark": true,
     "vercel@claude-plugins-official": true,
     "superpowers@hymme": true,
-    "hymme@hymme": true
+    "hymme@hymme": true,
+    "oh-my-mermaid@oh-my-mermaid": true
   },
   "extraKnownMarketplaces": {
     "hymme": {
@@ -116,6 +117,12 @@
       "source": {
         "source": "github",
         "repo": "LukasNiessen/terrashark"
+      }
+    },
+    "oh-my-mermaid": {
+      "source": {
+        "source": "github",
+        "repo": "oh-my-mermaid/oh-my-mermaid"
       }
     }
   },
