@@ -48,6 +48,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
+  "model": "claude-opus-5-5",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "Stop": [
@@ -127,6 +128,5 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-daltonized",
   "skipAutoPermissionPrompt": true,
-  "voiceEnabled": true,
-  "model": "sonnet"
+  "voiceEnabled": true
 }
