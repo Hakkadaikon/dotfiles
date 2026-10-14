@@ -2,9 +2,5 @@ Think in English. Write your final response to the user in Japanese.
 
 @rules/genshijin.md
 @rules/yomiyasu.md
-@rules/ponytail.md
-@rules/micro-commit.md
 @rules/prefer-repo-agents.md
 @rules/workflow-guidelines.md
-@rules/formal-verification.md
-@rules/loop-engineering.md
