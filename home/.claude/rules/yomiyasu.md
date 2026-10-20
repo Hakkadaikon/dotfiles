@@ -6,6 +6,6 @@
 
 非対象: 通常のチャット応答(genshijin 維持)。
 
-ドメイン指定: `--domain tech|business|essay`。技術文書は tech。
+ドメインと文書の種類はスキルが本文から判定する(`references/domains/`・`references/doc-types/`)。
 
 詳細規範: skills/yomiyasu/SKILL.md
