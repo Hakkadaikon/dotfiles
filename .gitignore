@@ -15,3 +15,7 @@ __pycache__/
 /.vscode
 /.zprofile
 /.zshrc
+
+# Claude Code が同期・削除時に ~/.claude/skills（この repo への symlink）へ自動生成する
+/home/.claude/skills/synced/
+/home/.claude/skills/.trash/
