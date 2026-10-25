@@ -59,6 +59,14 @@
             "command": "python3 ~/.claude/hooks/detect-leaked-toolcall.py"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code stop"
+          }
+        ]
       }
     ],
     "SubagentStop": [
@@ -67,6 +75,58 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/detect-leaked-toolcall.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|WebFetch|Read|Grep|Agent|mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code pretooluse"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Read|Write|Edit|NotebookEdit|Glob|Grep|TodoWrite|TaskCreate|TaskUpdate|EnterPlanMode|ExitPlanMode|Skill|Agent|AskUserQuestion|EnterWorktree|mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code posttooluse"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code precompact"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code sessionstart"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "context-mode hook claude-code userpromptsubmit"
           }
         ]
       }
