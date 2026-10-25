@@ -68,8 +68,11 @@ function install() {
     if nix profile list 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g' \
        | grep -qE "^Name:[[:space:]]+$1\$"; then
       nix profile upgrade --refresh "$1"
-    else
+    elif nix profile add --help >/dev/null 2>&1; then
       nix profile add "${@:2}"
+    else
+      # Nix before 2.27 has no `profile add`; `install` is the same command there
+      nix profile install "${@:2}"
     fi
   }
   # Migrate older installs: hymme used to publish its bundle as `tools` too, which
