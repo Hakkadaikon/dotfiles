@@ -38,6 +38,7 @@
         pkgs.socat
         pkgs.keychain
         context-mode
+        pkgs.gitleaks
       ]
       # bubblewrap is Linux-only (namespaces); macOS sandboxing uses seatbelt.
       ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.bubblewrap ];
