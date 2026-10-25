@@ -30,10 +30,11 @@
         pkgs.fish
         pkgs.fishPlugins.z
         pkgs.fishPlugins.bobthefish
-        pkgs.bubblewrap
         pkgs.socat
         pkgs.keychain
-      ];
+      ]
+      # bubblewrap is Linux-only (namespaces); macOS sandboxing uses seatbelt.
+      ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.bubblewrap ];
     in
     {
       packages = {
