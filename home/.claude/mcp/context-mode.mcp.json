@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "context-mode": {
+    "plugin_context-mode_context-mode": {
       "type": "stdio",
       "command": "context-mode",
       "args": []

@@ -31,6 +31,7 @@ claude mcp list
 - ツール出力をサンドボックスに逃がし、コンテキストに載る量を減らす MCP サーバー。
 - 本体は flake の `tools` に入る(`nix/context-mode/`)。`context-mode` が PATH に要る。
 - hooks(PreToolUse ほか 6 種)は `settings.json` に直接書いてある。プラグインとしては入れていない。
+- サーバー名は `plugin_context-mode_context-mode`。hooks がコンテキストに注入する案内文はツール名を `mcp__plugin_context-mode_context-mode__ctx_*`(プラグイン版の名前)で固定しているため、MCP 直登録でも同じ名前になるよう合わせている。
 - ライセンスは ELv2(ソース公開だが OSI の OSS ではない)。個人利用は可、ホスティングして他人に提供するのは不可。
 
 ## `all.mcp.json`

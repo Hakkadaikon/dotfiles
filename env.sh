@@ -136,10 +136,12 @@ function mcp() {
   # user スコープに MCP サーバーを登録する。~/.claude.json は dotfiles 管理外(可変)なので
   # 設定実体は home/.claude/mcp/*.mcp.json テンプレに置き、ここから add-json で流し込む。冪等。
   MCP_DIR="${DOTFILES_HOME_DIR}/.claude/mcp"
-  for name in terraform aws context-mode; do
-    SERVER_JSON=$(python3 -c "import json; d=json.load(open('${MCP_DIR}/${name}.mcp.json')); print(json.dumps(d['mcpServers']['${name}']))")
-    claude mcp remove -s user "${name}" >/dev/null 2>&1
-    claude mcp add-json -s user "${name}" "${SERVER_JSON}" && echo "mcp registered: ${name}"
+  # Server name = key inside each template (context-mode's key differs from its file name).
+  for file in terraform aws context-mode; do
+    while IFS=$'\t' read -r name SERVER_JSON; do
+      claude mcp remove -s user "${name}" >/dev/null 2>&1
+      claude mcp add-json -s user "${name}" "${SERVER_JSON}" && echo "mcp registered: ${name}"
+    done < <(python3 -c "import json; d=json.load(open('${MCP_DIR}/${file}.mcp.json')); [print(k + '\t' + json.dumps(v)) for k, v in d['mcpServers'].items()]")
   done
 }
 
