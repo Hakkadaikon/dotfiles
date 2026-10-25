@@ -15,7 +15,12 @@
 
   flake-utils.lib.eachDefaultSystem (system:
     let
-      pkgs = import nixpkgs { inherit system; };
+      pkgs = import nixpkgs {
+        inherit system;
+        # context-mode is ELv2 (source-available, unfree to nixpkgs); allow only it.
+        config.allowUnfreePredicate = pkg: pkgs.lib.getName pkg == "context-mode";
+      };
+      context-mode = pkgs.callPackage ./nix/context-mode { };
 
       # loop-engineering / test-design / formal-verification skills (and their
       # TLA+/Apalache/Lean toolchain) moved to the hymme repo's flake.
@@ -32,6 +37,7 @@
         pkgs.fishPlugins.bobthefish
         pkgs.socat
         pkgs.keychain
+        context-mode
       ]
       # bubblewrap is Linux-only (namespaces); macOS sandboxing uses seatbelt.
       ++ pkgs.lib.optionals pkgs.stdenv.isLinux [ pkgs.bubblewrap ];
