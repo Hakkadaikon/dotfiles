@@ -87,3 +87,9 @@ printf '%b\n' "$(bar_line "cx" "$CTX_PCT") | ${CYAN}${MODEL}${RESET}${GIT_BRANCH
 printf '%b\n' "$(bar_line "5h" "$FIVE_PCT") |$FIVE_RESET"
 printf '%b'   "$(bar_line "7d" "$SEVEN_PCT") |$SEVEN_RESET"
 
+
+# --- context-mode の節約量（入っていれば） ---
+if command -v context-mode >/dev/null 2>&1; then
+  CM_LINE=$(echo "$input" | context-mode statusline 2>/dev/null)
+  [ -n "$CM_LINE" ] && printf '\n%s' "$CM_LINE"
+fi
