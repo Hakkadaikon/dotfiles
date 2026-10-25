@@ -86,7 +86,8 @@
     "vercel@claude-plugins-official": true,
     "superpowers@hymme": true,
     "hymme@hymme": true,
-    "oh-my-mermaid@oh-my-mermaid": true
+    "oh-my-mermaid@oh-my-mermaid": true,
+    "imozuru@imozuru": true
   },
   "extraKnownMarketplaces": {
     "hymme": {
@@ -123,6 +124,25 @@
       "source": {
         "source": "github",
         "repo": "oh-my-mermaid/oh-my-mermaid"
+      }
+    },
+    "imozuru": {
+      "source": {
+        "source": "settings",
+        "name": "imozuru",
+        "plugins": [
+          {
+            "name": "imozuru",
+            "source": {
+              "source": "github",
+              "repo": "MaryCache/imozuru",
+              "sha": "a678b0743bb6cc37ef0f3a1a3a2dd6d19fc3c88d"
+            }
+          }
+        ],
+        "owner": {
+          "name": "MaryCache"
+        }
       }
     }
   },
