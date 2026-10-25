@@ -1,0 +1,21 @@
+#!/bin/bash
+# Global git hook (core.hooksPath). Every hook name is a symlink to this file.
+# pre-commit: block staged secrets with gitleaks. All hooks: then run the
+# repo's own .git/hooks/<name>, which core.hooksPath would otherwise skip.
+name=$(basename "$0")
+
+if [ "$name" = "pre-commit" ]; then
+  if command -v gitleaks >/dev/null 2>&1; then
+    gitleaks git --pre-commit --staged --redact --verbose --no-banner --log-level warn || {
+      echo "gitleaks: secret in staged changes; commit blocked (bypass: git commit --no-verify)" >&2
+      exit 1
+    }
+  else
+    echo "gitleaks not found; secret scan skipped" >&2
+  fi
+fi
+
+# Not `--git-path hooks/...`: that resolves through core.hooksPath back to here.
+local_hook="$(git rev-parse --git-common-dir)/hooks/$name"
+[ -x "$local_hook" ] && exec "$local_hook" "$@"
+exit 0

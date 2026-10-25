@@ -21,6 +21,7 @@ FILES=(
   "${CONFIG_DIR}/fish/conf.d/ssh-agent.fish"
   "${CONFIG_DIR}/fish/functions"
   "${CONFIG_DIR}/loopeng"
+  "${CONFIG_DIR}/git/hooks"
   ".claude/settings.json"
   ".claude/statusline.sh"
   ".claude/CLAUDE.md"
@@ -122,6 +123,8 @@ function setup() {
     ln -s ${SRC_FILE} ${DST_LINK}
     echo "link [${SRC_FILE}] -> [${DST_LINK}]"
   done
+  # Global hooks: gitleaks on pre-commit, then each repo's own .git/hooks/<name>.
+  git config --global core.hooksPath "${HOME_DIR}/${CONFIG_DIR}/git/hooks"
 }
 
 function cleanup() {
