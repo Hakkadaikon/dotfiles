@@ -5,7 +5,7 @@ MCP サーバー設定のテンプレート置き場。`~/.claude/.mcp.json` は
 ここでは user スコープに入れる。`~/.claude.json` は可変ファイルで dotfiles 管理に向かないため、設定実体はこのテンプレに置き、`env.sh mcp` が `claude mcp add-json -s user` で流し込む(冪等)。
 
 ```sh
-./env.sh mcp   # terraform / aws を user スコープに登録。全プロジェクトで有効
+./env.sh mcp   # terraform / aws / context-mode を user スコープに登録。全プロジェクトで有効
 ```
 
 登録確認:
@@ -25,6 +25,13 @@ claude mcp list
 - 接続先エンドポイントは `us-east-1` 固定(AWS MCP サービスの受け口。リージョン別エンドポイントは無い)。
 - `--skip-auth` 付き。AWS 認証情報が無くてもドキュメント検索などは動く。API 呼び出しにはローカルの認証情報が必要。
 - 操作対象リージョンは `AWS_REGION` で指定(デフォルト `ap-northeast-1`)。東京のリソースはこれで扱える。
+
+## context-mode (`context-mode.mcp.json`)
+
+- ツール出力をサンドボックスに逃がし、コンテキストに載る量を減らす MCP サーバー。
+- 本体は flake の `tools` に入る(`nix/context-mode/`)。`context-mode` が PATH に要る。
+- hooks(PreToolUse ほか 6 種)は `settings.json` に直接書いてある。プラグインとしては入れていない。
+- ライセンスは ELv2(ソース公開だが OSI の OSS ではない)。個人利用は可、ホスティングして他人に提供するのは不可。
 
 ## `all.mcp.json`
 
