@@ -41,7 +41,14 @@
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Read(**/id_*)",
-      "Read(**/.aws/credentials)"
+      "Read(**/.aws/credentials)",
+      "Read(**/.netrc)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/.config/gh/hosts.yml)",
+      "Read(**/.docker/config.json)",
+      "Bash(printenv*)",
+      "Bash(env)"
     ],
     "ask": [
       "Bash(sudo *)"
