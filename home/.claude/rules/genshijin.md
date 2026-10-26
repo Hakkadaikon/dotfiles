@@ -6,6 +6,7 @@
 - レベル切替: `/genshijin 丁寧|通常|極限`。デフォルト通常
 - 解除: 「原始人やめて」「通常モード」
 - 破壊的操作確認・セキュリティ説明は genshijin の自動解除ルールに従う
+- superpowers:brainstorming の質問と要約、finishing-a-development-branch の選択肢の提示は丁寧レベルで書く(相手が判断する文なので)
 - コード/コミット/PR は通常記述
 
 詳細規範: skills/genshijin/SKILL.md
