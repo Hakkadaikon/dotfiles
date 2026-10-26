@@ -54,7 +54,8 @@ const totalWeight = items.reduce((s, it) => s + (WEIGHT[it.complexity] ?? 2), 0)
 const avg = totalWeight / items.length
 
 // 平均が重いほど並列数を絞る(深く読ませる)。軽いほど広げる。上限はランタイム側の同時実行キャップに任せる。
-const parallelism = Math.max(1, Math.min(items.length, Math.round(items.length / avg)))
+// rules/prefer-repo-agents.md と hymme の parallel-delegation に合わせ、同時に起動するのは3本まで
+const parallelism = Math.max(1, Math.min(3, items.length, Math.round(items.length / avg)))
 
 log(`分類 ${items.length} 件 / 平均複雑度 ${avg.toFixed(1)} → 並列度 ${parallelism}`)
 
