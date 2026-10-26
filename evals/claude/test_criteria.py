@@ -54,10 +54,11 @@ class AllReviewCases(unittest.TestCase):
     def test_recorded_reviews_score_full(self):
         samples = json.load(open(os.path.join(HERE, "hidden", "review_samples.json")))
         cases = {c["id"]: c for c in json.load(open(os.path.join(HERE, "cases.json")))}
-        for cid, text in samples.items():
-            for pattern in cases[cid]["expect_all"]:
-                with self.subTest(case=cid, pattern=pattern[:40]):
-                    self.assertRegex(text, expand(pattern))
+        for cid, texts in samples.items():
+            for text in texts:
+                for pattern in cases[cid]["expect_all"]:
+                    with self.subTest(case=cid, pattern=pattern[:40], text=text[:40]):
+                        self.assertRegex(text, expand(pattern))
 
     def test_bare_diff_scores_zero(self):
         import subprocess

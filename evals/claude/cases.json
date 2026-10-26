@@ -467,7 +467,7 @@
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
    "(?s)(re\\.match|fullmatch|末尾|余分|trailing)[^\\n]{0,200}({DEFECT}|通して|ゴミ|一致する)|({DEFECT}|通して)[^\\n]{0,200}(re\\.match|fullmatch|末尾|trailing)",
-   "(?s)(空文字|空の入力|\"\"|empty)[^\\n]{0,200}(ValueError|{DEFECT})"
+   "(?s)(空文字|空の入力|\"\"|empty)[^\\n]{0,200}(ValueError|{DEFECT})|ValueError[^\\n]{0,40}(出ず|出ない|ならず|ならない|到達しない|raised)"
   ]
  },
  {
@@ -478,7 +478,7 @@
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
    "(?s)(クラス属性|class attribute|class variable|クラス変数)",
-   "(?s)(共有|shared|全インスタンス|他の注文|別の注文)"
+   "(?s)(共有|shared|全インスタンス|全 ?`?\\w*`? ?インスタンス|同じリスト|インスタンス間|他の注文|別の注文)"
   ]
  },
  {
