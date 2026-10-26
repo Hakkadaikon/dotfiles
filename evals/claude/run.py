@@ -31,10 +31,12 @@ def run_case(case, extra, timeout, keep=None):
     cmd += ["--dangerously-skip-permissions"] if case.get("mode") == "bypass" else READONLY
     cmd += extra
     t0 = time.time()
+    timed_out = False
     try:
         proc = subprocess.run(cmd, cwd=repo, capture_output=True, text=True, timeout=timeout)
         out = proc.stdout
     except subprocess.TimeoutExpired as e:
+        timed_out = True
         out = e.stdout.decode() if isinstance(e.stdout, bytes) else (e.stdout or "")
     skills, agents, tools, result, init = [], [], [], {}, {}
     for line in out.splitlines():
@@ -69,6 +71,7 @@ def run_case(case, extra, timeout, keep=None):
         "cost_usd": round(result.get("total_cost_usd") or 0, 4),
         "secs": round(time.time() - t0),
         "subtype": result.get("subtype"),
+        "timed_out": timed_out,
         "init_skills": len(init.get("skills", []) or []),
         "init_agents": len(init.get("agents", []) or []),
     }
@@ -93,18 +96,29 @@ def grade(case, repo, skills, text):
     if "expect_text" in case:
         g["text_ok"] = re.search(case["expect_text"], text) is not None
     if case.get("hidden"):
-        dst = os.path.join(repo, "tests", os.path.basename(case["hidden"]))
-        shutil.copy(os.path.join(HERE, "hidden", case["hidden"]), dst)
-        p = subprocess.run([sys.executable, "-m", "unittest", "-v", f"tests.{os.path.basename(dst)[:-3]}"], cwd=repo, capture_output=True, text=True, timeout=120)
-        ok = len(re.findall(r" \.\.\. ok$", p.stderr, re.M))
-        total = len(re.findall(r" \.\.\. (ok|FAIL|ERROR)$", p.stderr, re.M)) or 1
-        g["hidden_pass"] = round(ok / total, 3)
-        own = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-t", "."], cwd=repo, capture_output=True, text=True, timeout=120)
-        g["suite_green"] = own.returncode == 0
+        # look at the agent's own state before grading adds files (and __pycache__)
         base = int(subprocess.run(["git", "rev-list", "--count", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip() or 0)
         g["commits"] = base - case.get("base_commits", 1)
-        g["dirty"] = bool(subprocess.run(["git", "status", "--porcelain", "--", ".", ":!tests/" + os.path.basename(dst)], cwd=repo, capture_output=True, text=True).stdout.strip())
+        g["dirty"] = bool(subprocess.run(["git", "status", "--porcelain"], cwd=repo, capture_output=True, text=True).stdout.strip())
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+        g["suite_green"] = unittest_rc(["discover", "-s", "tests", "-t", "."], repo, env) == 0
+        dst = os.path.join(repo, "tests", os.path.basename(case["hidden"]))
+        shutil.copy(os.path.join(HERE, "hidden", case["hidden"]), dst)
+        try:
+            p = subprocess.run([sys.executable, "-m", "unittest", "-v", f"tests.{os.path.basename(dst)[:-3]}"], cwd=repo, env=env, capture_output=True, text=True, timeout=120)
+            ok = len(re.findall(r" \.\.\. ok$", p.stderr, re.M))
+            total = len(re.findall(r" \.\.\. (ok|FAIL|ERROR)$", p.stderr, re.M)) or 1
+            g["hidden_pass"] = round(ok / total, 3)
+        except subprocess.TimeoutExpired:
+            g["hidden_pass"] = 0.0
     return g
+
+
+def unittest_rc(args, repo, env):
+    try:
+        return subprocess.run([sys.executable, "-m", "unittest", *args], cwd=repo, env=env, capture_output=True, text=True, timeout=120).returncode
+    except subprocess.TimeoutExpired:
+        return -1
 
 
 def main():
@@ -117,6 +131,10 @@ def main():
     ap.add_argument("--keep", help="move each e2e fixture repo here after grading")
     args, extra = ap.parse_known_args()
     extra = [a for a in extra if a != "--"]
+    # the agent runs inside a temp fixture, so path arguments must not stay relative to this directory
+    for i, a in enumerate(extra[:-1]):
+        if a in ("--plugin-dir", "--mcp-config", "--settings") and os.path.exists(extra[i + 1]):
+            extra[i + 1] = os.path.abspath(extra[i + 1])
     cases = json.load(open(os.path.join(HERE, "cases.json")))
     for case in cases:
         if not fnmatch.fnmatch(case["id"], args.case):
