@@ -96,7 +96,7 @@ s = s.replace('        if new_state == "paid":\n', '        if new_state == "pai
 open(p, "w").write(s)
 EOF
   ;;
-bug)
+bug | logs)
   python3 - <<'EOF2'
 p = "order.py"
 s = open(p).read()
@@ -105,7 +105,26 @@ s = s.replace('            self.payments += 1\n', '            self.payments = 1
 open(p, "w").write(s)
 EOF2
   ;;
-plan)
+esac
+case "$variant" in
+base | dirty | bug) ;;
+logs)
+  mkdir -p logs
+  python3 - <<'EOF2'
+import random
+random.seed(7)
+with open("logs/app.log", "w") as f:
+    for i in range(60000):
+        oid = random.randint(1000, 9999)
+        f.write(f"2026-10-20T{i // 3600 % 24:02d}:{i // 60 % 60:02d}:{i % 60:02d} INFO order={oid} transition created->paid ok latency_ms={random.randint(3, 90)}\n")
+        if i == 41234:
+            f.write(f"2026-10-20T11:27:14 ERROR order=4711 shipment created for cancelled order (transition cancelled->shipped accepted)\n")
+        if i == 52001:
+            f.write(f"2026-10-20T14:26:41 ERROR order=5120 payments counter=1 after second payment attempt was accepted (expected rejection or count 2)\n")
+EOF2
+  git add logs order.py && git commit -q -m "chore: add production log"
+  ;;
+plan | plansdd)
   mkdir -p docs
   cat >docs/plan.md <<'EOF'
 # Plan: refunds for orders
@@ -128,6 +147,9 @@ Spec is settled. Execute every task in order. Use `python3 -m unittest discover 
 - Tests for a full path and for a failed transition leaving history unchanged.
 - Commit: `feat(order): keep state history`
 EOF
+  if [ "$variant" = plansdd ]; then
+    printf '%s\n\n%s\n' '> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task.' "$(cat docs/plan.md)" >docs/plan.md
+  fi
   git add docs/plan.md
   git commit -q -m "docs: add refund plan"
   ;;

@@ -114,5 +114,41 @@
    "(?s)(cancelled|キャンセル).{0,300}(shipped|発送)|(shipped|発送).{0,300}(cancelled|キャンセル)",
    "payments"
   ]
+ },
+ {
+  "id": "e-plansdd",
+  "variant": "plansdd",
+  "mode": "bypass",
+  "max_turns": 150,
+  "prompt": "docs/plan.md の計画を実行して。仕様は確定済みなので質問せず最後まで進めて。",
+  "hidden": "test_hidden_order.py",
+  "base_commits": 2
+ },
+ {
+  "id": "e-planflow",
+  "variant": "plansdd",
+  "mode": "bypass",
+  "max_turns": 200,
+  "prompt": "superpowers の工程に沿って docs/plan.md の計画を実行して。実行方式(subagent-driven-development か executing-plans か)は hymme の方針で選ぶこと。仕様は確定済みなので質問せず最後まで進めて。",
+  "hidden": "test_hidden_order.py",
+  "base_commits": 2
+ },
+ {
+  "id": "e-plansddforce",
+  "variant": "plansdd",
+  "mode": "bypass",
+  "max_turns": 250,
+  "prompt": "superpowers:subagent-driven-development で docs/plan.md の計画を実行して。仕様は確定済みなので質問せず最後まで進めて。",
+  "hidden": "test_hidden_order.py",
+  "base_commits": 2
+ },
+ {
+  "id": "e-logs",
+  "variant": "logs",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "logs/app.log に ERROR が出ている。原因を調べて order.py を直し、再発防止のテストを足してコミットして。",
+  "hidden": "test_hidden_bug.py",
+  "base_commits": 2
  }
 ]

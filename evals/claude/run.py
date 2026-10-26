@@ -62,6 +62,7 @@ def run_case(case, extra, timeout, keep=None):
         "skills": skills,
         "agents": agents,
         "tool_calls": len(tools),
+        "ctx_calls": sum(t.startswith("mcp__plugin_context-mode") for t in tools),
         "turns": result.get("num_turns"),
         "tokens": tokens,
         "output_tokens": sum(m.get("outputTokens", 0) for m in mu.values()),
