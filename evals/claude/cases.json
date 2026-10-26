@@ -1,0 +1,118 @@
+[
+ {
+  "id": "probe",
+  "prompt": "Reply with exactly: OK",
+  "max_turns": 1,
+  "expect_text": "OK"
+ },
+ {
+  "id": "r-commit",
+  "variant": "dirty",
+  "prompt": "今の変更をコミットして",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:micro-commit",
+   "hymme:commit-flow"
+  ]
+ },
+ {
+  "id": "r-loopeng",
+  "prompt": "order.py の注文の状態遷移で、二重決済やキャンセル後の発送が起きないことを、実装を変える前に設計として網羅的に検査したい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:loop-engineering"
+  ]
+ },
+ {
+  "id": "r-testdesign",
+  "prompt": "duration.py の parse_duration に書くべきテストケースを洗い出して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:test-design"
+  ]
+ },
+ {
+  "id": "r-fv",
+  "prompt": "parse_duration が返す値が常に非負であることを Lean 4 で証明したい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:formal-verification"
+  ]
+ },
+ {
+  "id": "r-rebase",
+  "prompt": "このブランチを main に追従させたいので rebase して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:rebase-flow"
+  ]
+ },
+ {
+  "id": "r-debug",
+  "prompt": "tests/test_order.py がたまに落ちる。原因を調べて",
+  "max_turns": 3,
+  "expect_skills": [
+   "superpowers:systematic-debugging",
+   "hymme:flakiness-concurrency",
+   "hymme:flakiness-value",
+   "hymme:flakiness-external"
+  ]
+ },
+ {
+  "id": "r-review",
+  "variant": "dirty",
+  "prompt": "今の差分をレビューして",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:diff-review"
+  ]
+ },
+ {
+  "id": "r-brainstorm",
+  "prompt": "注文に返品機能を足したい。設計から一緒に考えて",
+  "max_turns": 3,
+  "expect_skills": [
+   "superpowers:brainstorming"
+  ]
+ },
+ {
+  "id": "r-lookup",
+  "prompt": "order.py の transition 関数は何行目に定義されている? 行番号だけ答えて",
+  "max_turns": 4,
+  "expect_text": "(^|\\D)19(\\D|$)",
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering"
+  ]
+ },
+ {
+  "id": "e-duration",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "README の仕様どおりに duration.py の parse_duration を実装して。仕様は確定済みなので質問せず最後まで進め、テストを書いてコミットまで済ませて。",
+  "hidden": "test_hidden_duration.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-plan",
+  "variant": "plan",
+  "mode": "bypass",
+  "max_turns": 120,
+  "prompt": "docs/plan.md の計画を実行して。仕様は確定済みなので質問せず最後まで進めて。",
+  "hidden": "test_hidden_order.py",
+  "base_commits": 2
+ },
+ {
+  "id": "e-review",
+  "variant": "bug",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)(cancelled|キャンセル).{0,300}(shipped|発送)|(shipped|発送).{0,300}(cancelled|キャンセル)",
+   "payments"
+  ]
+ }
+]
