@@ -150,7 +150,7 @@ TodoWrite({
 
 ### reviewing-skillsの実行
 
-reviewing-skills はモデルのスキル一覧に出していない(`disable-model-invocation: true`)ので、Skill ツールでは呼ばない。`~/.claude/skills/utility-reviewing-skills/SKILL.md` を Read し、その手順どおりにレビューする。
+reviewing-skills はモデルのスキル一覧に出していない(`disable-model-invocation: true`)ので、Skill ツールでは呼ばない。`~/.claude/skills/utility-reviewing-skills/SKILL.md` を Read し、その手順どおりにレビューする。中の相対リンク(`references/...`)は、その SKILL.md と同じディレクトリを基準に読む。
 
 ### レビュー結果の処理
 
