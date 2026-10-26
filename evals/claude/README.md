@@ -14,5 +14,5 @@ python3 summary.py results.jsonl
 
 - `scaffold.sh` builds a fresh fixture repo per run (`base`, `dirty`, `bug`, `logs`, `plan`, `plansdd`).
 - `cases.json`: `probe` (always-on context), `r-*` (routing: read-only tools, a few turns, did the expected skill fire), `e-*` (end to end with permissions bypassed, graded by `hidden/` tests or by the planted bugs a review must find). `e-plan*` compare plan execution modes, `e-logs` traces a bug through a 4.7MB log.
-- Extra arguments after `--` go to `claude`. Each run costs real tokens; a full pass with 2 runs is roughly 3–4M tokens.
+- Extra arguments after `--` go to `claude`. Each run costs real tokens: a routing case is about 0.1M, `e-duration` / `e-logs` about 0.25M, and an `e-plan*` run 1.5–4M (SDD runs cost the most), so filter with `--case`.
 - Compare one change at a time against the previous label, and keep a change only when quality holds and tokens drop.
