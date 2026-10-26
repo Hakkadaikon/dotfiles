@@ -28,9 +28,15 @@ def quality(r):
     if "hidden_pass" in r:
         want = case.get("expect_commits", 1)
         return r["hidden_pass"] * (1 if r.get("commits", 0) >= want else 0.5)
-    if "text_score" in r:
-        return r["text_score"]
     checks = []
+    if "text_score" in r:
+        checks.append(r["text_score"])
+    if "files_score" in r:
+        checks.append(r["files_score"])
+    if "git_ok" in r:
+        checks.append(r["git_ok"])
+    if "expect_commits" in case and "commits" in r:
+        checks.append(r["commits"] >= case["expect_commits"])
     if "routed" in r:
         checks.append(r["routed"])
     if "text_ok" in r:

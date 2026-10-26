@@ -154,5 +154,410 @@
   "prompt": "logs/app.log に ERROR が出ている。原因を調べて order.py を直し、再発防止のテストを足してコミットして。",
   "hidden": "test_hidden_bug.py",
   "base_commits": 2
+ },
+ {
+  "id": "r-reset",
+  "prompt": "直前のコミットを取り消して、変更は作業ツリーに残したい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:reset-flow"
+  ],
+  "variant": "spec"
+ },
+ {
+  "id": "r-pr",
+  "prompt": "この作業ブランチで PR を作って",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:pr-create",
+   "superpowers:finishing-a-development-branch"
+  ],
+  "variant": "branch"
+ },
+ {
+  "id": "r-ci",
+  "prompt": "https://github.com/example/shop/actions/runs/123456 の CI が落ちた。原因を調べて",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:gh-ci-investigate"
+  ]
+ },
+ {
+  "id": "r-feedback",
+  "prompt": "レビューで「transition がキャンセル済みの注文の扱いを考慮していない」と指摘された。対応して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:review-feedback",
+   "superpowers:receiving-code-review"
+  ]
+ },
+ {
+  "id": "r-ledger",
+  "prompt": "tasks/todo.md の進捗台帳を、parse_duration の実装が終わった前提で更新して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:ledger-flow"
+  ],
+  "variant": "ledger"
+ },
+ {
+  "id": "r-verifiability",
+  "prompt": "transition の遷移判定を、形式検証しやすい小さな純粋関数に切り出したい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:verifiability"
+  ]
+ },
+ {
+  "id": "r-smt",
+  "prompt": "ALLOWED の遷移表の設定に矛盾や抜けがないか Z3 で検査したい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:loop-engineering"
+  ]
+ },
+ {
+  "id": "r-plan",
+  "prompt": "docs/spec.md の仕様から実装計画を書いて",
+  "max_turns": 3,
+  "expect_skills": [
+   "superpowers:writing-plans",
+   "superpowers:brainstorming"
+  ],
+  "variant": "spec"
+ },
+ {
+  "id": "r-tdd",
+  "prompt": "TDD で parse_duration を実装したい。進め方に沿ってやって",
+  "max_turns": 3,
+  "expect_skills": [
+   "superpowers:test-driven-development",
+   "hymme:test-design"
+  ]
+ },
+ {
+  "id": "r-en-tla",
+  "prompt": "I want to model-check the order state machine with TLA+ before changing the code.",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:loop-engineering"
+  ]
+ },
+ {
+  "id": "r-en-review",
+  "prompt": "Please review my uncommitted diff.",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:diff-review"
+  ],
+  "variant": "dirty"
+ },
+ {
+  "id": "r-en-commit",
+  "prompt": "Commit these changes.",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:micro-commit",
+   "hymme:commit-flow"
+  ],
+  "variant": "dirty"
+ },
+ {
+  "id": "r-flaky",
+  "prompt": "test_order が CI でだけたまに赤になる。手元では再現しない",
+  "max_turns": 3,
+  "expect_skills": [
+   "superpowers:systematic-debugging",
+   "hymme:flakiness-concurrency",
+   "hymme:flakiness-value",
+   "hymme:flakiness-external"
+  ]
+ },
+ {
+  "id": "r-testreview",
+  "prompt": "tests/test_order.py のテストが甘くないかレビューして",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:test-design"
+  ]
+ },
+ {
+  "id": "r-mutation",
+  "prompt": "tests/test_order.py の検出力を mutation testing で測りたい",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:test-design"
+  ]
+ },
+ {
+  "id": "r-squash",
+  "prompt": "feature ブランチのコミットを1つにまとめて",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:rebase-flow"
+  ],
+  "variant": "branch"
+ },
+ {
+  "id": "r-split",
+  "prompt": "今の変更を分けてコミットして",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:micro-commit",
+   "hymme:commit-flow"
+  ],
+  "variant": "two"
+ },
+ {
+  "id": "r-explain",
+  "prompt": "ALLOWED は何を表している? 一言で答えて",
+  "max_turns": 4,
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering",
+   "hymme:formal-verification",
+   "superpowers:subagent-driven-development"
+  ]
+ },
+ {
+  "id": "r-count",
+  "prompt": "tests ディレクトリにあるテストファイルの数だけ答えて",
+  "max_turns": 4,
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering",
+   "hymme:formal-verification",
+   "superpowers:subagent-driven-development"
+  ],
+  "expect_text": "(^|\\D)1(\\D|$)"
+ },
+ {
+  "id": "r-thanks",
+  "prompt": "ありがとう、助かった",
+  "max_turns": 4,
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering",
+   "hymme:formal-verification",
+   "superpowers:subagent-driven-development"
+  ]
+ },
+ {
+  "id": "r-whatfile",
+  "prompt": "parse_duration はどのファイルにある? ファイル名だけ答えて",
+  "max_turns": 4,
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering",
+   "hymme:formal-verification",
+   "superpowers:subagent-driven-development"
+  ],
+  "expect_text": "duration\\.py"
+ },
+ {
+  "id": "r-readme",
+  "prompt": "README に書かれている例をひとつだけそのまま引用して",
+  "max_turns": 4,
+  "forbid_skills": [
+   "superpowers:brainstorming",
+   "superpowers:writing-plans",
+   "hymme:test-design",
+   "hymme:loop-engineering",
+   "hymme:formal-verification",
+   "superpowers:subagent-driven-development"
+  ],
+  "expect_text": "1h30m|45s|2h|0s"
+ },
+ {
+  "id": "e-bugfix",
+  "variant": "bug",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "キャンセル済みの注文が発送できてしまうバグと、2回目の支払いが数えられないバグがある。直して再発防止のテストを足してコミットして。",
+  "hidden": "test_hidden_bug.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-refund",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "注文に refunded 状態を足して。paid と shipped からだけ遷移でき、refunded は終端。テストを書いてコミットして。仕様は確定済みなので質問しないで。",
+  "hidden": "test_hidden_refund.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-history",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "Order に history を足して。最初は [\"created\"]、成功した遷移だけを順に追記し、失敗した遷移は記録しない。テストを書いてコミットして。仕様は確定済み。",
+  "hidden": "test_hidden_history.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-refactor",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "order.py の transition を読みやすくリファクタして。振る舞いは変えないこと。テストで振る舞いが変わっていないことを確かめてからコミットして。",
+  "hidden": "test_hidden_behaviour.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-fee",
+  "variant": "spec",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "docs/spec.md の仕様どおりにキャンセル手数料を実装して。仕様は確定済みなので質問せず、テストを書いてコミットまで済ませて。",
+  "hidden": "test_hidden_fee.py",
+  "base_commits": 2
+ },
+ {
+  "id": "e-duration-en",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "Implement parse_duration in duration.py exactly as the README specifies. The spec is final, do not ask questions; write tests and commit.",
+  "hidden": "test_hidden_duration.py",
+  "base_commits": 1
+ },
+ {
+  "id": "e-review-swallow",
+  "variant": "swallow",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)(except|ValueError|例外)[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}(except|ValueError|例外)",
+   "(?s)(握り潰|飲み込|swallow|黙って|silent|無視)"
+  ]
+ },
+ {
+  "id": "e-review-mutable",
+  "variant": "mutable",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)(items=\\[\\]|ミュータブル|mutable|デフォルト引数|default argument)",
+   "(?s)(共有|shared|別の注文|他のインスタンス|全インスタンス)"
+  ]
+ },
+ {
+  "id": "e-review-eval",
+  "variant": "evaldur",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)eval[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}eval",
+   "(?s)(任意コード|コード実行|インジェクション|injection|arbitrary code|RCE)"
+  ]
+ },
+ {
+  "id": "e-review-durbug",
+  "variant": "durbug",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)(re\\.match|fullmatch|末尾|余分|trailing)",
+   "(?s)(空文字|空の入力|\"\"|empty|ValueError)[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}(空文字|空の入力|empty)"
+  ]
+ },
+ {
+  "id": "e-review-classattr",
+  "variant": "classattr",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "/hymme:diff-review 今の未コミットの差分",
+  "expect_all": [
+   "(?s)(history = \\[\\]|クラス属性|class attribute|class variable|クラス変数)",
+   "(?s)(共有|shared|全インスタンス|他の注文|別の注文)"
+  ]
+ },
+ {
+  "id": "v-loopeng-extract",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "order.py の注文の状態遷移を loop-engineering で設計検証したい。まず 0段の抽出台帳だけ作って、そこで止めて。",
+  "expect_files": [
+   {
+    "glob": "tasks/loopeng/*.extract.md",
+    "regex": "S-0*1"
+   }
+  ]
+ },
+ {
+  "id": "v-testdesign-ledger",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "duration.py の parse_duration について、テスト設計の 0段(テストすべき振る舞いの T-ID 台帳)だけ作って、そこで止めて。",
+  "expect_files": [
+   {
+    "glob": "tasks/test-design/*.md",
+    "regex": "T-0*1"
+   }
+  ]
+ },
+ {
+  "id": "v-fv-catalog",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "order.py の状態遷移を形式検証したい。まず性質カタログだけ作って、証明はまだしないで止めて。",
+  "expect_files": [
+   {
+    "glob": "tasks/fv/**/*.md",
+    "regex": "(不変|invariant|性質)"
+   }
+  ]
+ },
+ {
+  "id": "v-verifiability",
+  "mode": "bypass",
+  "max_turns": 60,
+  "prompt": "transition の遷移判定を形式検証にかけたい。その前段の検証容易性の台帳を作って、指標が通るところまでやって止めて。",
+  "expect_files": [
+   {
+    "glob": "tasks/verifiability/*.md",
+    "regex": "(対象|CCN)"
+   }
+  ]
+ },
+ {
+  "id": "g-rebase",
+  "variant": "branch",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "feature ブランチを main に rebase して追従させて。",
+  "expect_git": {
+   "cmd": "git branch --list; git log --oneline main..feature",
+   "regex": "backup"
+  }
+ },
+ {
+  "id": "g-reset",
+  "variant": "spec",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "直前のコミットを取り消して。変更は作業ツリーに残して。",
+  "expect_git": {
+   "cmd": "git branch --list; git status --porcelain",
+   "regex": "(safety|backup|docs/)"
+  }
+ },
+ {
+  "id": "g-split",
+  "variant": "two",
+  "mode": "bypass",
+  "max_turns": 40,
+  "prompt": "今の変更をコミットして。",
+  "base_commits": 1,
+  "expect_commits": 2
  }
 ]

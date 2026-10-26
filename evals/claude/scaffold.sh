@@ -126,6 +126,108 @@ with open("logs/app.log", "w") as f:
 EOF2
   git add logs order.py && git commit -q -m "chore: add production log"
   ;;
+branch)
+  # main moves on after the feature branch forks; rebasing the branch onto main is conflict-free
+  git checkout -q -b feature
+  printf '\ndef total(orders):\n    return len(orders)\n' >>order.py
+  git commit -qam "feat(order): add total"
+  printf '\ndef count_paid(orders):\n    return sum(o.state == "paid" for o in orders)\n' >>order.py
+  git commit -qam "feat(order): count paid orders"
+  git checkout -q main
+  printf '\n## Changelog\n- initial release\n' >>README.md
+  git commit -qam "docs: add changelog"
+  git checkout -q feature
+  ;;
+two)
+  # two unrelated uncommitted changes: a behaviour guard and a docs fix
+  python3 - <<'EOF2'
+p = "order.py"
+s = open(p).read()
+s = s.replace('        if new_state == "paid":\n', '        if new_state == "paid" and self.payments:\n            raise ValueError("already paid")\n        if new_state == "paid":\n')
+open(p, "w").write(s)
+p = "README.md"
+s = open(p).read()
+s = s.replace("Returns the number of seconds", "Return the number of seconds")
+open(p, "w").write(s)
+EOF2
+  ;;
+swallow)
+  python3 - <<'EOF2'
+p = "order.py"
+s = open(p).read()
+s = s.replace('        if new_state not in ALLOWED[self.state]:\n            raise ValueError(f"{self.state} -> {new_state} is not allowed")\n',
+              '        try:\n            if new_state not in ALLOWED[self.state]:\n                raise ValueError(f"{self.state} -> {new_state} is not allowed")\n        except ValueError:\n            return self.state\n')
+open(p, "w").write(s)
+EOF2
+  ;;
+mutable)
+  python3 - <<'EOF2'
+p = "order.py"
+s = open(p).read()
+s = s.replace("    def __init__(self, order_id):\n        self.order_id = order_id\n",
+              "    def __init__(self, order_id, items=[]):\n        self.order_id = order_id\n        self.items = items\n")
+s += "\n    def add_item(self, name):\n        self.items.append(name)\n        return self.items\n"
+open(p, "w").write(s)
+EOF2
+  ;;
+evaldur)
+  cat >duration.py <<'EOF2'
+"""Duration parsing."""
+
+
+def parse_duration(text):
+    """Parse strings like "1h30m", "45s", "2h" into seconds. See README."""
+    expr = text.strip().replace("h", "*3600+").replace("m", "*60+").replace("s", "+")
+    return eval(expr + "0")
+EOF2
+  ;;
+durbug)
+  cat >duration.py <<'EOF2'
+"""Duration parsing."""
+
+import re
+
+
+def parse_duration(text):
+    """Parse strings like "1h30m", "45s", "2h" into seconds. See README."""
+    m = re.match(r"(?:(\d*)h)?(?:(\d*)m)?(?:(\d*)s)?", text.strip())
+    if not m:
+        raise ValueError(text)
+    h, mi, s = (int(x) if x else 0 for x in m.groups())
+    return h * 3600 + mi * 60 + s
+EOF2
+  ;;
+classattr)
+  python3 - <<'EOF2'
+p = "order.py"
+s = open(p).read()
+s = s.replace("class Order:\n", "class Order:\n    history = []\n\n", 1)
+s = s.replace("        self.state = new_state\n        return self.state\n", "        self.state = new_state\n        self.history.append(new_state)\n        return self.state\n")
+open(p, "w").write(s)
+EOF2
+  ;;
+spec)
+  mkdir -p docs
+  cat >docs/spec.md <<'EOF2'
+# Spec: order cancellation fee
+
+- Cancelling a `paid` order charges a fee of 10% of `amount` (rounded down); cancelling a `created` order is free.
+- `Order(order_id, amount=0)`; `Order.cancellation_fee` is 0 until the order is cancelled.
+- Cancelling twice is not allowed (already covered by the state machine).
+EOF2
+  git add docs && git commit -q -m "docs: add cancellation fee spec"
+  ;;
+ledger)
+  mkdir -p tasks
+  cat >tasks/todo.md <<'EOF2'
+# todo
+
+- [ ] implement parse_duration
+- [ ] add duration tests
+- [ ] document duration format
+EOF2
+  git add tasks && git commit -q -m "chore: add todo"
+  ;;
 plan | plansdd)
   mkdir -p docs
   cat >docs/plan.md <<'EOF'

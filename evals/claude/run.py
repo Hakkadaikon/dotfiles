@@ -9,6 +9,7 @@ and records which skills/agents were invoked, token totals and the case check.
 
 import argparse
 import fnmatch
+import glob
 import json
 import os
 import re
@@ -29,7 +30,13 @@ def expand(pattern):
     return pattern.replace("{DEFECT}", DEFECT)
 
 
-READONLY = ["--allowedTools", "Skill Read Glob Grep", "--disallowedTools", "Bash Edit Write NotebookEdit Agent WebFetch WebSearch"]
+# read-only git is allowed so a commit/rebase request can be looked at before the skill fires
+READONLY = [
+    "--allowedTools",
+    "Skill Read Glob Grep Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*)",
+    "--disallowedTools",
+    "Edit Write NotebookEdit Agent WebFetch WebSearch",
+]
 
 
 def run_case(case, extra, timeout, keep=None):
@@ -104,11 +111,17 @@ def grade(case, repo, skills, text):
         g["text_score"] = round(sum(re.search(expand(x), text) is not None for x in case["expect_all"]) / len(case["expect_all"]), 3)
     if "expect_text" in case:
         g["text_ok"] = re.search(case["expect_text"], text) is not None
-    if case.get("hidden"):
+    if "base_commits" in case:
         # look at the agent's own state before grading adds files (and __pycache__)
         base = int(subprocess.run(["git", "rev-list", "--count", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip() or 0)
-        g["commits"] = base - case.get("base_commits", 1)
+        g["commits"] = base - case["base_commits"]
         g["dirty"] = bool(subprocess.run(["git", "status", "--porcelain"], cwd=repo, capture_output=True, text=True).stdout.strip())
+    if "expect_files" in case:
+        g["files_score"] = round(sum(file_matches(repo, f) for f in case["expect_files"]) / len(case["expect_files"]), 3)
+    if "expect_git" in case:
+        out = subprocess.run(["bash", "-c", case["expect_git"]["cmd"]], cwd=repo, capture_output=True, text=True).stdout
+        g["git_ok"] = re.search(case["expect_git"]["regex"], out, re.M) is not None
+    if case.get("hidden"):
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
         g["suite_green"] = unittest_rc(["discover", "-s", "tests", "-t", "."], repo, env) == 0
         dst = os.path.join(repo, "tests", os.path.basename(case["hidden"]))
@@ -121,6 +134,16 @@ def grade(case, repo, skills, text):
         except subprocess.TimeoutExpired:
             g["hidden_pass"] = 0.0
     return g
+
+
+def file_matches(repo, spec):
+    """spec = {"glob": "tasks/**/*.md", "regex": "..."}: some file matching glob contains regex (or just exists)."""
+    for path in glob.glob(os.path.join(repo, spec["glob"]), recursive=True):
+        if not os.path.isfile(path):
+            continue
+        if "regex" not in spec or re.search(spec["regex"], open(path, errors="ignore").read(), re.M):
+            return True
+    return False
 
 
 def unittest_rc(args, repo, env):

@@ -14,8 +14,8 @@ python3 run.py --label probe --case probe -- --strict-mcp-config
 python3 summary.py results.jsonl
 ```
 
-- `scaffold.sh` builds a fresh fixture repo per run (`base`, `dirty`, `bug`, `logs`, `plan`, `plansdd`).
-- `cases.json`: `probe` (always-on context), `r-*` (routing: read-only tools, a few turns, did the expected skill fire), `e-*` (end to end with permissions bypassed, graded by `hidden/` tests or by the planted bugs a review must find). `e-plan*` compare plan execution modes, `e-logs` traces a bug through a 4.7MB log.
+- `scaffold.sh` builds a fresh fixture repo per run: `base`, `dirty`, `two` (two unrelated changes), `bug` / `swallow` / `mutable` / `evaldur` / `durbug` / `classattr` (planted bugs for reviews), `logs`, `plan` / `plansdd`, `spec`, `ledger`, `branch` (a feature branch behind main).
+- `cases.json` (53 core cases): `probe` (always-on context), `r-*` (routing, 22 positive and 5 negative: read-only tools plus read-only git, a few turns, did the expected skill fire and did heavy skills stay quiet), `v-*` (verification routes: did the loop-engineering / test-design / formal-verification / verifiability artifact appear), `g-*` (guardrails: backup before rebase, safety before reset, split commits), `e-*` (end to end with permissions bypassed, graded by `hidden/` tests or by the planted bugs a review must find). `e-plan*` compare plan execution modes, `e-logs` traces a bug through a 4.7MB log.
 - Extra arguments after `--` go to `claude`. Each run costs real tokens. Measured per run: routing cases about 0.1M; `e-duration`, `e-logs`, `e-review` 0.2–0.4M; `e-plan`, `e-plansdd` 0.5–0.7M; `e-planflow` 1.4–3.9M (the high end when it picks SDD); `e-plansddforce` 2.2–2.6M. Filter with `--case`. `tokens` counts cache reads at full weight; `summary.py` also prints `usd` for the billed cost.
 - `python3 test_criteria.py` checks that the `e-review` criteria accept real findings and reject quoted diff lines and clean reviews; run it after editing them.
 - Compare one change at a time against the previous label, and keep a change only when quality holds and tokens drop.
