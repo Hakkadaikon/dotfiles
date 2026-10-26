@@ -92,6 +92,8 @@ def run_case(case, extra, timeout, keep=None):
         "init_agents": len(init.get("agents", []) or []),
     }
     rec.update(grade(case, repo, skills, result.get("result") or ""))
+    if "expect_all" in case:
+        rec["result_text"] = (result.get("result") or "")[:6000]  # keep review text so partial scores can be checked
     if keep:
         dst = os.path.join(keep, f"{case['id']}-{os.path.basename(work)}")
         shutil.move(repo, dst)

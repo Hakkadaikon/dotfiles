@@ -48,5 +48,31 @@ class ReviewCriteria(unittest.TestCase):
                     self.assertIsNone(re.search(pattern, text))
 
 
+class AllReviewCases(unittest.TestCase):
+    """Every planted-bug review case: a recorded real review scores full marks, the bare diff scores zero."""
+
+    def test_recorded_reviews_score_full(self):
+        samples = json.load(open(os.path.join(HERE, "hidden", "review_samples.json")))
+        cases = {c["id"]: c for c in json.load(open(os.path.join(HERE, "cases.json")))}
+        for cid, text in samples.items():
+            for pattern in cases[cid]["expect_all"]:
+                with self.subTest(case=cid, pattern=pattern[:40]):
+                    self.assertRegex(text, expand(pattern))
+
+    def test_bare_diff_scores_zero(self):
+        import subprocess
+        import tempfile
+
+        for c in json.load(open(os.path.join(HERE, "cases.json"))):
+            if "expect_all" not in c:
+                continue
+            repo = os.path.join(tempfile.mkdtemp(), "x")
+            subprocess.run(["bash", os.path.join(HERE, "scaffold.sh"), repo, c["variant"]], check=True, capture_output=True)
+            diff = subprocess.run(["git", "diff"], cwd=repo, capture_output=True, text=True).stdout
+            for pattern in c["expect_all"]:
+                with self.subTest(case=c["id"], pattern=pattern[:40]):
+                    self.assertIsNone(re.search(expand(pattern), diff))
+
+
 if __name__ == "__main__":
     unittest.main()

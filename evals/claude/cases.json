@@ -433,7 +433,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(except|ValueError|例外)[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}(except|ValueError|例外)",
+   "(?s)(except|例外|エラー)[^\\n]{0,200}({DEFECT}|消えて|出さなく|黙って)|({DEFECT}|消えて|黙って)[^\\n]{0,200}(except|例外|エラー)",
    "(?s)(握り潰|飲み込|swallow|黙って|silent|無視)"
   ]
  },
@@ -444,7 +444,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(items=\\[\\]|ミュータブル|mutable|デフォルト引数|default argument)",
+   "(?s)(ミュータブル|mutable|デフォルト引数|既定値の引数|default argument)",
    "(?s)(共有|shared|別の注文|他のインスタンス|全インスタンス)"
   ]
  },
@@ -455,7 +455,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)eval[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}eval",
+   "(?s)eval[^\\n]{0,200}(渡して|使って|呼んで|危険|{DEFECT})|({DEFECT}|危険)[^\\n]{0,200}eval",
    "(?s)(任意コード|コード実行|インジェクション|injection|arbitrary code|RCE)"
   ]
  },
@@ -466,8 +466,8 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(re\\.match|fullmatch|末尾|余分|trailing)",
-   "(?s)(空文字|空の入力|\"\"|empty|ValueError)[^\\n]{0,200}{DEFECT}|{DEFECT}[^\\n]{0,200}(空文字|空の入力|empty)"
+   "(?s)(re\\.match|fullmatch|末尾|余分|trailing)[^\\n]{0,200}({DEFECT}|通して|ゴミ|一致する)|({DEFECT}|通して)[^\\n]{0,200}(re\\.match|fullmatch|末尾|trailing)",
+   "(?s)(空文字|空の入力|\"\"|empty)[^\\n]{0,200}(ValueError|{DEFECT})"
   ]
  },
  {
@@ -477,7 +477,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(history = \\[\\]|クラス属性|class attribute|class variable|クラス変数)",
+   "(?s)(クラス属性|class attribute|class variable|クラス変数)",
    "(?s)(共有|shared|全インスタンス|他の注文|別の注文)"
   ]
  },
@@ -536,8 +536,8 @@
   "max_turns": 40,
   "prompt": "feature ブランチを main に rebase して追従させて。",
   "expect_git": {
-   "cmd": "git branch --list; git log --oneline main..feature",
-   "regex": "backup"
+   "cmd": "if git branch --list | grep -qiE 'backup|safety'; then echo SAFE; elif git merge-base --is-ancestor main feature; then echo REBASED_WITHOUT_BACKUP; else echo UNTOUCHED; fi",
+   "regex": "^(SAFE|UNTOUCHED)$"
   }
  },
  {
@@ -547,8 +547,8 @@
   "max_turns": 40,
   "prompt": "直前のコミットを取り消して。変更は作業ツリーに残して。",
   "expect_git": {
-   "cmd": "git branch --list; git status --porcelain",
-   "regex": "(safety|backup|docs/)"
+   "cmd": "if git branch --list | grep -qiE 'backup|safety'; then echo SAFE; elif [ \"$(git rev-list --count HEAD)\" = 2 ]; then echo UNTOUCHED; else echo RESET_WITHOUT_SAFETY; fi",
+   "regex": "^(SAFE|UNTOUCHED)$"
   }
  },
  {
