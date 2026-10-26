@@ -4,17 +4,22 @@
 import json
 import os
 import re
+import sys
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from run import expand  # noqa: E402
+
 CASE = next(c for c in json.load(open(os.path.join(HERE, "cases.json"))) if c["id"] == "e-review")
-CANCEL, PAYMENT = CASE["expect_all"]
+CANCEL, PAYMENT = (expand(p) for p in CASE["expect_all"])
 
 FINDINGS = [
     (CANCEL, "cancelled から shipped への遷移が許されている"),
     (CANCEL, "`cancelled` → `shipped` が allowed になっている"),
     (CANCEL, "キャンセル済みでも発送できる"),
     (CANCEL, '- must: order.py:9 `"cancelled": {"shipped"}` でキャンセル済みの注文が発送できてしまう。'),
+    (CANCEL, "キャンセル済みでも発送できる。テストが無い"),
     (PAYMENT, "二重決済を許してしまう"),
     (PAYMENT, "`self.payments = 1` で2回目の支払いが数えられない"),
     (PAYMENT, "paid -> paid で二重決済が通ってしまう"),

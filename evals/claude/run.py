@@ -20,6 +20,15 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLAUDE = os.environ.get("CLAUDE_BIN", os.path.expanduser("~/.local/bin/claude"))
+# words that mark a review sentence as reporting a defect; "{DEFECT}" in expect_all expands to this.
+# A following negation in the same clause (問題なし, 確認できない...) cancels it; negated defects stay defects.
+DEFECT = r"(?:数えられない|数えない|カウントされない|反映されない|(?:バグ|不正|誤り|問題があ|問題あり|許さ|許して|許可|allow|できてしまう|できる|可能に|通って|受理|受け付け|上書き|欠落|壊|must|bug|wrong)(?![^\n。、.,]{0,8}(?:なし|無し|ない|無い|ません)))"
+
+
+def expand(pattern):
+    return pattern.replace("{DEFECT}", DEFECT)
+
+
 READONLY = ["--allowedTools", "Skill Read Glob Grep", "--disallowedTools", "Bash Edit Write NotebookEdit Agent WebFetch WebSearch"]
 
 
@@ -92,7 +101,7 @@ def grade(case, repo, skills, text):
     if "forbid_skills" in case:
         g["overtriggered"] = any(f.split(":")[-1] in norm for f in case["forbid_skills"])
     if "expect_all" in case:
-        g["text_score"] = round(sum(re.search(x, text) is not None for x in case["expect_all"]) / len(case["expect_all"]), 3)
+        g["text_score"] = round(sum(re.search(expand(x), text) is not None for x in case["expect_all"]) / len(case["expect_all"]), 3)
     if "expect_text" in case:
         g["text_ok"] = re.search(case["expect_text"], text) is not None
     if case.get("hidden"):
