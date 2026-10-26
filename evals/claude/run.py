@@ -21,7 +21,7 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLAUDE = os.environ.get("CLAUDE_BIN", os.path.expanduser("~/.local/bin/claude"))
 # words that mark a review sentence as reporting a defect; "{DEFECT}" in expect_all expands to this.
-# A following negation in the same clause (問題なし, 確認できない...) cancels it; negated defects stay defects.
+# A following negation in the same clause (許されない, 問題ありません...) cancels it; negated defects stay defects.
 DEFECT = r"(?:数えられない|数えない|カウントされない|反映されない|(?:バグ|不正|誤り|問題があ|問題あり|許さ|許して|許可|allow|できてしまう|できる|可能に|通って|受理|受け付け|上書き|欠落|壊|must|bug|wrong)(?![^\n。、.,]{0,8}(?:なし|無し|ない|無い|ません)))"
 
 
