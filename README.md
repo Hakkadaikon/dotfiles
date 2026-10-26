@@ -44,3 +44,8 @@ so Claude Code fails to start if the sandbox backend is unavailable.
   sudo apt install bubblewrap socat
   ```
 - **macOS**: uses the built-in Seatbelt (`sandbox-exec`); no install needed.
+
+### Config evals
+`evals/claude/` holds headless evals for this Claude Code setup and the hymme / superpowers plugins.
+They score routing (did the right skill fire), end-to-end tasks against hidden tests, and planted review bugs, and record tokens per run.
+Change one thing at a time and keep it only if quality holds and tokens drop; see `evals/claude/README.md`.
