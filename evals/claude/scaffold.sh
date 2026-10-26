@@ -80,6 +80,7 @@ if __name__ == "__main__":
     unittest.main()
 EOF
 
+printf '__pycache__/\n' >.gitignore
 git init -q -b main
 git config user.email eval@example.com
 git config user.name eval
