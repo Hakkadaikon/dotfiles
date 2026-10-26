@@ -150,13 +150,7 @@ TodoWrite({
 
 ### reviewing-skillsの実行
 
-Skillツールを使用してreviewing-skillsスキルを実行します：
-
-```javascript
-Skill({
-  skill: "utility-reviewing-skills"
-})
-```
+reviewing-skills はモデルのスキル一覧に出していない(`disable-model-invocation: true`)ので、Skill ツールでは呼ばない。`~/.claude/skills/utility-reviewing-skills/SKILL.md` を Read し、その手順どおりにレビューする。
 
 ### レビュー結果の処理
 
