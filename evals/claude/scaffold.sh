@@ -101,6 +101,7 @@ bug | logs)
 p = "order.py"
 s = open(p).read()
 s = s.replace('"cancelled": set(),', '"cancelled": {"shipped"},')
+s = s.replace('"paid": {"shipped", "cancelled"},', '"paid": {"shipped", "cancelled", "paid"},')
 s = s.replace('            self.payments += 1\n', '            self.payments = 1\n')
 open(p, "w").write(s)
 EOF2

@@ -17,6 +17,15 @@ class HiddenBug(unittest.TestCase):
         with self.assertRaises(ValueError):
             o.transition("shipped")
 
+    def test_second_payment_rejected_or_counted(self):
+        o = Order(1)
+        o.transition("paid")
+        try:
+            o.transition("paid")
+        except ValueError:
+            return
+        self.assertEqual(o.payments, 2)
+
     def test_normal_flow_still_works(self):
         o = Order(1)
         o.transition("paid")
