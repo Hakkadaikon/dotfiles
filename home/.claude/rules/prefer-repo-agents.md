@@ -6,7 +6,7 @@
 
 リポ側に無いときの委任先:
 
-- 実装: `hymme:coder`
+- 実装: 委任せず本体で行う(SDD を選んだときは superpowers 既定の implementer)
 - 過剰設計レビュー: `ponytail:ponytail-review` スキル(多観点は `hymme:diff-review` スキル)
 - TLA+ / Lean: `hymme:modeler` / `hymme:prover`(完了前の検査は `hymme:verification-reviewer`)
 - 調査: 組み込みの `Explore`
