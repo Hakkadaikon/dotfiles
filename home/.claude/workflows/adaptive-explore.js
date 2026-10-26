@@ -79,7 +79,7 @@ for (let i = 0; i < items.length; i += parallelism) {
       agent(`次のファイルを読み、役割と要点を簡潔にまとめる。中身を全部貼らず結論と path:line を返す。\nfile: ${it.path}\nkind: ${it.kind} / complexity: ${it.complexity}`, {
         label: `explore:${it.path}`,
         phase: 'Explore',
-        agentType: 'explorer',
+        agentType: 'Explore',
         schema: FIND_SCHEMA,
       }),
     ),
