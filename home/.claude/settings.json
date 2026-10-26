@@ -146,7 +146,7 @@
   },
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
-    "document-skills@anthropic-agent-skills": true,
+    "document-skills@anthropic-agent-skills": false,
     "deploy-on-aws@claude-plugins-official": true,
     "ponytail@ponytail": true,
     "terrashark@terrashark": true,

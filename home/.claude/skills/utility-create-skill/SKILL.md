@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: utility-create-skill
 description: 新しいClaude Codeスキルを作成し、レビュー・自動修正まで行う。skill-creatorでSKILL.mdを生成し、reviewing-skillsでベストプラクティスに照らして検証・修正する。「スキルを作って」「スキルを作成」「create skill」「新しいスキルが欲しい」などのリクエストや、/create-skill コマンドで起動する。
 argument-hint: "[スキル名] [スキルの説明]"

@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: utility-reviewing-skills
 description: Claude Codeスキルを公式ベストプラクティスに基づいてレビューします。SKILL.mdファイルのレビュー、スキル品質のチェック、スキル構造の検証、改善提案が必要な場合に使用します。「このスキルをレビューして」「スキル品質をチェック」「SKILL.mdを検証」「このスキルを改善」などのリクエストで起動します。
 ---

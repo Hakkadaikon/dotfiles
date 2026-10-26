@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: designing-with-nasa-manual
 description: Use when building or restyling a web UI "in the style of" the 1976 NASA Graphics Standards Manual (NHB 1430.2, the Vignelli-era worm manual) or a similar 1970s corporate identity manual — any brief asking for Helvetica, flush-left ragged-right type, hairline rules instead of boxes, a red/black/warm-gray palette, signage-style buttons with text arrows, or a uniform-stroke SVG wordmark. Also when such a design must survive dark mode without putting red on black.
 ---
