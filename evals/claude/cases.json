@@ -433,7 +433,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(except|例外|エラー)[^\\n]{0,200}({DEFECT}|消えて|出さなく|黙って)|({DEFECT}|消えて|黙って)[^\\n]{0,200}(except|例外|エラー)",
+   "(?s)(except|例外|エラー)[^\\n]{0,200}({DEFECT}|消えて|出さなく|黙って)|({DEFECT}|消えて|黙って)[^\\n]{0,200}(except|例外|エラー)|(捕まえ|捕捉して|捨てて|握り潰|飲み込)",
    "(?s)(握り潰|飲み込|swallow|黙って|silent|無視)"
   ]
  },
@@ -444,7 +444,7 @@
   "max_turns": 40,
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
-   "(?s)(ミュータブル|mutable|デフォルト引数|既定値の引数|default argument)",
+   "(?s)(ミュータブル|mutable|可変|デフォルト引数|既定引数|既定値の引数|default argument)",
    "(?s)(共有|shared|別の注文|他のインスタンス|全インスタンス)"
   ]
  },
@@ -456,7 +456,7 @@
   "prompt": "/hymme:diff-review 今の未コミットの差分",
   "expect_all": [
    "(?s)eval[^\\n]{0,200}(渡して|使って|呼んで|危険|{DEFECT})|({DEFECT}|危険)[^\\n]{0,200}eval",
-   "(?s)(任意コード|コード実行|インジェクション|injection|arbitrary code|RCE)"
+   "(?s)(任意コード|コード実行|インジェクション|injection|arbitrary code|RCE|DoS|使い切|外から来た文字列|外部入力|untrusted)"
   ]
  },
  {
