@@ -559,5 +559,13 @@
   "prompt": "今の変更をコミットして。",
   "base_commits": 1,
   "expect_commits": 2
+ },
+ {
+  "id": "r-targeted",
+  "prompt": "order.py を直したので、関係するテストだけ回して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:test-targeted"
+  ]
  }
 ]
