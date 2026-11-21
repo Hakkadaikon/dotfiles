@@ -20,7 +20,6 @@ FILES=(
   "${CONFIG_DIR}/fish/conf.d/loopeng.fish"
   "${CONFIG_DIR}/fish/conf.d/ssh-agent.fish"
   "${CONFIG_DIR}/fish/functions"
-  "${CONFIG_DIR}/loopeng"
   "${CONFIG_DIR}/git/hooks"
   ".claude/settings.json"
   ".claude/statusline.sh"
@@ -96,6 +95,13 @@ function install() {
   # cache, not the flake input's cached rev, so force that separately first.
   nix flake prefetch --refresh github:Hakkadaikon/hymme >/dev/null
   _profile_ensure skill-tools "github:Hakkadaikon/hymme#skill-tools" --refresh --priority 6
+  # The hymme plugin's hooks and the skill-tools commands share one library and
+  # compare versions (an approval is refused when they differ), so move the
+  # plugin together with the tools.
+  if command -v claude >/dev/null 2>&1; then
+    claude plugin marketplace update hymme || true
+    claude plugin update hymme@hymme || true
+  fi
   # Lean 4 本体は elan が別管理。hymme tools の elan で stable toolchain を入れる(冪等)。
   command -v elan >/dev/null 2>&1 && elan default stable
 }
