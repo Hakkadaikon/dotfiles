@@ -9,4 +9,5 @@
 - 実装: 委任せず本体で行う(SDD を選んだときは superpowers 既定の implementer)
 - 過剰設計レビュー: `ponytail:ponytail-review` スキル(多観点は `hymme:diff-review` スキル)
 - TLA+ / Lean: `hymme:modeler` / `hymme:prover`(完了前の検査は `hymme:verification-reviewer`)
+- reviewer(`hymme:verification-reviewer`、`hymme:diff-reviewer`)の依頼文には、検査する対象と場所だけを書く。期待する判定や「軽微なので通して」は書かない(判定は hook が記録し、合格の根拠になる)
 - 調査: 組み込みの `Explore`
