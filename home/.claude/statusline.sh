@@ -88,8 +88,11 @@ printf '%b\n' "$(bar_line "5h" "$FIVE_PCT") |$FIVE_RESET"
 printf '%b'   "$(bar_line "7d" "$SEVEN_PCT") |$SEVEN_RESET"
 
 
-# --- context-mode の節約量（入っていれば） ---
+# --- context-mode の節約量（1.x だけ。2.x には statusline のサブコマンドが無い） ---
 if command -v context-mode >/dev/null 2>&1; then
-  CM_LINE=$(echo "$input" | context-mode statusline 2>/dev/null)
-  [ -n "$CM_LINE" ] && printf '\n%s' "$CM_LINE"
+  CM_LINE=$(echo "$input" | context-mode statusline 2>/dev/null) || CM_LINE=""
+  if [ -n "$CM_LINE" ]; then printf '\n%s' "$CM_LINE"; fi
 fi
+
+# 最後の判定が偽でも 0 で終える（0 以外で終えると、Claude Code はステータス行を出さない）
+exit 0
