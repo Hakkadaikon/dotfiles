@@ -567,5 +567,22 @@
   "expect_skills": [
    "hymme:test-targeted"
   ]
+ },
+ {
+  "id": "r-escape",
+  "prompt": "e2e テストで、同時に注文すると在庫がマイナスになるバグが見つかった。単体テストでは通っていた。直して",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:escape-flow",
+   "superpowers:systematic-debugging"
+  ]
+ },
+ {
+  "id": "r-surface",
+  "prompt": "このリポジトリの CLI を実際に動かして確かめる手順を定義しておきたい。起動と確認のコマンドを決めて",
+  "max_turns": 3,
+  "expect_skills": [
+   "hymme:real-surface"
+  ]
  }
 ]

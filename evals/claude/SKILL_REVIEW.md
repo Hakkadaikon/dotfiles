@@ -13,6 +13,7 @@ Every skill was read in this pass. `changed` means its files differ from before 
 | blackbox-state | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | commit-flow | yes | yes | eval: r-commit, r-en-commit, r-split |
 | diff-review | yes | yes | eval: e-review, e-review-classattr, e-review-durbug, e-review-eval, e-review-mutable, e-review-swallow, r-en-review, r-review |
+| escape-flow | yes | new | new in hymme 0.14; text reviewed against the hook code by two independent reviewers; routing case `r-escape` added, not run yet |
 | experience-checklist | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | experience-exploratory | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | experience-scenario | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
@@ -47,6 +48,7 @@ Every skill was read in this pass. `changed` means its files differ from before 
 | oracle-relational | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | pr-create | yes | yes | eval: r-pr |
 | process-static | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
+| real-surface | yes | new | new in hymme 0.14; text reviewed against the hook code by two independent reviewers; routing case `r-surface` added, not run yet |
 | rebase-flow | yes | yes | eval: g-rebase, r-rebase, r-squash |
 | reset-flow | yes | yes | eval: g-reset, r-reset |
 | review-feedback | yes | yes | eval: r-feedback |
