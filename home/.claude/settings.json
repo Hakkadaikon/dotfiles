@@ -47,6 +47,7 @@
       "Read(**/*.pfx)",
       "Read(**/.config/gh/hosts.yml)",
       "Read(**/.docker/config.json)",
+      "Read(**/.claude/plugins/data/**/notary.key)",
       "Bash(printenv*)",
       "Bash(env)"
     ],
