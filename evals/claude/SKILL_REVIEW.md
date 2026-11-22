@@ -30,13 +30,13 @@ Every skill was read in this pass. `changed` means its files differ from before 
 | levels-service | hidden | no | content read, no correction needed; references checked by `check-doc-refs` in nix flake check |
 | levels-system | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | levels | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
-| loop-engineering | yes | yes | eval: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-extract | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-formalize | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-gherkin | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-modelcheck | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-smt | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
-| loopeng-tracecheck | hidden | yes | eval via router loop-engineering: r-en-tla, r-loopeng, r-smt, v-loopeng-extract |
+| agent-loop | yes | yes | eval: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-extract | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-formalize | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-gherkin | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-modelcheck | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-smt | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
+| agentloop-tracecheck | hidden | yes | eval via router agent-loop: r-en-tla, r-agentloop, r-smt, v-agentloop-extract |
 | micro-commit | yes | yes | eval: g-split, r-commit, r-en-commit, r-split |
 | mutation-testing | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
 | nonfunctional-attributes | hidden | yes | content read and corrected where wrong; references checked by `check-doc-refs` in nix flake check |
@@ -79,11 +79,11 @@ Every skill was read in this pass. `changed` means its files differ from before 
 |---|---|---|
 | diff-reviewer | kept; takes all lenses | e-review* (6 cases) |
 | verification-reviewer | new: merges 4 reviewers | v-* (dispatched in v-testdesign-ledger) |
-| modeler | kept | read; loop-engineering route kept |
+| modeler | kept | read; agent-loop route kept |
 | prover | kept | read; formal-verification route kept |
 | coder | removed | e-plansddforce A/B: same quality, -10% tokens without it |
 | code-reviewer | removed | duplicated ponytail-review |
-| loop-engineering / test-design / formal-verification / verifiability reviewers | merged into verification-reviewer | flake check on skills/*/reviewer.md |
+| agent-loop / test-design / formal-verification / verifiability reviewers | merged into verification-reviewer | flake check on skills/*/reviewer.md |
 
 ## superpowers skills (foundation, unchanged)
 

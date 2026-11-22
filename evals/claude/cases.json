@@ -16,11 +16,11 @@
   ]
  },
  {
-  "id": "r-loopeng",
+  "id": "r-agentloop",
   "prompt": "order.py の注文の状態遷移で、二重決済やキャンセル後の発送が起きないことを、実装を変える前に設計として網羅的に検査したい",
   "max_turns": 3,
   "expect_skills": [
-   "hymme:loop-engineering"
+   "hymme:agent-loop"
   ]
  },
  {
@@ -84,7 +84,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering"
+   "hymme:agent-loop"
   ]
  },
  {
@@ -213,7 +213,7 @@
   "prompt": "ALLOWED の遷移表の設定に矛盾や抜けがないか Z3 で検査したい",
   "max_turns": 3,
   "expect_skills": [
-   "hymme:loop-engineering"
+   "hymme:agent-loop"
   ]
  },
  {
@@ -240,7 +240,7 @@
   "prompt": "I want to model-check the order state machine with TLA+ before changing the code.",
   "max_turns": 3,
   "expect_skills": [
-   "hymme:loop-engineering"
+   "hymme:agent-loop"
   ]
  },
  {
@@ -316,7 +316,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering",
+   "hymme:agent-loop",
    "hymme:formal-verification",
    "superpowers:subagent-driven-development"
   ]
@@ -329,7 +329,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering",
+   "hymme:agent-loop",
    "hymme:formal-verification",
    "superpowers:subagent-driven-development"
   ],
@@ -343,7 +343,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering",
+   "hymme:agent-loop",
    "hymme:formal-verification",
    "superpowers:subagent-driven-development"
   ]
@@ -356,7 +356,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering",
+   "hymme:agent-loop",
    "hymme:formal-verification",
    "superpowers:subagent-driven-development"
   ],
@@ -370,7 +370,7 @@
    "superpowers:brainstorming",
    "superpowers:writing-plans",
    "hymme:test-design",
-   "hymme:loop-engineering",
+   "hymme:agent-loop",
    "hymme:formal-verification",
    "superpowers:subagent-driven-development"
   ],
@@ -482,10 +482,10 @@
   ]
  },
  {
-  "id": "v-loopeng-extract",
+  "id": "v-agentloop-extract",
   "mode": "bypass",
   "max_turns": 60,
-  "prompt": "order.py の注文の状態遷移を loop-engineering で設計検証したい。まず 0段の抽出台帳だけ作って、そこで止めて。",
+  "prompt": "order.py の注文の状態遷移を agent-loop で設計検証したい。まず 0段の抽出台帳だけ作って、そこで止めて。",
   "expect_files": [
    {
     "glob": "tasks/loopeng/*.extract.md",

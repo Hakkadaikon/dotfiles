@@ -22,7 +22,7 @@
       };
       context-mode = pkgs.callPackage ./nix/context-mode { };
 
-      # loop-engineering / test-design / formal-verification skills (and their
+      # agent-loop / test-design / formal-verification skills (and their
       # TLA+/Apalache/Lean toolchain) moved to the hymme repo's flake.
       # See github:Hakkadaikon/hymme.
 

@@ -17,7 +17,7 @@ FILES=(
   "${CONFIG_DIR}/fish/conf.d/nix-profile.fish"
   "${CONFIG_DIR}/fish/conf.d/rustup.fish"
   "${CONFIG_DIR}/fish/conf.d/uv.env.fish"
-  "${CONFIG_DIR}/fish/conf.d/loopeng.fish"
+  "${CONFIG_DIR}/fish/conf.d/agentloop.fish"
   "${CONFIG_DIR}/fish/conf.d/ssh-agent.fish"
   "${CONFIG_DIR}/fish/functions"
   "${CONFIG_DIR}/git/hooks"
@@ -87,7 +87,7 @@ function install() {
   # dotfiles tools (neovim/wezterm/stylua/shfmt/fish/bubblewrap/socat); profile Name: tools.
   _profile_ensure tools "${DOTFILES_DIR}#tools"
   # Skill toolchain (TLA+/Apalache/make/python3/Lean) lives in the hymme plugin's
-  # flake so the loop-engineering / test-design / formal-verification skills find
+  # flake so the agent-loop / test-design / formal-verification skills find
   # their tools on PATH; profile Name: skill-tools. python3 collides with dotfiles'
   # transitive python3, so give hymme lower priority (higher number) to defer the
   # shared file. profile add/upgrade's own --refresh only bypasses the derivation
